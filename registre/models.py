@@ -2,11 +2,10 @@ from django.db import models
 from num2words import num2words
 
 class Structure(models.Model):
-    # Ajout de la préfecture pour la centralisation des données
-    prefecture = models.CharField(max_length=255, verbose_name="Préfecture") 
+    # Ajoutez default='' pour que Django puisse remplir les anciens centres automatiquement
+    prefecture = models.CharField(max_length=255, verbose_name="Préfecture", default="Non précisée") 
     sous_prefecture = models.CharField(max_length=255, verbose_name="Sous-Préfecture")
     nom_centre = models.CharField(max_length=255, verbose_name="Nom du Centre")
-
     class Meta:
         verbose_name = "Structure Administrative"
         verbose_name_plural = "Structures Administratives"
