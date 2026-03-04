@@ -1,1 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de Bord - État Civil</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f2f5; }
+        .header { background: #004494; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { margin: 0; }
+        .btn { display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Bienvenue sur le Portail d'État Civil</h1>
+        <p>Utilisateur : {{ user.username }}</p>
+    </div>
 
+    <div class="card">
+        <h3>Gestion des Actes</h3>
+        <p>Vous pouvez maintenant commencer à gérer les registres.</p>
+        <a href="/admin/registre/naissance/add/" class="btn">+ Enregistrer une nouvelle naissance</a>
+    </div>
+</body>
+</html>
