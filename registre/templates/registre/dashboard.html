@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,20 +7,33 @@
     <title>Tableau de Bord - État Civil CI</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
-        .navbar { background: #004494; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        /* Barre de navigation officielle */
+        .navbar { 
+            background: #004494; 
+            color: white; 
+            padding: 10px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        
+        .nav-brand { display: flex; align-items: center; gap: 15px; }
+        .logo-nav { height: 50px; width: auto; background-color: white; border-radius: 4px; padding: 2px; }
+        
         .container { padding: 30px; max-width: 1100px; margin: auto; }
         .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
         h1, h2 { color: #004494; margin-top: 0; }
         
-        /* Bouton vert corrigé pour ActeNaissance */
+        /* Bouton d'ajout */
         .btn-add { display: inline-block; padding: 12px 25px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
         .btn-add:hover { background: #218838; }
 
-        /* Style du tableau des actes */
+        /* Tableau des actes */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
         th { background-color: #f8f9fa; color: #666; text-transform: uppercase; font-size: 0.85em; }
-        tr:hover { background-color: #fdfdfd; }
         
         .btn-view { padding: 6px 12px; background: #17a2b8; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
         .btn-logout { color: #ffcccc; text-decoration: none; font-size: 0.9em; border: 1px solid #ffcccc; padding: 5px 10px; border-radius: 4px; }
@@ -28,37 +42,43 @@
 <body>
 
     <div class="navbar">
-        <div><strong>SYSTÈME ÉTAT CIVIL</strong></div>
+        <div class="nav-brand">
+            <img src="{% static 'registre/logo.png' %}" alt="Emblème CI" class="logo-nav">
+            <div>
+                <div style="font-size: 0.75em; opacity: 0.9; font-weight: 300;">RÉPUBLIQUE DE CÔTE D'IVOIRE</div>
+                <div style="font-weight: bold; letter-spacing: 1px; font-size: 1.1em;">SYSTÈME ÉTAT CIVIL</div>
+            </div>
+        </div>
         <div>
-            <span>Session : {{ user.username }}</span> &nbsp;
+            <span style="font-size: 0.9em;">Agent : <strong>{{ user.username }}</strong></span> &nbsp;
             <a href="{% url 'logout' %}" class="btn-logout">Déconnexion</a>
         </div>
     </div>
 
     <div class="container">
-        <h1>Bienvenue sur le Portail</h1>
+        <h1>Tableau de Bord Administratif</h1>
 
         <div class="card">
-            <h2>Gestion des Registres</h2>
-            <p>Cliquez sur le bouton ci-dessous pour ouvrir le formulaire officiel de saisie.</p>
-            <a href="/admin/registre/actenaissance/add/" class="btn-add">+ Enregistrer un nouvel acte de naissance</a>
+            <h2>Nouvel Enregistrement</h2>
+            <p>Utilisez ce bouton pour accéder au formulaire officiel de déclaration de naissance.</p>
+            <a href="/admin/registre/actenaissance/add/" class="btn-add">+ Enregistrer une naissance</a>
         </div>
 
         <div class="card">
-            <h2>Derniers actes enregistrés</h2>
+            <h2>Registre des Naissances (Derniers actes)</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Nom de l'enfant</th>
+                        <th>Nom et Prénoms</th>
                         <th>Date de naissance</th>
                         <th>Lieu</th>
-                        <th>Actions</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for acte in actes %}
                     <tr>
-                        <td><strong>{{ acte.prenoms_enfant }} {{ acte.nom_enfant|upper }}</strong></td>
+                        <td><strong>{{ acte.nom_complet_officiel }}</strong></td>
                         <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
                         <td>{{ acte.lieu_naissance }}</td>
                         <td>
@@ -68,7 +88,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="4" style="text-align: center; color: #999; padding: 30px;">
-                            Aucun acte n'a encore été enregistré dans la base de données.
+                            Aucun acte n'est encore enregistré dans le système.
                         </td>
                     </tr>
                     {% endfor %}
