@@ -37,6 +37,7 @@
         .txt-etat-civil { font-size: 22px; font-weight: bold; margin: 5px 0 0 0; }
         .txt-centre { font-size: 13px; font-weight: bold; margin: 0; }
         
+        /* Style pour le numéro d'acte modifié */
         .num-acte-final { font-size: 14px; font-weight: bold; margin-top: 15px; text-align: center; line-height: 1.1; }
 
         .cadre-nom-naissance { text-align: center; width: 100%; margin-top: 20px; }
@@ -98,7 +99,7 @@
             <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
             
             <p class="num-acte-final">
-                N° {{ acte.numero_acte_complet }} du {{ acte.date_declaration|date:"d/m/Y" }}<br>DU REGISTRE
+                N° {{ acte.id }} du {{ acte.date_declaration|date:"d/m/Y" }}<br>DU REGISTRE
             </p>
 
             <div class="cadre-nom-naissance">
@@ -110,7 +111,8 @@
 
         <div class="bloc-droite">
             <h1 class="titre-extrait-final">EXTRAIT</h1>
-            <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">ANNEE <strong>{{ acte.annee_registre }}</strong></p>
+            <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">DU REGISTRE DES ACTE DE L'ETAT <br> 
+            CIVIL POUR L'ANNEE <strong>{{ acte.annee_registre }}</strong></p>
             
             <div class="bloc-naissance-compact">
                 <p>Le <span style="text-transform: lowercase;">{{ date_lettres }}</span></p>
@@ -157,7 +159,7 @@
 
     <div class="qr-code-container">
         <img class="qr-code-img" 
-             src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Acte%20N°:{{ acte.numero_acte_complet }}%20du%20{{ acte.date_declaration|date:'d/m/Y' }}%0ANom:%20{{ acte.nom_enfant|upper }}%20{{ acte.prenoms_enfant }}%0ACentre:%20{{ acte.structure.nom_centre|upper }}" 
+             src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Acte%20N°:{{ acte.id }}%20du%20{{ acte.date_declaration|date:'d/m/Y' }}%0ANom:%20{{ acte.nom_enfant|upper }}%20{{ acte.prenoms_enfant }}%0ACentre:%20{{ acte.structure.nom_centre|upper }}" 
              alt="QR Code">
         <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle</p>
     </div>
