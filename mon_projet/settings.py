@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-10r42_@iwii1a(0s&rw9cun%bh-&5ou98go@s8&*dtyg-r7#w0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['appetatcivil-ci-2025.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['appetatcivil-ci-2025.onrender.com', localhost', '127.0.0.1']
 
 
 # Application definition
