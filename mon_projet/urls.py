@@ -1,21 +1,20 @@
 from django.contrib import admin
-from django.urls import path
-from django.contrib.auth import get_user_model
-from registre.views import apercu_extrait # Import direct pour éviter la boucle
-
-# --- CODE DE SECOURS POUR CRÉER VOTRE COMPTE ---
-try:
-    User = get_user_model()
-    if not User.objects.filter(username='Mggmv').exists():
-        User.objects.create_superuser('Mggmv', 'mgbehe14@gmail.com', 'Gbehe2804')
-except Exception:
-    pass
-# ----------------------------------------------
+from django.urls import path, include
+from registre import views
 
 urlpatterns = [
-    # Accès à l'administration
+    # Accès direct (sans taper admin)
+    path('', views.home, name='home'),
+    
+    # Gestion des comptes (pour vos futurs agents)
+    path('accounts/', include('django.contrib.auth.urls')),
+    
+    # Administration Django
     path('admin/', admin.site.urls),
     
-    # Lien pour l'impression
-    path('extrait/<int:pk>/', apercu_extrait, name='apercu_extrait'),
+    # Tableau de bord des agents
+    path('dashboard/', views.dashboard, name='dashboard'),
+    
+    # Vue des extraits
+    path('extrait/<int:pk>/', views.voir_extrait, name='voir_extrait'),
 ]
