@@ -24,11 +24,14 @@
             display: flex; justify-content: space-between; align-items: flex-start; width: 100%;
         }
 
+        /* BLOC GAUCHE REPOUSSÉ ET REMONTÉ (Conservé) */
         .bloc-gauche {
             display: flex; flex-direction: column; align-items: center; text-align: center; 
-            width: 300px; margin-left: -5mm; margin-top: -2mm;
+            width: 300px;
+            margin-left: -5mm; 
+            margin-top: -2mm;  
         }
-        .logo-embleme { width: 150px; height: auto; margin: 5px 0; } 
+        .logo-embleme { width: 150px; height: auto; margin: 5px 0; }
         
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 12px; margin: 0; line-height: 1.2; }
         .txt-etat-civil { font-size: 22px; font-weight: bold; margin: 5px 0 0 0; }
@@ -47,10 +50,6 @@
         .bloc-naissance-compact p { margin: 4px 0; padding: 0; }
         .gras-majuscule { font-weight: bold; text-transform: uppercase; }
 
-        .espace-prenom { margin-top: 25px !important; }
-        .filiation-interligne { margin-top: 20px !important; display: block; }
-        .nationalite-decalee { margin-top: 8px !important; display: block; font-size: 16px; }
-
         .transcription-zone {
             margin-top: 20px; font-size: 11px; font-style: italic; text-align: justify;
             width: 100%; line-height: 1.3; min-height: 1.5cm;
@@ -58,7 +57,7 @@
 
         .separateur-mentions {
             border-top: 1.5px solid black; width: 100%;
-            margin-top: 1cm; margin-bottom: 10px;
+            margin-top: 2cm; margin-bottom: 10px;
         }
         .bloc-mentions-final { width: 100%; box-sizing: border-box; }
         .titre-mention { font-weight: bold; text-decoration: underline; display: block; margin-bottom: 15px; font-size: 15px; }
@@ -71,22 +70,15 @@
         .valeur-officielle { font-weight: bold; text-transform: uppercase; white-space: nowrap; font-size: 14px; }
 
         .signature-zone { text-align: right; margin-top: 40px; padding-right: 20px; font-size: 14px; }
-        .signature-titre { font-weight: bold; margin-bottom: 0px; }
 
-        /* CONFIGURATION QR CODE CENTRÉ ET SCEAU DÉCALÉ */
-        .bas-page-container {
-            width: 100%; position: absolute; bottom: 30px; left: 0;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr; /* 3 colonnes pour un centrage parfait du milieu */
-            align-items: center;
+        .qr-code-container {
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            bottom: 30px;
+            left: 0;
         }
-        
-        .colonne-sceau { text-align: right; padding-right: 20mm; } /* Sceau à 2cm du QR */
-        .colonne-qr { text-align: center; }
-        .colonne-vide { } /* Sert à équilibrer le centrage */
-
         .qr-code-img { width: 85px; height: 85px; }
-        .mention-sceau { font-weight: bold; font-size: 14px; text-transform: uppercase; }
 
         @media print {
             body { background-color: white; display: block; }
@@ -104,7 +96,11 @@
             <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
             <p class="txt-etat-civil">ETAT CIVIL</p>
             <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
-            <p class="num-acte-final">N° {{ acte.numero_acte_complet }} du {{ acte.date_declaration|date:"d/m/Y" }}<br>DU REGISTRE</p>
+            
+            <p class="num-acte-final">
+                N° {{ acte.numero_acte_complet }} du {{ acte.date_declaration|date:"d/m/Y" }}<br>DU REGISTRE
+            </p>
+
             <div class="cadre-nom-naissance">
                 <span style="font-size: 13px;">NAISSANCE DE :</span><br>
                 <span class="prenom-enfant-grand">{{ acte.prenoms_enfant }}</span>
@@ -114,20 +110,22 @@
 
         <div class="bloc-droite">
             <h1 class="titre-extrait-final">EXTRAIT</h1>
-            <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">DU REGISTRE DES ACTES DE L'ETAT<br> 
-             CIVIL POUR L'ANNEE <strong>{{ acte.annee_registre }}</strong></p>
+            <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">ANNEE <strong>{{ acte.annee_registre }}</strong></p>
+            
             <div class="bloc-naissance-compact">
                 <p>Le <span style="text-transform: lowercase;">{{ date_lettres }}</span></p>
                 <p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span></p>
                 <p>à <span style="font-weight: bold;">{{ acte.lieu_naissance }}</span></p>
-                <p class="espace-prenom">est né(e) <span class="gras-majuscule" style="font-size: 20px;">{{ acte.prenoms_enfant }}</span></p>
-                <p class="filiation-interligne">
-                    Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>
-                    <span class="nationalite-decalee">{% if acte.nationalite_pere %}{{ acte.nationalite_pere }}{% endif %}</span>
+                
+                <p style="margin-top: 15px;">
+                    est né(e) <span class="gras-majuscule" style="font-size: 20px;">{{ acte.prenoms_enfant }}</span>
                 </p>
-                <p class="filiation-interligne">
-                    et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>
-                    <span class="nationalite-decalee">{% if acte.nationalite_mere %}{{ acte.nationalite_mere }}{% endif %}</span>
+
+                <p style="margin-top: 8px;">
+                    Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>{% if acte.nationalite_pere %}, {{ acte.nationalite_pere }}{% endif %}
+                </p>
+                <p>
+                    et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>{% if acte.nationalite_mere %}, {{ acte.nationalite_mere }}{% endif %}
                 </p>
             </div>
         </div>
@@ -136,7 +134,9 @@
     <div class="transcription-zone">
         {% if acte.transcription_justice %}<strong>TRANSCRIPTION :</strong> {{ acte.transcription_justice }}{% endif %}
     </div>
+
     <div class="separateur-mentions"></div>
+    
     <div class="bloc-mentions-final">
         <span class="titre-mention">MENTIONS (éventuellement) :</span>
         <div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span></div>
@@ -150,20 +150,16 @@
 
     <div class="signature-zone">
         <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
-        <p class="signature-titre">L'Officier de l'État Civil</p>
-        <p style="margin: 0; font-size: 11px;">(Signature et Sceau)</p>
-        <div style="height: 60px;"></div>
+        <p style="font-weight: bold;">L'Officier de l'État Civil</p>
+        <div style="height: 65px;"></div>
+        <p>(Signature et Sceau)</p>
     </div>
 
-    <div class="bas-page-container">
-        <div class="colonne-sceau">
-            <span class="mention-sceau">SCEAU</span>
-        </div>
-        <div class="colonne-qr">
-            <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Nom:{{ acte.nom_enfant }} {{ acte.prenoms_enfant }} Acte:{{ acte.numero_acte_complet }}" alt="QR Code">
-            <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique</p>
-        </div>
-        <div class="colonne-vide"></div>
+    <div class="qr-code-container">
+        <img class="qr-code-img" 
+             src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Acte%20N°:{{ acte.numero_acte_complet }}%20du%20{{ acte.date_declaration|date:'d/m/Y' }}%0ANom:%20{{ acte.nom_enfant|upper }}%20{{ acte.prenoms_enfant }}%0ACentre:%20{{ acte.structure.nom_centre|upper }}" 
+             alt="QR Code">
+        <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle</p>
     </div>
 </div>
 
