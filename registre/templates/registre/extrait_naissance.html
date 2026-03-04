@@ -26,7 +26,7 @@
 
         .bloc-gauche {
             display: flex; flex-direction: column; align-items: center; text-align: center; 
-            width: 300px; margin-left: -5mm; margin-top: -2mm;  
+            width: 300px; margin-left: -5mm; margin-top: -2mm;
         }
         .logo-embleme { width: 150px; height: auto; margin: 5px 0; }
         
@@ -49,7 +49,7 @@
 
         .transcription-zone {
             margin-top: 20px; font-size: 11px; font-style: italic; text-align: justify;
-            width: 100%; line-height: 1.3; min-height: 1.5cm;
+            width: 100%; line-height: 1.3; min-height: 1.2cm;
         }
 
         .separateur-mentions {
@@ -76,7 +76,7 @@
         @media print {
             body { background-color: white; display: block; }
             .cadre-exterieur { margin: 10mm auto; border: 1.5px solid black !important; }
-            .no-print { display: none; }
+            .btn-action { display: none; }
         }
     </style>
 </head>
@@ -117,10 +117,10 @@
                 </p>
 
                 <p style="margin-top: 8px;">
-                    Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>
+                    Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>{% if acte.nationalite_pere %}, {{ acte.nationalite_pere }}{% endif %}
                 </p>
                 <p>
-                    et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>
+                    et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>{% if acte.nationalite_mere %}, {{ acte.nationalite_mere }}{% endif %}
                 </p>
             </div>
         </div>
@@ -135,28 +135,32 @@
     <div class="bloc-mentions-final">
         <span class="titre-mention">MENTIONS (éventuellement) :</span>
         <div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Avec</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.conjoint_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Mariage dissous (date et décision)</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.dissolution_mariage|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
     </div>
 
-    <p style="font-style: italic; margin-top: 35px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
+    <p style="font-style: italic; margin-top: 30px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
 
     <div class="signature-zone">
         <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
         <p style="font-weight: bold;">L'Officier de l'État Civil</p>
-        <div style="height: 65px;"></div>
+        <div style="height: 60px;"></div>
         <p>(Signature et Sceau)</p>
     </div>
 
     <div class="qr-code-container">
-        <img class="qr-code-img" loading="lazy" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Acte:{{ acte.id }} du {{ acte.date_declaration|date:'d/m/Y' }} Nom:{{ acte.nom_enfant }} {{ acte.prenoms_enfant }}" alt="QR Code">
+        <img class="qr-code-img" loading="lazy" 
+             src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Acte%20N°:{{ acte.id }}%20du%20{{ acte.date_declaration|date:'d/m/Y' }}%0ANom:%20{{ acte.nom_enfant|upper }}%20{{ acte.prenoms_enfant }}%0ACentre:%20{{ acte.structure.nom_centre|upper }}" 
+             alt="QR Code">
         <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle</p>
     </div>
 </div>
 
-<div class="no-print" style="position: fixed; top: 20px; right: 20px;">
-    <button onclick="window.print()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimer l'acte</button>
-</div>
+<button onclick="window.print()" class="btn-action" style="position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 1000;">
+    Imprimer l'extrait
+</button>
 
 </body>
 </html>
