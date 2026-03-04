@@ -2,25 +2,80 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tableau de Bord - État Civil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - État Civil CI</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f2f5; }
-        .header { background: #004494; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { margin: 0; }
-        .btn { display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
+        .navbar { background: #004494; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .container { padding: 30px; max-width: 1100px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        h1, h2 { color: #004494; margin-top: 0; }
+        
+        /* Bouton vert corrigé pour ActeNaissance */
+        .btn-add { display: inline-block; padding: 12px 25px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
+        .btn-add:hover { background: #218838; }
+
+        /* Style du tableau des actes */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #666; text-transform: uppercase; font-size: 0.85em; }
+        tr:hover { background-color: #fdfdfd; }
+        
+        .btn-view { padding: 6px 12px; background: #17a2b8; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
+        .btn-logout { color: #ffcccc; text-decoration: none; font-size: 0.9em; border: 1px solid #ffcccc; padding: 5px 10px; border-radius: 4px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Bienvenue sur le Portail d'État Civil</h1>
-        <p>Utilisateur : {{ user.username }}</p>
+
+    <div class="navbar">
+        <div><strong>SYSTÈME ÉTAT CIVIL</strong></div>
+        <div>
+            <span>Session : {{ user.username }}</span> &nbsp;
+            <a href="{% url 'logout' %}" class="btn-logout">Déconnexion</a>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Gestion des Actes</h3>
-        <p>Vous pouvez maintenant commencer à gérer les registres.</p>
-        <a href="/admin/registre/naissance/add/" class="btn">+ Enregistrer une nouvelle naissance</a>
+    <div class="container">
+        <h1>Bienvenue sur le Portail</h1>
+
+        <div class="card">
+            <h2>Gestion des Registres</h2>
+            <p>Cliquez sur le bouton ci-dessous pour ouvrir le formulaire officiel de saisie.</p>
+            <a href="/admin/registre/actenaissance/add/" class="btn-add">+ Enregistrer un nouvel acte de naissance</a>
+        </div>
+
+        <div class="card">
+            <h2>Derniers actes enregistrés</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom de l'enfant</th>
+                        <th>Date de naissance</th>
+                        <th>Lieu</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for acte in actes %}
+                    <tr>
+                        <td><strong>{{ acte.prenoms_enfant }} {{ acte.nom_enfant|upper }}</strong></td>
+                        <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
+                        <td>{{ acte.lieu_naissance }}</td>
+                        <td>
+                            <a href="{% url 'voir_extrait' acte.pk %}" class="btn-view">Voir l'extrait</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #999; padding: 30px;">
+                            Aucun acte n'a encore été enregistré dans la base de données.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </body>
 </html>
