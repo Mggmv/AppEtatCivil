@@ -1,14 +1,15 @@
 import os
 from pathlib import Path
-import dj_database_url # Nécessaire pour Render
 
+# Chemin de base du projet
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-votre-cle-ici')
-DEBUG = True
+# --- CONFIGURATION DE SÉCURITÉ ---
+SECRET_KEY = 'votre-cle-secrete-ici' # Gardez celle que vous avez déjà
+DEBUG = True # À mettre sur False en production réelle
+ALLOWED_HOSTS = ['*'] # Permet le fonctionnement sur Render
 
-ALLOWED_HOSTS = ['*']
-
+# --- APPLICATIONS ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,12 +17,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'registre',
+    'registre', # Votre application d'état civil
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # DOIT ÊTRE ICI (2ème position)
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Pour les fichiers statiques sur Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -32,48 +33,50 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'mon_projet.urls'
 
+# --- GESTION DES TEMPLATES (CORRIGÉ) ---
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Cette ligne permet de trouver le dossier templates à la racine du projet
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        # DIRS configuré pour trouver vos dossiers templates
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth', # Indispensable pour la connexion
+                'django.contrib.auth.context_processors.auth', # Indispensable pour l'agent
                 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
+
 WSGI_APPLICATION = 'mon_projet.wsgi.application'
 
-# BASE DE DONNÉES (Configuration pour Render)
+# --- BASE DE DONNÉES ---
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-# --- CONFIGURATION IVOIRIENNE ---
+# --- INTERNATIONALISATION (CI) 🇨🇮 ---
 LANGUAGE_CODE = 'fr-fr'
-TIME_ZONE = 'Africa/Abidjan' # Heure de Côte d'Ivoire
+# Fuseau horaire réglé sur Abidjan pour la validité des actes
+TIME_ZONE = 'Africa/Abidjan' 
 USE_I18N = True
 USE_TZ = True
 
-# FICHIERS STATIQUES (WhiteNoise)
-STATIC_URL = '/static/'
+# --- FICHIERS STATIQUES ---
+STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'registre/static')]
+
+# --- CONFIGURATION DES ACCÈS (CORRIGÉ POUR L'ERREUR 404 PROFILE) ---
+# Redirige l'agent vers le Dashboard après connexion au lieu de /accounts/profile/
+LOGIN_REDIRECT_URL = 'dashboard'
+# Redirige vers la page d'accueil après déconnexion
+LOGOUT_REDIRECT_URL = 'home'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
