@@ -1,27 +1,26 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Naissance
+from django.apps import apps # Plus sûr pour l'importation
 
-# 1. PAGE D'ACCUEIL (Redirection intelligente)
+# Page d'accueil intelligente
 def home(request):
     if request.user.is_authenticated:
-        # Si c'est l'administrateur, on peut l'envoyer vers l'admin ou un tableau de bord
         if request.user.is_superuser:
             return redirect('admin:index')
-        # Pour les autres utilisateurs (agents), on les envoie vers le tableau de bord
         return redirect('dashboard')
-    # Si non connecté, direction la page de login
     return redirect('login')
 
-# 2. TABLEAU DE BORD POUR LES AGENTS
+# Tableau de bord pour les agents et l'administration
 @login_required
 def dashboard(request):
-    # Liste des 10 derniers actes pour l'agent
+    # Récupération dynamique du modèle pour éviter l'ImportError
+    Naissance = apps.get_model('registre', 'Naissance') 
     derniers_actes = Naissance.objects.all().order_by('-id')[:10]
     return render(request, 'registre/dashboard.html', {'actes': derniers_actes})
 
-# 3. VOTRE VUE EXISTANTE (Aperçu de l'extrait)
+# Vue pour voir un extrait spécifique
 @login_required
 def voir_extrait(request, pk):
+    Naissance = apps.get_model('registre', 'Naissance')
     acte = get_object_or_404(Naissance, pk=pk)
     return render(request, 'registre/extrait_naissance.html', {'acte': acte})
