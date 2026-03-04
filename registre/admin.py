@@ -1,35 +1,60 @@
 from django.contrib import admin
-from django.utils.html import format_html
-from django.urls import reverse
 from .models import Structure, ActeNaissance
 
 @admin.register(Structure)
 class StructureAdmin(admin.ModelAdmin):
-    list_display = ('nom_centre', 'sous_prefecture')
+    """Configuration pour la gestion des structures (Préfecture, Sous-Préfecture, Centre)"""
+    # Affichage en colonnes dans la liste
+    list_display = ('prefecture', 'sous_prefecture', 'nom_centre')
+    
+    # Filtre latéral pour regrouper rapidement par Préfecture
+    list_filter = ('prefecture', 'sous_prefecture')
+    
+    # Barre de recherche
+    search_fields = ('prefecture', 'sous_prefecture', 'nom_centre')
+    
+    ordering = ('prefecture', 'sous_prefecture')
 
 @admin.register(ActeNaissance)
 class ActeNaissanceAdmin(admin.ModelAdmin):
-    # Optimisation : on ne garde que l'essentiel pour l'affichage rapide
-    list_display = ('id_affiche', 'nom_enfant', 'prenoms_enfant', 'date_declaration', 'bouton_imprimer')
+    """Configuration pour la gestion des actes avec toutes les mentions marginales"""
     
-    # Ajout de la pagination pour ne pas charger trop d'actes d'un coup
-    list_per_page = 20 
+    # 1. Optimisation de la performance (évite la lenteur)
+    list_select_related = ('structure',) 
+    list_per_page = 20 # Paging pour éviter de charger trop de données d'un coup
     
-    # Recherche rapide
-    search_fields = ('nom_enfant', 'prenoms_enfant')
+    # 2. Affichage de la liste des actes
+    list_display = ('numero_acte_complet', 'nom_enfant', 'prenoms_enfant', 'get_prefecture', 'get_sous_prefecture', 'date_declaration')
+    
+    # 3. Filtres pour le regroupement et les statistiques
+    # On utilise 'structure__prefecture' pour filtrer les actes par leur préfecture rattachée
+    list_filter = ('structure__prefecture', 'structure__sous_prefecture', 'annee_registre', 'date_declaration')
+    
+    # 4. Recherche par nom ou numéro d'acte
+    search_fields = ('nom_enfant', 'prenoms_enfant', 'numero_registre')
 
-    def id_affiche(self, obj):
-        # Format demandé : 01 du 12/01/2014
-        return f"{obj.id} du {obj.date_declaration.strftime('%d/%m/%Y')}"
-    id_affiche.short_description = 'N° Acte'
+    # 5. Organisation du formulaire de saisie (inclut les mentions marginales)
+    fieldsets = (
+        ('Informations Administratives', {
+            'fields': ('structure', 'numero_registre', 'annee_registre', 'date_declaration')
+        }),
+        ('Identité de l’Enfant', {
+            'fields': ('nom_enfant', 'prenoms_enfant', 'date_naissance', 'heure_naissance', 'lieu_naissance')
+        }),
+        ('Filiation', {
+            'fields': (('nom_pere', 'nationalite_pere'), ('nom_mere', 'nationalite_mere'))
+        }),
+        ('Mentions Marginales (Éventuellement)', {
+            'description': "Toutes les mentions définies dans le modèle sont affichées ici",
+            'fields': ('transcription_justice', 'date_mariage', 'conjoint_mariage', 'dissolution_mariage', 'date_deces', 'lieu_deces')
+        }),
+    )
 
-    def bouton_imprimer(self, obj):
-        # On utilise voir_extrait car apercu_extrait cause une erreur 404
-        url = reverse('voir_extrait', args=[obj.pk])
-        return format_html(
-            '<a class="button" href="{}" target="_blank" '
-            'style="background-color: #28a745; color: white; padding: 5px 10px; border-radius: 4px;">'
-            'Imprimer</a>', 
-            url
-        )
-    bouton_imprimer.short_description = 'Impression'
+    # Méthodes pour afficher les informations de la structure dans la liste des actes
+    def get_prefecture(self, obj):
+        return obj.structure.prefecture
+    get_prefecture.short_description = 'Préfecture'
+
+    def get_sous_prefecture(self, obj):
+        return obj.structure.sous_prefecture
+    get_sous_prefecture.short_description = 'Sous-Préfecture'
