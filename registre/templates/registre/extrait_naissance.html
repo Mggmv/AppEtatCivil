@@ -145,9 +145,20 @@
 
     <div class="signature-zone">
         <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
-        <p style="font-weight: bold;">L'Officier de l'État Civil</p>
+        <p class="signature-titre">L'Officier de l'État Civil</p>
+        <p style="margin: 0; font-size: 11px;">(Signature et Sceau)</p>
         <div style="height: 60px;"></div>
-        <p>(Signature et Sceau)</p>
+    </div>
+
+    <div class="bas-page-container">
+        <div class="colonne-sceau">
+            <span class="mention-sceau">SCEAU</span>
+        </div>
+        <div class="colonne-qr">
+            <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Nom:{{ acte.nom_enfant }} {{ acte.prenoms_enfant }} Acte:{{ acte.numero_acte_complet }}" alt="QR Code">
+            <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique</p>
+        </div>
+        <div class="colonne-vide"></div>
     </div>
 
     <div class="qr-code-container">
