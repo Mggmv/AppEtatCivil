@@ -109,7 +109,7 @@
             </p>
 
             <div class="cadre-nom-naissance">
-                <span style="font-size: 13px;">NAISSANCE DE :</span><br>
+                <span style="font-size: 12px;">NAISSANCE DE :</span><br>
                 <span class="prenom-enfant-grand">{{ acte.prenoms_enfant }}</span>
                 <span class="nom-enfant-grand">{{ acte.nom_enfant }}</span>
             </div>
@@ -129,10 +129,10 @@
                     est né(e) <span class="gras-majuscule" style="font-size: 20px;">{{ acte.prenoms_enfant }}</span>
                 </p>
 
-                <p style="margin-top: 8px;">
+                <p style="margin-top: 15px;">
                     Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>{% if acte.nationalite_pere %}, {{ acte.nationalite_pere }}{% endif %}
                 </p>
-                <p>
+                <p style="margin-top: 15px;">
                     et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>{% if acte.nationalite_mere %}, {{ acte.nationalite_mere }}{% endif %}
                 </p>
             </div>
