@@ -37,9 +37,9 @@ class ActeNaissance(models.Model):
 
     @property
     def numero_acte_complet(self):
-        # Format demandé : '01 du 02/12/2014'
+        """Format exact demandé : '01 du 02/12/2014'"""
         date_str = self.date_declaration.strftime('%d/%m/%Y')
-        return f"{self.numero_registre:02d} du {date_str}"
+        [span_0](start_span)return f"{self.numero_registre:02d} du {date_str}"[span_0](end_span)
 
     def infos_naissance_lettres(self):
         # Respect des conventions ivoiriennes : "mil" et "premier" [cite: 2026-02-28]
