@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import ActeNaissance  # Utilisation du nom exact du modèle
+from .models import ActeNaissance
 
 # Page d'accueil : redirige selon l'état de connexion
 def home(request):
@@ -15,20 +15,19 @@ def dashboard(request):
     derniers_actes = ActeNaissance.objects.all().order_by('-id')[:10]
     return render(request, 'registre/dashboard.html', {'actes': derniers_actes})
 
-# Vue pour l'affichage et l'impression de l'extrait
+# Vue corrigée pour l'affichage de l'extrait (Supprime la page jaune)
 @login_required
 def voir_extrait(request, pk):
     # Récupération de l'acte ou erreur 404 si inconnu
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # Appel de la fonction du modèle pour convertir date et heure en lettres
-    # Cette fonction applique les règles ivoiriennes : 'mil' et 'premier' [cite: 2026-02-28]
-    infos = acte.infos_naissance_lettres()
+    # On récupère la date en lettres directement depuis le modèle.
+    # Cette fonction applique déjà 'mil' et 'premier'
+    date_en_lettres = acte.infos_naissance_lettres()
     
     context = {
         'acte': acte,
-        'date_lettres': infos['date'], # Transmis à {{ date_lettres }} dans l'HTML
-        'heure_lettres': infos['heure'] # Transmis à {{ heure_lettres }} dans l'HTML
+        'date_lettres': date_en_lettres, # Variable corrigée
     }
     
     return render(request, 'registre/extrait_naissance.html', context)
