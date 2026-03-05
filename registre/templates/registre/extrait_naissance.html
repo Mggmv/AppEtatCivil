@@ -102,6 +102,8 @@
             <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
             <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
             <p class="txt-etat-civil">ETAT CIVIL</p>
+             <p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br> 
+                 DE {{ acte.structure.sous_prefecture|upper }}</p>
             <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
             
             <p class="num-acte-final">
