@@ -15,34 +15,43 @@ class Structure(models.Model):
 
 class ActeNaissance(models.Model):
     structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
-    numero_registre = models.IntegerField(default=1) 
-    annee_registre = models.IntegerField(default=2026)
-    date_declaration = models.DateField()
+    
+    # Enregistrement
+    numero_registre = models.IntegerField(default=1, verbose_name="N° Acte") 
+    annee_registre = models.IntegerField(default=2026, verbose_name="Année")
+    date_declaration = models.DateField(verbose_name="Date de déclaration")
 
-    prenoms_enfant = models.CharField(max_length=255)
-    nom_enfant = models.CharField(max_length=255)
-    date_naissance = models.DateField()
-    heure_naissance = models.TimeField()
-    lieu_naissance = models.CharField(max_length=255)
+    # Identité de l'Enfant
+    prenoms_enfant = models.CharField(max_length=255, verbose_name="Prénoms")
+    nom_enfant = models.CharField(max_length=255, verbose_name="Nom")
+    date_naissance = models.DateField(verbose_name="Né(e) le")
+    heure_naissance = models.TimeField(verbose_name="Heure de naissance")
+    lieu_naissance = models.CharField(max_length=255, verbose_name="Lieu de naissance")
 
-    nom_pere = models.CharField(max_length=255, blank=True, null=True)
-    nationalite_pere = models.CharField(max_length=100, blank=True, null=True)
-    nom_mere = models.CharField(max_length=255, blank=True, null=True)
-    nationalite_mere = models.CharField(max_length=100, blank=True, null=True)
+    # Filiation complète [Nouveau]
+    nom_pere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom du Père")
+    nationalite_pere = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nationalité Père")
+    nom_mere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom de la Mère")
+    nationalite_mere = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nationalité Mère")
 
-    # Mentions Marginales
-    date_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Marié le")
+    # Transcription et Jugement [Nouveau]
+    transcription_justice = models.TextField(blank=True, null=True, verbose_name="Transcription / Jugement Supplétif")
+
+    # Mentions Marginales complètes [Nouveau]
+    date_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Marié(e) le")
     conjoint_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Avec")
-    date_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Décédé le")
+    dissolution_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Mariage dissous le")
+    date_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Décédé(e) le")
+    lieu_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Lieu de décès")
 
     @property
     def numero_acte_complet(self):
-        """Format exact demandé : '01 du 02/12/2014'"""
+        [span_1](start_span)[span_2](start_span)"""Format : '01 du 02/12/2014'[span_1](end_span)[span_2](end_span)"""
         date_str = self.date_declaration.strftime('%d/%m/%Y')
-        [span_0](start_span)return f"{self.numero_registre:02d} du {date_str}"[span_0](end_span)
+        return f"{self.numero_registre:02d} du {date_str}"
 
     def infos_naissance_lettres(self):
-        # Respect des conventions ivoiriennes : "mil" et "premier" [cite: 2026-02-28]
+        [span_3](start_span)"""Conventions : 'mil' et 'premier'[span_3](end_span)"""
         jours = ["premier", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", 
                  "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", 
                  "dix-neuf", "vingt", "vingt et un", "vingt-deux", "vingt-trois", "vingt-quatre", 
