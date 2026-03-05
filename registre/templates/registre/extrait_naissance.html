@@ -165,9 +165,9 @@
     <div class="bas-de-page">
         <div class="mention-sceau">sceau</div>
         <div class="qr-code-container">
-            <img class="qr-code-img" loading="lazy" 
-                 src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Structure:{{ acte.structure.nom_centre|upper }}%0ANom:{{ acte.nom_enfant|upper }} {{ acte.prenoms_enfant }}%0AActe:{{ acte.numero_acte_complet }}" 
-                 alt="QR Code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }} {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
+     style="width: 90px; height: 90px;" 
+     alt="QR Code de validation">
             <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle</p>
         </div>
     </div>
