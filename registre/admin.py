@@ -5,49 +5,70 @@ from .models import Structure, ActeNaissance
 
 @admin.register(Structure)
 class StructureAdmin(admin.ModelAdmin):
+    # Affichage des colonnes dans la liste des structures
     list_display = ('prefecture', 'sous_prefecture', 'nom_centre')
+    search_fields = ('prefecture', 'sous_prefecture', 'nom_centre')
 
 @admin.register(ActeNaissance)
 class ActeNaissanceAdmin(admin.ModelAdmin):
-    # 'action_imprimer' remplacera le texte "Lien indisponible" par un bouton vert
-    list_display = ('numero_acte_complet', 'nom_enfant', 'prenoms_enfant', 'get_prefecture', 'get_sous_prefecture', 'action_imprimer')
+    # Configuration des colonnes du tableau de bord
+    # 'action_imprimer' affiche le bouton vert à la place du texte d'erreur
+    list_display = (
+        'numero_acte_complet', 
+        'nom_enfant', 
+        'prenoms_enfant', 
+        'get_prefecture', 
+        'get_sous_prefecture', 
+        'action_imprimer'
+    )
     
-    list_select_related = ('structure',)
-    list_filter = ('structure__prefecture', 'annee_registre')
+    list_filter = ('structure__prefecture', 'annee_registre', 'date_declaration')
     search_fields = ('nom_enfant', 'numero_registre')
+    list_select_related = ('structure',)
 
+    # Récupération de la Préfecture depuis le modèle Structure
     def get_prefecture(self, obj):
         return obj.structure.prefecture
     get_prefecture.short_description = 'PRÉFECTURE'
 
+    # Récupération de la Sous-Préfecture depuis le modèle Structure
     def get_sous_prefecture(self, obj):
         return obj.structure.sous_prefecture
     get_sous_prefecture.short_description = 'SOUS-PRÉFECTURE'
 
+    # Création du bouton Imprimer vert
     def action_imprimer(self, obj):
-        # [span_1](start_span)Utilisation du nom correct identifié dans url.txt[span_1](end_span)
-        url_name = 'voir_extrait' 
-        
         try:
-            # [span_2](start_span)pk est utilisé car c'est ce qui est défini dans votre url.txt[span_2](end_span)
-            url = reverse(url_name, kwargs={'pk': obj.pk})
+            # Utilisation du nom 'voir_extrait' défini dans votre fichier url.txt
+            url = reverse('voir_extrait', kwargs={'pk': obj.pk})
             return format_html(
                 '<a class="button" href="{}" target="_blank" '
                 'style="background-color: #28a745; color: white; padding: 5px 12px; '
-                'border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block;">'
+                'border-radius: 4px; text-decoration: none; font-weight: bold; '
+                'display: inline-block; min-width: 80px; text-align: center;">'
                 'Imprimer</a>', 
                 url
             )
-        except Exception as e:
-            return format_html('<span style="color: red; font-size: 10px;">Erreur lien</span>')
+        except Exception:
+            # Si l'URL n'est pas trouvée, on garde un message discret
+            return format_html('<span style="color: #999;">Lien indisponible</span>')
     
     action_imprimer.short_description = 'IMPRESSION'
 
-    # Formulaire de saisie avec les mentions marginales (Mariage, Décès)
+    # Organisation des champs dans le formulaire de saisie
     fieldsets = (
-        ('Info Admin', {'fields': ('structure', 'numero_registre', 'annee_registre', 'date_declaration')}),
-        ('Enfant', {'fields': ('nom_enfant', 'prenoms_enfant', 'date_naissance', 'heure_naissance', 'lieu_naissance')}),
+        ('Enregistrement', {
+            'fields': ('structure', 'numero_registre', 'annee_registre', 'date_declaration')
+        }),
+        ('Identité de l\'enfant', {
+            'fields': ('nom_enfant', 'prenoms_enfant', 'date_naissance', 'heure_naissance', 'lieu_naissance')
+        }),
+        ('Filiation', {
+            'fields': ('nom_pere', 'nationalite_pere', 'nom_mere', 'nationalite_mere')
+        }),
         ('Mentions Marginales', {
-            'fields': ('date_mariage', 'conjoint_mariage', 'dissolution_mariage', 'date_deces', 'lieu_deces')
+            'classes': ('collapse',), # Le volet est réduit par défaut
+            'fields': ('date_mariage', 'conjoint_mariage', 'dissolution_mariage', 'date_deces', 'lieu_deces'),
+            'description': 'Remplir uniquement en cas de mise à jour de l\'acte.'
         }),
     )
