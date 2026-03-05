@@ -2,27 +2,25 @@ from django.db import models
 from num2words import num2words
 
 class Structure(models.Model):
-    # Ajoutez default='' pour que Django puisse remplir les anciens centres automatiquement
+    # [span_2](start_span)Le 'default' permet de remplir les anciens centres sans bloquer le déploiement[span_2](end_span)
     prefecture = models.CharField(max_length=255, verbose_name="Préfecture", default="Non précisée") 
     sous_prefecture = models.CharField(max_length=255, verbose_name="Sous-Préfecture")
     nom_centre = models.CharField(max_length=255, verbose_name="Nom du Centre")
+
     class Meta:
         verbose_name = "Structure Administrative"
         verbose_name_plural = "Structures Administratives"
 
     def __str__(self):
-        # Affichage hiérarchique dans l'administration Django
         return f"{self.prefecture} > {self.sous_prefecture} > {self.nom_centre}"
 
 class ActeNaissance(models.Model):
     structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
-    
-    # Numérotation et Enregistrement
     numero_registre = models.IntegerField(default=1) 
     annee_registre = models.IntegerField(default=2026)
     date_declaration = models.DateField()
 
-    # Identité de l'Enfant
+    # Identité
     prenoms_enfant = models.CharField(max_length=255)
     nom_enfant = models.CharField(max_length=255)
     date_naissance = models.DateField()
@@ -35,22 +33,16 @@ class ActeNaissance(models.Model):
     nom_mere = models.CharField(max_length=255, blank=True, null=True)
     nationalite_mere = models.CharField(max_length=100, blank=True, null=True)
 
-    # Transcription (Jugements supplétifs, etc.)
-    transcription_justice = models.TextField(blank=True, null=True, verbose_name="Transcription")
-
-    # MENTIONS MARGINALES (Maintenues selon vos instructions)
+    # [span_3](start_span)Mentions Marginales[span_3](end_span)
     date_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Marié le")
     conjoint_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Avec")
-    dissolution_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Mariage dissous (Date et décision)")
+    dissolution_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Mariage dissous")
     date_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Décédé le")
     lieu_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Lieu de décès")
 
-   @property
+    @property
     def numero_acte_complet(self):
-        """
-        Retourne le format exact : '01 du 02/12/2014'
-        Le numéro est complété par un zéro (01, 02...) s'il est inférieur à 10.
-        """
+        [span_4](start_span)"""Format demandé : '01 du 02/12/2014'[span_4](end_span)"""
         date_str = self.date_declaration.strftime('%d/%m/%Y')
         return f"{self.numero_registre:02d} du {date_str}"
 
@@ -58,30 +50,13 @@ class ActeNaissance(models.Model):
         return f"{self.prenoms_enfant.strip().title()} {self.nom_enfant.strip().upper()}"
 
     def infos_naissance_lettres(self):
-        """
-        Formatage conforme à l'administration ivoirienne :
-        - 'mille' devient 'mil' [cite: 2026-02-28]
-        - Le 1er du mois devient 'premier' [cite: 2026-02-28]
-        """
+        [span_5](start_span)[span_6](start_span)"""Conformité CI : 'mil' et 'premier'[span_5](end_span)[span_6](end_span)"""
         jours = ["premier", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", 
                  "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", 
                  "dix-neuf", "vingt", "vingt et un", "vingt-deux", "vingt-trois", "vingt-quatre", 
                  "vingt-cinq", "vingt-six", "vingt-sept", "vingt-huit", "vingt-neuf", "trente", "trente et un"]
         
-        mois_liste = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
-        
         d = self.date_naissance
-        # Remplacement systématique de mille par mil pour la CI [cite: 2026-02-28]
-        annee_lettres = num2words(d.year, lang='fr').replace('mille', 'mil')
-        date_str = f"{jours[d.day-1]} {mois_liste[d.month-1]} {annee_lettres}"
-        
-        h = self.heure_naissance
-        h_lettres = num2words(h.hour, lang='fr')
-        m_lettres = num2words(h.minute, lang='fr')
-        lbl_h = "heure" if h.hour <= 1 else "heures"
-        min_str = "" if h.minute == 0 else f" {m_lettres} minutes"
-        
-        return {"date": date_str, "heure": f"{h_lettres} {lbl_h}{min_str}"}
-
-    def __str__(self):
-        return f"Acte {self.numero_acte_complet} - {self.nom_complet_officiel()}"
+        [span_7](start_span)annee_lettres = num2words(d.year, lang='fr').replace('mille', 'mil')[span_7](end_span)
+        date_str = f"{jours[d.day-1]} {d.strftime('%B')} {annee_lettres}"
+        return date_str
