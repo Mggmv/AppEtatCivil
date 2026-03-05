@@ -45,10 +45,14 @@ class ActeNaissance(models.Model):
     date_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Décédé le")
     lieu_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Lieu de décès")
 
-    @property
+   @property
     def numero_acte_complet(self):
-        """Retourne le format N° XX/AAAA utilisé dans le QR Code et l'en-tête"""
-        return f"{self.numero_registre:02d}/{self.annee_registre}"
+        """
+        Retourne le format exact : '01 du 02/12/2014'
+        Le numéro est complété par un zéro (01, 02...) s'il est inférieur à 10.
+        """
+        date_str = self.date_declaration.strftime('%d/%m/%Y')
+        return f"{self.numero_registre:02d} du {date_str}"
 
     def nom_complet_officiel(self):
         return f"{self.prenoms_enfant.strip().title()} {self.nom_enfant.strip().upper()}"
