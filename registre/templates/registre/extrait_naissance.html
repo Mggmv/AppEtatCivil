@@ -105,7 +105,7 @@
             <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
             
             <p class="num-acte-final">
-                N° {{ acte.numero_acte_complet }} du {{ acte.date_declaration|date:"d/m/Y" }}<br>DU REGISTRE
+               N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}<br>DU REGISTRE
             </p>
 
             <div class="cadre-nom-naissance">
