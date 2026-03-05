@@ -2,7 +2,7 @@ from django.db import models
 from num2words import num2words
 
 class Structure(models.Model):
-    # [span_2](start_span)Le 'default' permet de remplir les anciens centres sans bloquer le déploiement[span_2](end_span)
+    # Le default="Non précisée" est indispensable pour le déploiement
     prefecture = models.CharField(max_length=255, verbose_name="Préfecture", default="Non précisée") 
     sous_prefecture = models.CharField(max_length=255, verbose_name="Sous-Préfecture")
     nom_centre = models.CharField(max_length=255, verbose_name="Nom du Centre")
