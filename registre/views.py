@@ -18,16 +18,19 @@ def dashboard(request):
 # Vue corrigée pour l'affichage de l'extrait (Supprime la page jaune)
 @login_required
 def voir_extrait(request, pk):
-    # Récupération de l'acte ou erreur 404 si inconnu
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # On récupère la date en lettres directement depuis le modèle.
-    # Cette fonction applique déjà 'mil' et 'premier'
-    date_en_lettres = acte.infos_naissance_lettres()
+    # On récupère la date et l'heure séparément pour le template
+    date_en_lettres = acte.infos_naissance_lettres() 
+    # Assurez-vous que cette méthode existe dans votre models.py :
+    heure_en_lettres = acte.heure_naissance_lettres() 
     
     context = {
         'acte': acte,
-        'date_lettres': date_en_lettres, # Variable corrigée
+        'date_lettres': date_en_lettres,
+        'heure_lettres': heure_en_lettres, # Nouvelle variable pour l'heure
     }
+    
+    return render(request, 'registre/extrait_naissance.html', context)
     
     return render(request, 'registre/extrait_naissance.html', context)
