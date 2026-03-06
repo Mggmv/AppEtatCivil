@@ -20,17 +20,17 @@ def dashboard(request):
 def voir_extrait(request, pk):
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # On récupère la date et l'heure séparément pour le template
-    date_en_lettres = acte.infos_naissance_lettres() 
-    # Assurez-vous que cette méthode existe dans votre models.py :
-    heure_en_lettres = acte.heure_naissance_lettres() 
+    # [span_0](start_span)On utilise la fonction existante pour la date[span_0](end_span)
+    date_en_lettres = acte.infos_naissance_lettres()
     
     context = {
         'acte': acte,
         'date_lettres': date_en_lettres,
-        'heure_lettres': heure_en_lettres, # Nouvelle variable pour l'heure
+        # On passe l'heure directement depuis le champ du modèle
+        'heure_lettres': acte.heure_naissance, 
     }
     
+    return render(request, 'registre/extrait_naissance.html', context)
     return render(request, 'registre/extrait_naissance.html', context)
     
   
