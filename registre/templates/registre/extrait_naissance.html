@@ -10,157 +10,173 @@
             font-family: "Times New Roman", Times, serif; 
             font-size: 13px; margin: 0; padding: 0; color: black;
             display: flex; justify-content: center; 
-            [span_2](start_span)background-color: #f0f0f0;[span_2](end_span)
+            background-color: #f0f0f0; 
         }
         
-        /* Conteneur principal */
         .cadre-exterieur {
             border: 1.5px solid black; padding: 5mm; width: 190mm; 
             min-height: 277mm; margin: 10mm 0;
             box-sizing: border-box; position: relative;
-            [span_3](start_span)background-color: white; overflow: hidden;[span_3](end_span)
+            background-color: white; 
         }
 
-        /* FILIGRANE CENTRAL - Positionné de façon à ne pas décaler le texte */
-        .armoiries-filigrane {
-            position: absolute;
-            top: 55%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 14cm; 
-            opacity: 0.08; 
-            z-index: 0;
-            pointer-events: none;
+        .section-superieure {
+            display: flex; justify-content: space-between; align-items: flex-start; width: 100%;
         }
-
-        /* Protection de la disposition du texte */
-        .contenu-officiel { position: relative; z-index: 1; }
-
-        [span_4](start_span).section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%;[span_4](end_span) }
 
         .bloc-gauche {
             display: flex; flex-direction: column; align-items: center; text-align: center; 
-            [span_5](start_span)width: 300px; margin-left: -5mm; margin-top: -2mm;[span_5](end_span)
+            width: 300px; margin-left: -5mm; margin-top: -2mm;
         }
-        [span_6](start_span).logo-embleme { width: 150px; height: auto; margin: 5px 0;[span_6](end_span) }
-        [span_7](start_span).txt-admin { font-weight: bold; text-transform: uppercase; font-size: 12px; margin: 0; line-height: 1.2;[span_7](end_span) }
-        [span_8](start_span).txt-etat-civil { font-size: 22px; font-weight: bold; margin: 5px 0 0 0;[span_8](end_span) }
-        [span_9](start_span).txt-centre { font-size: 13px; font-weight: bold; margin: 0;[span_9](end_span) }
+        .logo-embleme { width: 150px; height: auto; margin: 5px 0; }
         
-        [span_10](start_span).num-acte-final { font-size: 14px; font-weight: bold; margin-top: 15px; text-align: center; line-height: 1.1;[span_10](end_span) }
-
-        [span_11](start_span).cadre-nom-naissance { text-align: center; width: 100%; margin-top: 20px;[span_11](end_span) }
-        [span_12](start_span).prenom-enfant-grand { font-size: 20px; text-transform: capitalize; display: block;[span_12](end_span) }
-        [span_13](start_span).nom-enfant-grand { font-size: 22px; font-weight: bold; text-transform: uppercase; display: block;[span_13](end_span) }
-
-        [span_14](start_span).bloc-droite { text-align: center; width: 380px;[span_14](end_span) }
-        [span_15](start_span).titre-extrait-final { font-size: 28px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0;[span_15](end_span) }
+        .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 12px; margin: 0; line-height: 1.2; }
+        .txt-etat-civil { font-size: 22px; font-weight: bold; margin: 5px 0 0 0; }
+        .txt-centre { font-size: 13px; font-weight: bold; margin: 0; }
         
-        [span_16](start_span).bloc-naissance-compact { margin-top: 25px; text-align: left; line-height: 1.0; font-size: 18px; margin-left: 30px;[span_16](end_span) }
-        [span_17](start_span).bloc-naissance-compact p { margin: 4px 0; padding: 0;[span_17](end_span) }
-        [span_18](start_span).gras-majuscule { font-weight: bold; text-transform: uppercase;[span_18](end_span) }
+        .num-acte-final { font-size: 14px; font-weight: bold; margin-top: 15px; text-align: center; line-height: 1.1; }
 
-        [span_19](start_span).separateur-mentions { border-top: 1.5px solid black; width: 100%; margin-top: 1.5cm; margin-bottom: 10px;[span_19](end_span) }
-        
-        [span_20](start_span).ligne-mention-pointillee { display: flex; align-items: baseline; width: 100%; margin-bottom: 12px;[span_20](end_span) }
-        [span_21](start_span).legende { white-space: nowrap; margin-right: 5px; font-size: 14px;[span_21](end_span) }
-        [span_22](start_span).pointilles { flex-grow: 1; border-bottom: 1px dotted black; height: 1em; margin-right: 10px;[span_22](end_span) }
-        [span_23](start_span).valeur-officielle { font-weight: bold; text-transform: uppercase; white-space: nowrap; font-size: 14px;[span_23](end_span) }
+        .cadre-nom-naissance { text-align: center; width: 100%; margin-top: 20px; }
+        .prenom-enfant-grand { font-size: 20px; text-transform: capitalize; display: block; }
+        .nom-enfant-grand { font-size: 22px; font-weight: bold; text-transform: uppercase; display: block; }
 
-        [span_24](start_span).signature-zone { text-align: right; margin-top: 30px; padding-right: 20px; font-size: 14px;[span_24](end_span) }
+        .bloc-droite { text-align: center; width: 380px; }
+        .titre-extrait-final { font-size: 28px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0; }
         
+        .bloc-naissance-compact { margin-top: 25px; text-align: left; line-height: 1.0; font-size: 18px; margin-left: 30px; }
+        .bloc-naissance-compact p { margin: 4px 0; padding: 0; }
+        .gras-majuscule { font-weight: bold; text-transform: uppercase; }
+
+        .transcription-zone {
+            margin-top: 20px; font-size: 11px; font-style: italic; text-align: justify;
+            width: 100%; line-height: 1.3; min-height: 1cm;
+        }
+
+        .separateur-mentions {
+            border-top: 1.5px solid black; width: 100%;
+            margin-top: 1.5cm; margin-bottom: 10px;
+        }
+        .bloc-mentions-final { width: 100%; box-sizing: border-box; }
+        .titre-mention { font-weight: bold; text-decoration: underline; display: block; margin-bottom: 15px; font-size: 15px; }
+        
+        .ligne-mention-pointillee {
+            display: flex; align-items: baseline; width: 100%; margin-bottom: 12px;
+        }
+        .legende { white-space: nowrap; margin-right: 5px; font-size: 14px; }
+        .pointilles { flex-grow: 1; border-bottom: 1px dotted black; height: 1em; margin-right: 10px; }
+        .valeur-officielle { font-weight: bold; text-transform: uppercase; white-space: nowrap; font-size: 14px; }
+
+        /* Signature collée à l'officier */
+        .signature-zone { text-align: right; margin-top: 30px; padding-right: 20px; font-size: 14px; }
+        .officier-titre { font-weight: bold; margin-bottom: 0; }
+        .signature-mention { margin-top: 0; font-size: 13px; }
+
+        /* Bas de page avec Sceau rapproché à gauche du QR Code centré */
         .bas-de-page {
             position: absolute; bottom: 30px; width: 100%; left: 0;
-            [span_25](start_span)display: flex; align-items: center; justify-content: center;[span_25](end_span)
+            display: flex; align-items: center; justify-content: center;
         }
-        [span_26](start_span).mention-sceau { position: absolute; left: calc(50% - 42px - 113px); font-weight: bold; text-transform: lowercase; font-size: 15px;[span_26](end_span) }
+        .mention-sceau {
+            position: absolute; 
+            left: calc(50% - 42px - 113px); /* 50% - moitié largeur QR - 3cm */
+            font-weight: bold; 
+            text-transform: lowercase;
+            font-size: 15px;
+        }
+        .qr-code-container { text-align: center; }
+        .qr-code-img { width: 85px; height: 85px; }
 
         @media print {
-            [span_27](start_span)body { background-color: white; display: block;[span_27](end_span) }
-            [span_28](start_span).cadre-exterieur { margin: 10mm auto; border: 1.5px solid black !important;[span_28](end_span) }
-            [span_29](start_span).btn-print { display: none;[span_29](end_span) }
+            body { background-color: white; display: block; }
+            .cadre-exterieur { margin: 10mm auto; border: 1.5px solid black !important; }
+            .btn-print { display: none; }
         }
     </style>
 </head>
 <body>
 
 <div class="cadre-exterieur">
-    <img src="{% static 'registre/images/armoirie-ci.png' %}" class="armoiries-filigrane">
+    <div class="section-superieure">
+        <div class="bloc-gauche">
+            <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
+            <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
+            <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
+            <p class="txt-etat-civil">ETAT CIVIL</p>
+             <p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br> 
+                 DE {{ acte.structure.sous_prefecture|upper }}</p>
+            <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
+            
+            <p class="num-acte-final">
+               N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}<br>DU REGISTRE
+            </p>
 
-    <div class="contenu-officiel">
-        <div class="section-superieure">
-            <div class="bloc-gauche">
-                [span_30](start_span)<p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE[span_30](end_span)</p>
-                [span_31](start_span)<p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}[span_31](end_span)</p>
-                <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
-                [span_32](start_span)<p class="txt-etat-civil">ETAT CIVIL[span_32](end_span)</p>
-                [span_33](start_span)<p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL DE {{ acte.structure.sous_prefecture|upper }}[span_33](end_span)</p>
-                [span_34](start_span)<p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong>[span_34](end_span)</p>
+            <div class="cadre-nom-naissance">
+                <span style="font-size: 12px;">NAISSANCE DE :</span><br>
+                <span class="prenom-enfant-grand">{{ acte.prenoms_enfant }}</span>
+                <span class="nom-enfant-grand">{{ acte.nom_enfant }}</span>
+            </div>
+        </div>
+
+        <div class="bloc-droite">
+            <h1 class="titre-extrait-final">EXTRAIT</h1>
+            <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">DU REGISTRE DES ACTE DE L'ETAT<br> 
+            CIVIL POUR L'ANNEE <strong>{{ acte.annee_registre }}</strong></p>
+            
+            <div class="bloc-naissance-compact">
+                <p>Le <span style="text-transform: lowercase;">{{ date_lettres }}</span></p>
+                <p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span></p>
+                <p>à <span style="font-weight: bold;">{{ acte.lieu_naissance }}</span></p>
                 
-                <p class="num-acte-final">
-                   [span_35](start_span)N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }} DU REGISTRE[span_35](end_span)
+                <p style="margin-top: 15px;">
+                    est né(e) <span class="gras-majuscule" style="font-size: 20px;">{{ acte.prenoms_enfant }}</span>
                 </p>
 
-                <div class="cadre-nom-naissance">
-                    [span_36](start_span)<span style="font-size: 12px;">NAISSANCE DE :[span_36](end_span)</span><br>
-                    [span_37](start_span)<span class="prenom-enfant-grand">{{ acte.prenoms_enfant }}[span_37](end_span)</span>
-                    [span_38](start_span)<span class="nom-enfant-grand">{{ acte.nom_enfant }}[span_38](end_span)</span>
-                </div>
-            </div>
-
-            <div class="bloc-droite">
-                [span_39](start_span)<h1 class="titre-extrait-final">EXTRAIT[span_39](end_span)</h1>
-                <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">
-                    [span_40](start_span)DU REGISTRE DES ACTE DE L'ETAT CIVILE POUR L'ANNEE <strong>{{ acte.annee_registre }}</strong>[span_40](end_span)
+                <p style="margin-top: 15px;">
+                    Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>{% if acte.nationalite_pere %}, {{ acte.nationalite_pere }}{% endif %}
                 </p>
-                
-                <div class="bloc-naissance-compact">
-                    [span_41](start_span)<p>Le <span style="text-transform: lowercase;">{{ date_lettres }}</span>[span_41](end_span)</p>
-                    [span_42](start_span)<p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span>[span_42](end_span)</p>
-                    [span_43](start_span)<p>à <span style="font-weight: bold;">{{ acte.lieu_naissance }}</span>[span_43](end_span)</p>
-                    
-                    <p style="margin-top: 15px;">
-                        [span_44](start_span)est né(e) <span class="gras-majuscule" style="font-size: 20px;">{{ acte.prenoms_enfant }}</span>[span_44](end_span)
-                    </p>
-
-                    <p style="margin-top: 15px;">
-                        [span_45](start_span)Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>[span_45](end_span)
-                    </p>
-                    <p style="margin-top: 15px;">
-                        [span_46](start_span)et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>[span_46](end_span)
-                    </p>
-                </div>
+                <p style="margin-top: 15px;">
+                    et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>{% if acte.nationalite_mere %}, {{ acte.nationalite_mere }}{% endif %}
+                </p>
             </div>
         </div>
+    </div>
 
-        <div class="separateur-mentions"></div>
-        
-        <div class="bloc-mentions-final">
-            [span_47](start_span)<span class="titre-mention">MENTIONS (éventuellement) :[span_47](end_span)</span>
-            [span_48](start_span)<div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span>[span_48](end_span)</div>
-            [span_49](start_span)<div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span>[span_49](end_span)</div>
-        </div>
+    <div class="transcription-zone">
+        {% if acte.transcription_justice %}<strong>TRANSCRIPTION :</strong> {{ acte.transcription_justice }}{% endif %}
+    </div>
 
-        [span_50](start_span)<p style="font-style: italic; margin-top: 25px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.[span_50](end_span)</p>
+    <div class="separateur-mentions"></div>
+    
+    <div class="bloc-mentions-final">
+        <span class="titre-mention">MENTIONS (éventuellement) :</span>
+        <div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Avec</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.conjoint_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Mariage dissous (date et décision)</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.dissolution_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
+    </div>
 
-        <div class="signature-zone">
-            [span_51](start_span)<p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}[span_51](end_span)</p>
-            [span_52](start_span)<p class="officier-titre">L'Officier de l'État Civil[span_52](end_span)</p>
-            [span_53](start_span)<p class="signature-mention">(Signature)[span_53](end_span)</p>
-        </div>
+    <p style="font-style: italic; margin-top: 25px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
 
-        <div class="bas-de-page">
-            [span_54](start_span)<div class="mention-sceau">sceau[span_54](end_span)</div>
-            <div style="text-align: center;">
-                [span_55](start_span)<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=NOM: {{ acte.nom_enfant|upper }}%0AACTE N°: {{ acte.numero_registre }}" style="width: 90px; height: 90px;" alt="QR Code">[span_55](end_span)
-                [span_56](start_span)<p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle[span_56](end_span)</p>
-            </div>
+    <div class="signature-zone">
+        <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
+        <p class="officier-titre">L'Officier de l'État Civil</p>
+        <p class="signature-mention">(Signature)</p>
+    </div>
+
+    <div class="bas-de-page">
+        <div class="mention-sceau">sceau</div>
+        <div class="qr-code-container">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }} {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
+     style="width: 90px; height: 90px;" 
+     alt="QR Code de validation">
+            <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle</p>
         </div>
     </div>
 </div>
 
 <button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 1000;">
-    [span_57](start_span)Imprimer l'extrait[span_57](end_span)
+    Imprimer l'extrait
 </button>
 
 </body>
