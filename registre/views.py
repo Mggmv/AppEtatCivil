@@ -33,4 +33,4 @@ def voir_extrait(request, pk):
     
     return render(request, 'registre/extrait_naissance.html', context)
     
-    return render(request, 'registre/extrait_naissance.html', context)
+  
