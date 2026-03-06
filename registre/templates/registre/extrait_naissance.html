@@ -13,7 +13,7 @@
             background-color: #f0f0f0; 
         }
         
-        /* Conteneur principal avec sécurité pour le filigrane */
+        /* Conteneur principal */
         .cadre-exterieur {
             border: 1.5px solid black; padding: 5mm; width: 190mm; 
             min-height: 277mm; margin: 10mm 0;
@@ -21,20 +21,20 @@
             background-color: white; overflow: hidden;
         }
 
-        /* FILIGRANE CENTRAL - Configuré pour ne pas déranger la mise en page */
+        /* --- FILIGRANE CENTRAL (Désormais bien placé en static) --- */
         .armoiries-filigrane {
             position: absolute;
-            top: 55%; /* Centrage vertical légèrement abaissé */
+            top: 55%; 
             left: 50%;
-            transform: translate(-50%, -50%); /* Centrage exact */
-            width: 13cm; 
-            opacity: 0.08; /* Très discret comme sur le spécimen */
-            z-index: 0; /* Toujours en arrière-plan */
-            pointer-events: none; /* Ignore les clics */
+            transform: translate(-50%, -50%); /* Centrage parfait */
+            width: 14cm; 
+            opacity: 0.08; /* Très discret pour l'impression */
+            z-index: 0; /* Toujours derrière le texte */
+            pointer-events: none;
         }
 
-        /* Conteneur de texte pour éviter le mélange des blocs */
-        .contenu-protege { position: relative; z-index: 1; }
+        /* Bloque la disposition pour éviter le mélange */
+        .contenu-officiel { position: relative; z-index: 1; }
 
         .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
         .bloc-gauche { display: flex; flex-direction: column; align-items: center; text-align: center; width: 300px; }
@@ -47,7 +47,7 @@
         .bloc-droite { text-align: center; width: 380px; }
         .titre-extrait-final { font-size: 28px; font-weight: bold; text-decoration: underline; margin: 0; }
         
-        .bloc-naissance-compact { margin-top: 35px; text-align: left; line-height: 1.4; font-size: 17px; margin-left: 25px; }
+        .bloc-naissance-compact { margin-top: 35px; text-align: left; line-height: 1.4; font-size: 17px; margin-left: 20px; }
         .gras-majuscule { font-weight: bold; text-transform: uppercase; }
 
         .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin: 1.2cm 0 10px 0; }
@@ -70,7 +70,7 @@
 <div class="cadre-exterieur">
     <img src="{% static 'registre/images/armoirie-ci.png' %}" class="armoiries-filigrane">
 
-    <div class="contenu-protege">
+    <div class="contenu-officiel">
         <div class="section-superieure">
             <div class="bloc-gauche">
                 <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
@@ -120,7 +120,7 @@
     </div>
 </div>
 
-<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 12px; background: #28a745; color: white; border-radius: 5px; cursor: pointer; border: none; font-weight: bold;">Imprimer l'acte</button>
+<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 12px; background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold;">Imprimer l'acte</button>
 
 </body>
 </html>
