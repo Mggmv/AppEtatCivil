@@ -8,7 +8,172 @@
         @page { size: A4; margin: 0; }
         body { 
             font-family: "Times New Roman", Times, serif; 
+            font-size: 13px; margin: 0; padding: 0{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Extrait d'Acte de Naissance - Côte d'Ivoire</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { 
+            font-family: "Times New Roman", Times, serif; 
             font-size: 13px; margin: 0; padding: 0; color: black;
+            display: flex; justify-content: center; 
+            background-color: #f0f0f0; 
+        }
+        
+        .cadre-exterieur {
+            border: 1.5px solid black; padding: 5mm; width: 190mm; 
+            min-height: 277mm; margin: 10mm 0;
+            box-sizing: border-box; position: relative;
+            background-color: white; overflow: hidden;
+        }
+
+        /* FILIGRANE CENTRAL - Ne décale pas le texte */
+        .armoiries-filigrane {
+            position: absolute;
+            top: 55%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14cm; 
+            opacity: 0.08; 
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Conteneur pour protéger la disposition du texte */
+        .contenu-officiel { position: relative; z-index: 1; }
+
+        .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        
+        .bloc-gauche { 
+            display: flex; flex-direction: column; align-items: center; text-align: center; 
+            width: 300px; margin-left: -5mm; margin-top: -2mm;
+        }
+        
+        .logo-embleme { width: 150px; height: auto; margin: 5px 0; }
+        .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 12px; margin: 0; line-height: 1.2; }
+        .txt-etat-civil { font-size: 22px; font-weight: bold; margin: 5px 0 0 0; }
+        
+        .num-acte-final { font-size: 14px; font-weight: bold; margin-top: 15px; text-align: center; line-height: 1.1; }
+
+        .cadre-nom-naissance { text-align: center; width: 100%; margin-top: 20px; }
+        .prenom-enfant-grand { font-size: 20px; text-transform: capitalize; display: block; }
+        .nom-enfant-grand { font-size: 22px; font-weight: bold; text-transform: uppercase; display: block; }
+
+        .bloc-droite { text-align: center; width: 380px; }
+        .titre-extrait-final { font-size: 28px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0; }
+        
+        .bloc-naissance-compact { margin-top: 25px; text-align: left; line-height: 1.1; font-size: 18px; margin-left: 30px; }
+        .gras-majuscule { font-weight: bold; text-transform: uppercase; }
+
+        .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin-top: 1.5cm; margin-bottom: 10px; }
+        
+        .ligne-mention-pointillee { display: flex; align-items: baseline; width: 100%; margin-bottom: 12px; }
+        .legende { white-space: nowrap; margin-right: 5px; font-size: 14px; }
+        .pointilles { flex-grow: 1; border-bottom: 1px dotted black; height: 1em; margin-right: 10px; }
+        .valeur-officielle { font-weight: bold; text-transform: uppercase; white-space: nowrap; font-size: 14px; }
+
+        .signature-zone { text-align: right; margin-top: 30px; padding-right: 20px; font-size: 14px; }
+        
+        .bas-de-page {
+            position: absolute; bottom: 30px; width: 100%; left: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mention-sceau { position: absolute; left: calc(50% - 155px); font-weight: bold; text-transform: lowercase; font-size: 15px; }
+
+        @media print {
+            body { background-color: white; display: block; }
+            .cadre-exterieur { margin: 10mm auto; border: 1.5px solid black !important; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cadre-exterieur">
+    <img src="{% static 'registre/images/armoirie-ci.png' %}" class="armoiries-filigrane">
+
+    <div class="contenu-officiel">
+        <div class="section-superieure">
+            <div class="bloc-gauche">
+                [span_1](start_span)[span_2](start_span)<p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE[span_1](end_span)[span_2](end_span)</p>
+                [span_3](start_span)<p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}[span_3](end_span)</p>
+                <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
+                [span_4](start_span)[span_5](start_span)<p class="txt-etat-civil">ETAT CIVIL[span_4](end_span)[span_5](end_span)</p>
+                [span_6](start_span)<p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br>DE {{ acte.structure.sous_prefecture|upper }}[span_6](end_span)</p>
+                [span_7](start_span)<p style="font-weight: bold; margin: 0;">CENTRE DE {{ acte.structure.nom_centre|upper }}[span_7](end_span)</p>
+                
+                <p class="num-acte-final">
+                   [span_8](start_span)[span_9](start_span)N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}<br>DU REGISTRE[span_8](end_span)[span_9](end_span)
+                </p>
+
+                <div class="cadre-nom-naissance">
+                    [span_10](start_span)[span_11](start_span)<span style="font-size: 12px;">NAISSANCE DE :[span_10](end_span)[span_11](end_span)</span><br>
+                    [span_12](start_span)<span class="prenom-enfant-grand">{{ acte.prenoms_enfant }}[span_12](end_span)</span>
+                    [span_13](start_span)<span class="nom-enfant-grand">{{ acte.nom_enfant }}[span_13](end_span)</span>
+                </div>
+            </div>
+
+            <div class="bloc-droite">
+                [span_14](start_span)[span_15](start_span)<h1 class="titre-extrait-final">EXTRAIT[span_14](end_span)[span_15](end_span)</h1>
+                <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">
+                    [span_16](start_span)[span_17](start_span)DU REGISTRE DES ACTE DE L'ETAT<br>CIVIL POUR L'ANNEE <strong>{{ acte.annee_registre }}</strong>[span_16](end_span)[span_17](end_span)
+                </p>
+                
+                <div class="bloc-naissance-compact">
+                    [span_18](start_span)[span_19](start_span)<p>Le <span style="text-transform: lowercase;">{{ date_lettres }}</span>[span_18](end_span)[span_19](end_span)</p>
+                    [span_20](start_span)<p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span>[span_20](end_span)</p>
+                    [span_21](start_span)[span_22](start_span)<p>à <span style="font-weight: bold;">{{ acte.lieu_naissance }}</span>[span_21](end_span)[span_22](end_span)</p>
+                    
+                    <p style="margin-top: 15px;">
+                        [span_23](start_span)est né(e) <span class="gras-majuscule" style="font-size: 20px;">{{ acte.prenoms_enfant }}</span>[span_23](end_span)
+                    </p>
+
+                    <p style="margin-top: 15px;">
+                        [span_24](start_span)[span_25](start_span)Fils de <span class="gras-majuscule">{% if acte.nom_pere %}{{ acte.nom_pere }}{% else %}PÈRE INCONNU{% endif %}</span>[span_24](end_span)[span_25](end_span)
+                    </p>
+                    <p style="margin-top: 15px;">
+                        [span_26](start_span)[span_27](start_span)et de <span class="gras-majuscule">{% if acte.nom_mere %}{{ acte.nom_mere }}{% else %}MÈRE INCONNUE{% endif %}</span>[span_26](end_span)[span_27](end_span)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="separateur-mentions"></div>
+        
+        <div class="bloc-mentions-final">
+            [span_28](start_span)[span_29](start_span)<span class="titre-mention">MENTIONS (éventuellement) :[span_28](end_span)[span_29](end_span)</span>
+            [span_30](start_span)<div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span>[span_30](end_span)</div>
+            [span_31](start_span)<div class="ligne-mention-pointillee"><span class="legende">Avec</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.conjoint_mariage|default:"NÉANT" }}</span>[span_31](end_span)</div>
+            [span_32](start_span)<div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span>[span_32](end_span)</div>
+        </div>
+
+        [span_33](start_span)[span_34](start_span)<p style="font-style: italic; margin-top: 25px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.[span_33](end_span)[span_34](end_span)</p>
+
+        <div class="signature-zone">
+            [span_35](start_span)[span_36](start_span)<p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}[span_35](end_span)[span_36](end_span)</p>
+            [span_37](start_span)[span_38](start_span)<p style="font-weight: bold; margin-bottom: 0;">L'Officier de l'État Civil[span_37](end_span)[span_38](end_span)</p>
+            [span_39](start_span)[span_40](start_span)<p style="margin-top: 0; font-size: 13px;">(Signature)[span_39](end_span)[span_40](end_span)</p>
+        </div>
+
+        <div class="bas-de-page">
+            [span_41](start_span)[span_42](start_span)<div class="mention-sceau">sceau[span_41](end_span)[span_42](end_span)</div>
+            <div style="text-align: center;">
+                [span_43](start_span)<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=NOM: {{ acte.nom_enfant|upper }}%0AACTE N°: {{ acte.numero_registre }}" style="width: 90px; height: 90px;">[span_43](end_span)
+                [span_44](start_span)<p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle[span_44](end_span)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 1000;">
+    [span_45](start_span)Imprimer l'extrait[span_45](end_span)
+</button>
+
+</body>
+</html>; color: black;
             display: flex; justify-content: center; 
             background-color: #f0f0f0; 
         }
