@@ -23,7 +23,7 @@ class ActeNaissance(models.Model):
     prenoms_enfant = models.CharField(max_length=255, verbose_name="Prénoms")
     nom_enfant = models.CharField(max_length=255, verbose_name="Nom")
     date_naissance = models.DateField(verbose_name="Né(e) le")
-    heure_naissance = models.TimeField(verbose_name="À (Heure)")
+    heure_naissance = models.TimeField(verbose_name="À (Heure)", null=True, blank=True)
     lieu_naissance = models.CharField(max_length=255, verbose_name="Lieu de naissance")
 
     # Filiation (Parents)
