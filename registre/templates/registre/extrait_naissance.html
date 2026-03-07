@@ -73,10 +73,12 @@
         <div class="section-superieure">
             <div class="bloc-gauche">
                 <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
-                <p class="txt-admin">Union - Discipline - Travail</p>
-                <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
-                <p><strong>ETAT CIVIL</strong></p>
-                <p>CENTRE DE {{ acte.structure.nom_centre|upper }}</p>
+            <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
+            <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
+            <p class="txt-etat-civil">ETAT CIVIL</p>
+             <p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br> 
+                 DE {{ acte.structure.sous_prefecture|upper }}</p>
+            <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
                 <p style="margin-top:10px;">N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}</p>
                 
                 <div style="margin-top:20px;">
