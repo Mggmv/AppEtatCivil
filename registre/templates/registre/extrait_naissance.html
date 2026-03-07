@@ -18,10 +18,10 @@
             position: relative; background-color: white; overflow: hidden;
         }
 
-        /* FILIGRANE - Position absolue pour NE PAS décaler le texte */
+        /* FILIGRANE - Position absolue pour ne pas décaler le texte */
         .armoiries-filigrane {
             position: absolute;
-            top: 55%; left: 50%; transform: translate(-50%, -50%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 14cm; opacity: 0.08; z-index: 0; pointer-events: none;
         }
 
@@ -30,22 +30,23 @@
         .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
         .bloc-gauche { text-align: center; width: 300px; }
         .logo-embleme { width: 140px; height: auto; margin: 5px 0; }
-        .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; }
+        .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.2; }
         
         .bloc-droite { text-align: center; width: 400px; }
-        .titre-extrait { font-size: 28px; font-weight: bold; text-decoration: underline; margin: 0; }
-        .bloc-naissance-compact { margin-top: 25px; text-align: left; line-height: 1.2; font-size: 18px; margin-left: 20px; }
+        .titre-extrait { font-size: 28px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0; }
+        .bloc-naissance-compact { margin-top: 25px; text-align: left; line-height: 1.3; font-size: 18px; margin-left: 20px; }
 
         .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin: 1.5cm 0 10px 0; }
         
-        [span_4](start_span)/* STYLE POUR LES 5 MENTIONS POINTILLÉES[span_4](end_span) */
+        /* Les 5 mentions avec pointillés */
         .ligne-mention-pointillee { display: flex; align-items: baseline; width: 100%; margin-bottom: 10px; }
         .legende { white-space: nowrap; margin-right: 5px; font-size: 14px; }
         .pointilles { flex-grow: 1; border-bottom: 1px dotted black; height: 1em; margin: 0 10px; }
         .valeur-officielle { font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
         .signature-zone { text-align: right; margin-top: 30px; padding-right: 20px; font-size: 14px; }
-        .bas-de-page { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; }
+        .bas-de-page { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; align-items: center; }
+        .mention-sceau { position: absolute; left: 15%; font-weight: bold; text-transform: lowercase; font-size: 15px; }
 
         @media print {
             body { background-color: white; }
@@ -57,12 +58,13 @@
 <body>
 
 <div class="cadre-exterieur">
-    <img src="{% static 'registre/images/armoirie-ci.png' %}" class="armoiries-filigrane">
+    <img src="{% static 'registre/armoirie-ci.png' %}" class="armoiries-filigrane">
 
     <div class="contenu-officiel">
         <div class="section-superieure">
             <div class="bloc-gauche">
                 <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
+                <p class="txt-admin">Union - Discipline - Travail</p>
                 <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
                 <p><strong>ETAT CIVIL</strong></p>
                 <p>CENTRE DE {{ acte.structure.nom_centre|upper }}</p>
@@ -81,9 +83,9 @@
                 
                 <div class="bloc-naissance-compact">
                     <p>Le {{ date_lettres }}</p> 
-                    <p>à <strong>{{ heure_lettres }}</strong></p>
-                    <p>est né(e) à {{ acte.lieu_naissance }}</p>
-                    <p style="margin-top:10px; font-weight: bold;">{{ acte.prenoms_enfant }} {{ acte.nom_enfant }}</p>
+                    <p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span></p>
+                    <p>est né(e) à <strong>{{ acte.lieu_naissance }}</strong></p>
+                    <p style="margin-top:15px; font-weight: bold; font-size: 20px;">{{ acte.prenoms_enfant }} {{ acte.nom_enfant }}</p>
                     <p>Fils de {{ acte.nom_pere|default:"..........." }}</p>
                     <p>et de {{ acte.nom_mere|default:"..........." }}</p>
                 </div>
@@ -105,12 +107,13 @@
         </div>
 
         <div class="bas-de-page">
+            <div class="mention-sceau">sceau</div>
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ acte.numero_registre }}" alt="QR Code">
         </div>
     </div>
 </div>
 
-<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer;">Imprimer</button>
+<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; z-index: 1000;">Imprimer</button>
 
 </body>
 </html>
