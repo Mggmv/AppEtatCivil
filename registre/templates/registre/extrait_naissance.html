@@ -18,7 +18,6 @@
             position: relative; background-color: white; overflow: hidden;
         }
 
-        /* FILIGRANE */
         .armoiries-filigrane {
             position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -32,10 +31,9 @@
         .logo-embleme { width: 140px; height: auto; margin: 5px 0; }
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.2; }
         
-        /* Bloc Transcription déplacé sous le nom */
         .transcription-zone-interne {
-            margin-top: 15px; font-size: 10px; font-style: italic; text-align: center;
-            width: 100%; line-height: 1.2; color: #333;
+            margin-top: 10px; font-size: 11px; font-style: italic; text-align: center;
+            width: 100%; line-height: 1.2; color: black;
         }
 
         .bloc-droite { text-align: center; width: 400px; }
@@ -123,16 +121,18 @@
             <p><strong>L'Officier de l'État Civil</strong></p>
         </div>
 
-        <div class="bas-de-page">
-        <div class="mention-sceau">sceau</div>
-        <div class="qr-code-container">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }} {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
-     style="width: 90px; height: 90px;" 
-     alt="QR Code de validation">
-            <p style="font-size: 9px; margin: 2px 0 0 0;">Validation numérique officielle</p>
+        <div class="bas-de-page-fixe">
+            <div class="container-sceau-qr">
+                <div class="mention-sceau-bas">sceau</div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }}%0APRÉNOMS: {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
+                     style="width: 90px; height: 90px;" 
+                     alt="QR Code de validation">
+            </div>
+            <p style="font-size: 9px; margin-top: 5px;">Validation numérique officielle</p>
         </div>
     </div>
 </div>
+
 <button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; z-index: 1000;">Imprimer</button>
 
 </body>
