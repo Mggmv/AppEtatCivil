@@ -121,9 +121,10 @@
          <p style="font-style: italic; margin-top: 35px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
         
         <div class="signature-zone">
-            <p>Délivré à {{ acte.structure.sous_prefecture }}, le {% now "d F Y" %}</p>
-            <p><strong>L'Officier de l'État Civil</strong></p>
-        </div>
+        <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
+        <p class="officier-titre">L'Officier de l'État Civil</p>
+        <p class="signature-mention">(Signature)</p>
+    </div>
 
         <div class="bas-de-page-fixe">
             <div class="container-sceau-qr">
