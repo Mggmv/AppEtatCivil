@@ -102,10 +102,10 @@
                 <div class="bloc-naissance-compact">
                     <p>Le {{ date_lettres }}</p>
                     <p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span></p>
-                    <p>est né(e) à <strong>{{ acte.lieu_naissance }}</strong></p>
-                    <p style="margin-top:15px; font-weight: bold; font-size: 20px;">{{ acte.prenoms_enfant }} {{ acte.nom_enfant }}</p>
+                    <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
+                    <p style="margin-top:15px;  font-size: 20px;"> est né(e)<strong>{{ acte.prenoms_enfant }}</strong>strong> </p>
                     <p>Fils de {{ acte.nom_pere|default:"..........." }}</p>
-                    <p>et de {{ acte.nom_mere|default:"..........." }}</p>
+                    <p>et de <strong>{{ acte.nom_mere|default:"..........." }}</strong>strong></p>
                 </div>
             </div>
         </div>
