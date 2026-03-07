@@ -83,8 +83,8 @@
                 
                 <div style="margin-top:20px;">
                     <span style="font-size: 12px;">NAISSANCE DE :</span><br>
-                    <span style="font-size: 18px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
-                    <span style="font-size: 20px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
+                    <span style="font-size: 16px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
+                    <span style="font-size: 16px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
                 </div>
 
                 <div class="transcription-zone-interne">
@@ -118,9 +118,8 @@
         <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
 
-         <p style="font-style: italic; margin-top: 35px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
-        
-        <div class="signature-zone">
+         <p style="font-style: italic; margin-top: 22px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
+         <div class="signature-zone">
         <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
         <p class="officier-titre">L'Officier de l'État Civil</p>
         <p class="signature-mention">(Signature)</p>
