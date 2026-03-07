@@ -25,9 +25,8 @@ def voir_extrait(request, pk):
     
     context = {
         'acte': acte,
-        'date_lettres': date_en_lettres,
-        # On passe l'heure directement depuis le champ du modèle
-        'heure_lettres': acte.heure_naissance, 
+        'date_lettres': date_en_lettres, 
+        'heure_lettres': acte.heure_naissance, # On utilise le champ direct du modèle
     }
     
     return render(request, 'registre/extrait_naissance.html', context)
