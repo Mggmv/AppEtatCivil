@@ -100,8 +100,7 @@
                 CIVIL POUR L'ANNEE  {{ acte.annee_registre }}</p>
                 
                 <div class="bloc-naissance-compact">
-                    <p>Le {{ date_lettres }}</p>
-                    <p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span></p>
+                    <p>{{ date_heure_complete }}</p>
                     <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
                     <p style="margin-top:15px;  font-size: 20px;"> est né(e)<strong>{{ acte.prenoms_enfant }}</strong></p>
                     <p>Fils de {{ acte.nom_pere|default:"..........." }}</p>
