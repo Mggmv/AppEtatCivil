@@ -7,9 +7,9 @@
     <style>
         @page { size: A4; margin: 0; }
         body { 
-            font-family: "Times New Roman", Times, serif; 
+            font-family: "Times New Roman", Times, serif;
             font-size: 13px; margin: 0; padding: 0; color: black;
-            display: flex; justify-content: center; background-color: #f0f0f0; 
+            display: flex; justify-content: center; background-color: #f0f0f0;
         }
         
         .cadre-exterieur {
@@ -27,6 +27,7 @@
         .contenu-officiel { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
 
         .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        
         .bloc-gauche { text-align: center; width: 300px; }
         .logo-embleme { width: 140px; height: auto; margin: 5px 0; }
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.2; }
@@ -48,11 +49,19 @@
         .pointilles { flex-grow: 1; border-bottom: 1px dotted black; height: 1em; margin: 0 10px; }
         .valeur-officielle { font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
-        .signature-zone { text-align: right; margin-top: 30px; padding-right: 20px; font-size: 14px; }
-        
+        /* BLOC SIGNATURE REGROUPÉ */
+        .signature-zone { 
+            text-align: right; 
+            margin-top: 30px; 
+            padding-right: 20px; 
+            line-height: 1.4;
+        }
+        .officier-titre { font-weight: bold; font-size: 14px; margin: 5px 0 0 0; }
+        .signature-mention { font-size: 12px; margin: 0; font-style: italic; }
+
         .bas-de-page-fixe { 
             position: absolute; bottom: 30px; width: 100%; 
-            display: flex; flex-direction: column; align-items: center; 
+            display: flex; flex-direction: column; align-items: center;
         }
         .container-sceau-qr { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; }
         .mention-sceau-bas { position: absolute; left: 20%; font-weight: bold; text-transform: lowercase; font-size: 15px; }
@@ -73,13 +82,12 @@
         <div class="section-superieure">
             <div class="bloc-gauche">
                 <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
-            <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
-            <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
-            <p class="txt-etat-civil">ETAT CIVIL</p>
-             <p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br> 
-                 DE {{ acte.structure.sous_prefecture|upper }}</p>
-            <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
-                <p style="margin-top:10px;">N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}</p>
+                [span_1](start_span)<p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}[span_1](end_span)</p>
+                <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
+                <p><strong>ETAT CIVIL</strong></p>
+                [span_2](start_span)<p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br> DE {{ acte.structure.sous_prefecture|upper }}[span_2](end_span)</p>
+                [span_3](start_span)<p>CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong>[span_3](end_span)</p>
+                [span_4](start_span)<p style="margin-top:10px;">N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}[span_4](end_span)</p>
                 
                 <div style="margin-top:20px;">
                     <span style="font-size: 12px;">NAISSANCE DE :</span><br>
@@ -89,28 +97,28 @@
 
                 <div class="transcription-zone-interne">
                     {% if acte.transcription_justice %}
-                        <strong>TRANSCRIPTION :</strong><br>{{ acte.transcription_justice }}
+                        [span_5](start_span)<strong>TRANSCRIPTION :</strong><br>{{ acte.transcription_justice }}[span_5](end_span)
                     {% endif %}
                 </div>
             </div>
 
             <div class="bloc-droite">
                 <h1 class="titre-extrait">EXTRAIT</h1>
-                <p style="font-weight: bold;">DU REGISTRE DES ACTES DE NAISSANCE POUR L'ANNEE {{ acte.annee_registre }}</p>
+                [span_6](start_span)<p style="font-weight: bold;">DU REGISTRE DES ACTES DE NAISSANCE POUR L'ANNEE {{ acte.annee_registre }}[span_6](end_span)</p>
                 
                 <div class="bloc-naissance-compact">
-                    <p>Le {{ date_lettres }}</p>
-                    <p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span></p>
-                    <p>est né(e) à <strong>{{ acte.lieu_naissance }}</strong></p>
-                    <p style="margin-top:15px; font-weight: bold; font-size: 20px;">{{ acte.prenoms_enfant }} {{ acte.nom_enfant }}</p>
-                    <p>Fils de {{ acte.nom_pere|default:"..........." }}</p>
-                    <p>et de {{ acte.nom_mere|default:"..........." }}</p>
+                    [span_7](start_span)<p>Le {{ date_lettres }}[span_7](end_span)</p>
+                    [span_8](start_span)<p>à <span style="text-transform: lowercase;">{{ heure_lettres }}</span>[span_8](end_span)</p>
+                    [span_9](start_span)<p>est né(e) à <strong>{{ acte.lieu_naissance }}</strong>[span_9](end_span)</p>
+                    [span_10](start_span)<p style="margin-top:15px; font-weight: bold; font-size: 20px;">{{ acte.prenoms_enfant }} {{ acte.nom_enfant }}[span_10](end_span)</p>
+                    [span_11](start_span)<p>Fils de {{ acte.nom_pere|default:"..........." }}[span_11](end_span)</p>
+                    [span_12](start_span)<p>et de {{ acte.nom_mere|default:"..........." }}[span_12](end_span)</p>
                 </div>
             </div>
         </div>
 
         <div class="separateur-mentions"></div>
-        <span class="titre-mention-centre">MENTIONS (éventuellement) :</span>
+        [span_13](start_span)<span class="titre-mention-centre">MENTIONS (éventuellement) :[span_13](end_span)</span>
         
         <div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Avec</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.conjoint_mariage|default:"NÉANT" }}</span></div>
@@ -118,26 +126,27 @@
         <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
 
-         <p style="font-style: italic; margin-top: 22px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
-         <div class="signature-zone">
-        <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
-        <p class="officier-titre">L'Officier de l'État Civil</p>
-        <p class="signature-mention">(Signature)</p>
-    </div>
+        [span_14](start_span)<p style="font-style: italic; margin-top: 22px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.[span_14](end_span)</p>
+        
+        <div class="signature-zone">
+            [span_15](start_span)<p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}[span_15](end_span)</p>
+            [span_16](start_span)<p class="officier-titre">L'Officier de l'État Civil[span_16](end_span)</p>
+            [span_17](start_span)<p class="signature-mention">(Signature)[span_17](end_span)</p>
+        </div>
 
         <div class="bas-de-page-fixe">
             <div class="container-sceau-qr">
-                <div class="mention-sceau-bas">sceau</div>
+                [span_18](start_span)<div class="mention-sceau-bas">sceau[span_18](end_span)</div>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }}%0APRÉNOMS: {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
                      style="width: 90px; height: 90px;" 
-                     alt="QR Code de validation">
+                     [span_19](start_span)alt="QR Code de validation">[span_19](end_span)
             </div>
-            <p style="font-size: 9px; margin-top: 5px;">Validation numérique officielle</p>
+            [span_20](start_span)<p style="font-size: 9px; margin-top: 5px;">Validation numérique officielle[span_20](end_span)</p>
         </div>
     </div>
 </div>
 
-<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; z-index: 1000;">Imprimer</button>
+[span_21](start_span)<button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; z-index: 1000;">Imprimer</button>[span_21](end_span)
 
 </body>
 </html>
