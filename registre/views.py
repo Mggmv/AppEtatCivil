@@ -23,13 +23,12 @@ def voir_extrait(request, pk):
     # [span_0](start_span)On utilise la fonction existante pour la date[span_0](end_span)
     date_en_lettres = acte.infos_naissance_lettres()
     
-    context = {
+ context = {
         'acte': acte,
-        'date_lettres': date_en_lettres, 
-        'heure_lettres': acte.heure_naissance, # On utilise le champ direct du modèle
+        'date_lettres': acte.infos_naissance_lettres(), # Contient 'mil' et 'premier'
+        # On force l'heure en lettres ici si le modèle ne le fait pas
+        'heure_lettres': acte.heure_naissance.strftime('%H heures %M minutes'), 
     }
-    
-    return render(request, 'registre/extrait_naissance.html', context)
     return render(request, 'registre/extrait_naissance.html', context)
     
   
