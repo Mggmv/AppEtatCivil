@@ -88,9 +88,12 @@
 
         <div class="separateur-mentions"></div>
         <p><strong>MENTIONS (éventuellement) :</strong></p>
-        <div class="ligne-mention-pointillee"><span>Marié(e) le</span><div class="pointilles"></div><span>{{ acte.date_mariage|default:"NÉANT" }}</span></div>
-        <div class="ligne-mention-pointillee"><span>Décédé(e) le</span><div class="pointilles"></div><span>{{ acte.date_deces|default:"NÉANT" }}</span></div>
-
+        <div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Avec</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.conjoint_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Mariage dissous (date et décision)</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.dissolution_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
+    </div>
         <div style="text-align: right; margin-top: 30px; padding-right: 20px;">
             <p>Délivré à {{ acte.structure.sous_prefecture }}, le {% now "d F Y" %}</p>
             <p><strong>L'Officier de l'État Civil</strong></p>
