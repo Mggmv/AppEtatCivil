@@ -118,6 +118,8 @@
         <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
 
+         <p style="font-style: italic; margin-top: 35px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
+        
         <div class="signature-zone">
             <p>Délivré à {{ acte.structure.sous_prefecture }}, le {% now "d F Y" %}</p>
             <p><strong>L'Officier de l'État Civil</strong></p>
