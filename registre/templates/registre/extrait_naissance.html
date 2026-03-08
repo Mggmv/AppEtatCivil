@@ -49,9 +49,31 @@
         }
 
         /* BLOC DROITE */
-        .bloc-droite { text-align: center; width: 400px; }
-        .titre-extrait { font-size: 28px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0; }
-        .bloc-naissance-compact { margin-top: 25px; text-align: left; line-height: 1.4; font-size: 18px; margin-left: 20px; }
+      
+.bloc-droite { 
+    text-align: center; 
+    width: 380px; /* Réduit de 400px à 380px */
+}
+
+/* Centrage parfait du titre */
+.titre-extrait { 
+    font-size: 28px; 
+    font-weight: bold; 
+    text-decoration: underline; 
+    text-transform: uppercase; 
+    margin: 0 auto; /* Assure le centrage horizontal */
+    display: block; 
+    width: 100%;
+}
+
+/* Ajustement de la marge du bloc de contenu pour qu'il soit bien aligné sous le titre */
+.bloc-naissance-compact { 
+    margin-top: 25px; 
+    text-align: left; 
+    line-height: 1.3; 
+    font-size: 18px; 
+    margin-left: 10px; /* Réduit pour compenser la largeur du bloc */
+}
 
         /* MENTIONS & SIGNATURE */
         .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin: 1cm 0 5px 0; }
