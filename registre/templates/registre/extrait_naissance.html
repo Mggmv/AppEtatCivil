@@ -26,8 +26,18 @@
         .logo-embleme { width: 140px; height: auto; margin: 5px 0 0 0; }
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.1; }
         .transcription-zone-interne {
-            margin-top: 10px; font-size: 11px; font-style: italic; text-align: center;
-            width: 100%; max-width: 280px; line-height: 1.2; word-wrap: break-word;
+        margin-top: 10px;
+        font-size: 11px;
+        font-style: italic;
+        text-align: center;
+        width: 100%;
+        max-width: 200px; /* Limite la largeur au bloc gauche */
+        line-height: 1.2;
+        color: black;
+        word-wrap: break-word; /* Force le retour à la ligne des mots longs */
+        overflow-wrap: break-word;
+        display: inline-block;
+    }
         }
 
         /* BLOC DROITE */
@@ -78,13 +88,13 @@
 
             <div class="bloc-droite">
                 <h1 class="titre-extrait">EXTRAIT</h1>
-                <p style="font-weight: bold;">DU REGISTRE DES ACTES DE NAISSANCE POUR L'ANNEE {{ acte.annee_registre }}</p>
+                <p style="font-weight: bold;">DU REGISTRE DES ACTES D'ETAT CIVIL <br> POUR L'ANNEE {{ acte.annee_registre }}</p>
                 <div class="bloc-naissance-compact">
                     <p>{{ date_heure_complete }}</p>
-                    <p>est né(e) à <strong>{{ acte.lieu_naissance }}</strong></p>
-                    <p style="margin: 15px 0; font-weight: bold; font-size: 20px;">{{ acte.prenoms_enfant }} </p>
+                    <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
+                    <p style="margin: 15px 0; font-size: 20px;">est né(e)<strong>{{ acte.prenoms_enfant }}</strong> </p>
                     
-                    <p>{{ pere_label }}{{ pere_info }}</p>
+                    <p>{{ pere_label }}<strong>{{ pere_info }}</strong></p>
                     <p>{{ mere_label }}<strong>{{ mere_info }}</strong></p>
                 </div>
             </div>
