@@ -122,13 +122,18 @@
                 CIVIL POUR L'ANNEE  <h3>{{ acte.annee_registre }}</h3></p>
                 
                 <div class="bloc-naissance-compact">
-                    <p>{{ date_heure_complete }}</p>
-                    <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
-                    <p style="margin-top:15px;  font-size: 20px;"> est né(e)<strong>{{ acte.prenoms_enfant }}</strong></p>
-                    <p>Fils de <strong>{{ pere_info }}</strong></p>
-                    <p>et de <strong>{{ mere_info }}</strong></p>
-                </div>
-            </div>
+                <p>{{ date_heure_complete }}</p>
+    
+                <p>est né(e) à <strong>{{ acte.lieu_naissance }}</strong></p>
+    
+                <p style="margin: 15px 0; font-weight: bold; font-size: 20px;">
+                {{ acte.prenoms_enfant }} {{ acte.nom_enfant }}
+              </p>
+    
+              <p>{{ pere_label }}{{ pere_info }}</p>
+    
+             <p>{{ mere_label }}<strong>{{ mere_info }}</strong></p>
+        </div>
         </div>
 
         <div class="separateur-mentions"></div>
