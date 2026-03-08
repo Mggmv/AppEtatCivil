@@ -11,9 +11,17 @@
             display: flex; justify-content: center; background-color: #f0f0f0; 
         }
         .cadre-exterieur {
-            border: 1.5px solid black; padding: 5mm; width: 190mm; min-height: 277mm; margin: 10mm 0; 
-            box-sizing: border-box; position: relative; background-color: white; overflow: hidden;
-        }
+    border: 1.5px solid black; 
+    padding: 5mm; 
+    width: 190mm; 
+    /* Réduction de la hauteur minimale pour diminuer la marge inférieure */
+    min-height: 260mm; 
+    margin: 5mm auto; 
+    box-sizing: border-box; 
+    position: relative; 
+    background-color: white; 
+    overflow: hidden;
+}
         .armoiries-filigrane {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 14cm; opacity: 0.08; z-index: 0; pointer-events: none;
