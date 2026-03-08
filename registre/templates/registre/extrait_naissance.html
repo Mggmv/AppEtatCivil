@@ -71,30 +71,39 @@
 
     <div class="contenu-officiel">
         <div class="section-superieure">
-            <div class="bloc-gauche">
-                <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
-            <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
-            <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
-            <p class="txt-etat-civil"><h2>ETAT CIVIL</h2></p>
-             <p class="txt-admin">CIRCONSCRIPTION D'ETAT CIVIL<br> 
-                 DE {{ acte.structure.sous_prefecture|upper }}</p>
-            <p class="txt-centre">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
-                <p style="margin-top:10px;">N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}</p>
-                
-                <div style="margin-top:20px;">
-                    <span style="font-size: 12px;">NAISSANCE DE :</span><br>
-                    <span style="font-size: 16px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
-                    <span style="font-size: 16px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
-                </div>
+            <<div class="bloc-gauche">
+    <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
+    <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
+    
+    <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
+    
+    <p style="margin: 0; font-weight: bold; font-size: 14px;">ETAT CIVIL</p>
+    
+    <p class="txt-admin" style="margin-top: 2px; line-height: 1.1;">
+        CIRCONSCRIPTION D'ETAT CIVIL<br> 
+        DE {{ acte.structure.sous_prefecture|upper }}
+    </p>
+    
+    <p class="txt-centre" style="margin-top: 5px;">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
+    
+    <p style="margin-top:10px;">
+        N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}
+    </p>
+    
+    <div style="margin-top:20px;">
+        <span style="font-size: 12px;">NAISSANCE DE :</span><br>
+        <span style="font-size: 16px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
+        <span style="font-size: 16px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
+    </div>
 
-                <div class="transcription-zone-interne">
-                    {% if acte.transcription_justice %}
-                        <strong>TRANSCRIPTION :</strong><br>{{ acte.transcription_justice }}
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="bloc-droite">
+    <div class="transcription-zone-interne">
+        {% if acte.transcription_justice %}
+            <strong>TRANSCRIPTION :</strong><br>{{ acte.transcription_justice }}
+        {% endif %}
+    </div>
+</div>
+       
+                <div class="bloc-droite">
                 <h1 class="titre-extrait">EXTRAIT</h1>
                 <p style="font-weight: bold;">DU REGISTRE DES ACTE DE L'ETAT<br>
                 CIVIL POUR L'ANNEE  {{ acte.annee_registre }}</p>
