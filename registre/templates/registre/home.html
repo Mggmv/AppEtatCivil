@@ -1,1 +1,25 @@
-
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil - État Civil 🇨🇮</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid #28a745; max-width: 400px; }
+        h1 { color: #333; margin-bottom: 10px; font-size: 24px; }
+        p { color: #666; margin-bottom: 30px; }
+        .btn { display: inline-block; padding: 12px 25px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background 0.3s; }
+        .btn:hover { background: #218838; }
+        .flag { font-size: 30px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="flag">🇨🇮</div>
+        <h1>Système d'État Civil</h1>
+        <p>République de Côte d'Ivoire<br>Gestion des Actes de Naissance</p>
+        <a href="{% url 'admin:index' %}" class="btn">Accès Officier d'État Civil</a>
+    </div>
+</body>
+</html>
