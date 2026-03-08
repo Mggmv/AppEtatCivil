@@ -92,27 +92,33 @@
 
         <div class="separateur-mentions"></div>
         <span class="titre-mention-centre">MENTIONS (éventuellement) :</span>
+        
         <div class="ligne-mention-pointillee"><span class="legende">Marié le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_mariage|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Avec</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.conjoint_mariage|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Mariage dissous le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.dissolution_mariage|default:"NÉANT" }}</span></div>
         <div class="ligne-mention-pointillee"><span class="legende">Décédé le</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.date_deces|default:"NÉANT" }}</span></div>
+        <div class="ligne-mention-pointillee"><span class="legende">Lieu de décès</span><div class="pointilles"></div><span class="valeur-officielle">{{ acte.lieu_deces|default:"NÉANT" }}</span></div>
 
-        <p style="font-style: italic; margin-top: 25px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
-        <div class="signature-zone">
-            <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
-            <p style="font-weight: bold; font-size: 14px; margin: 5px 0 0 0;">L'Officier de l'État Civil</p>
-            <p style="font-style: italic; margin: 0;">(Signature)</p>
-        </div>
+         <p style="font-style: italic; margin-top: 22px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
+         <div class="signature-zone">
+        <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
+        <p class="officier-titre">L'Officier de l'État Civil</p>
+        <p class="signature-mention">(Signature)</p>
+    </div>
 
         <div class="bas-de-page-fixe">
             <div class="container-sceau-qr">
                 <div class="mention-sceau-bas">sceau</div>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }}%0APRÉNOMS: {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }}" 
-                     style="width: 90px; height: 90px;" alt="QR Code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }}%0APRÉNOMS: {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
+                     style="width: 90px; height: 90px;" 
+                     alt="QR Code de validation">
             </div>
             <p style="font-size: 9px; margin-top: 5px;">Validation numérique officielle</p>
         </div>
     </div>
 </div>
+
 <button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; z-index: 1000;">Imprimer</button>
+
 </body>
 </html>
