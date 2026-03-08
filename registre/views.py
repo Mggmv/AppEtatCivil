@@ -3,15 +3,15 @@ from django.contrib.auth.decorators import login_required
 from .models import ActeNaissance
 
 def home(request):
-    """Ajout de cette fonction pour corriger l'AttributeError au déploiement"""
+    """Indispensable pour corriger l'erreur de déploiement 'no attribute home'"""
     return render(request, 'registre/home.html')
 
 @login_required
 def voir_extrait(request, pk):
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # 1. DATE ET HEURE EN LETTRES
-    date_lettres = acte.infos_naissance_lettres()
+    # --- Date et Heure en lettres ---
+    date_lettres = acte.infos_naissance_lettres() # Utilise déjà 'mil' et 'premier'
     phrase_naissance = f"Le {date_lettres}"
     
     if acte.heure_naissance:
@@ -33,22 +33,24 @@ def voir_extrait(request, pk):
             else:
                 d, u = divmod(m, 10)
                 txt_m = f" {conv.get(d*10)}{' et ' if u == 1 else '-'}{conv.get(u)}"
-        [span_1](start_span)phrase_naissance += f" à {txt_h}{txt_m}"[span_1](end_span)
+        phrase_naissance += f" à {txt_h}{txt_m}"
 
-    # 2. FILIATION (Père et Mère)
-    # Logique Père
+    # --- Filiation (Père et Mère) ---
+    # Logique pour le Père
     if acte.nom_pere:
-        nat_p = getattr(acte, 'nationalite_pere', None)
-        pere_info = f"{acte.nom_pere} de nationalité {nat_p}" if nat_p else acte.nom_pere
+        pere_info = acte.nom_pere
+        if acte.nationalite_pere:
+            pere_info += f" de nationalité {acte.nationalite_pere}"
         pere_label = "Fils de "
     else:
         pere_info = "de père inconnu"
         pere_label = ""
 
-    # Logique Mère
+    # Logique pour la Mère
     if acte.nom_mere:
-        nat_m = getattr(acte, 'nationalite_mere', None)
-        mere_info = f"{acte.nom_mere} de nationalité {nat_m}" if nat_m else acte.nom_mere
+        mere_info = acte.nom_mere
+        if acte.nationalite_mere:
+            mere_info += f" de nationalité {acte.nationalite_mere}"
         mere_label = "et de "
     else:
         mere_info = "de mère inconnue"
