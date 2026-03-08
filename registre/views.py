@@ -2,13 +2,17 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import ActeNaissance
 
+def home(request):
+    """Ajout de cette fonction pour corriger l'AttributeError au déploiement"""
+    return render(request, 'registre/home.html')
+
 @login_required
 def voir_extrait(request, pk):
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # --- DATE ET HEURE ---
+    # 1. DATE ET HEURE EN LETTRES
     date_lettres = acte.infos_naissance_lettres()
-    complement_heure = ""
+    phrase_naissance = f"Le {date_lettres}"
     
     if acte.heure_naissance:
         h = acte.heure_naissance.hour
@@ -18,8 +22,8 @@ def voir_extrait(request, pk):
             6: "six", 7: "sept", 8: "huit", 9: "neuf", 10: "dix",
             11: "onze", 12: "douze", 13: "treize", 14: "quatorze", 15: "quinze",
             16: "seize", 17: "dix-sept", 18: "dix-huit", 19: "dix-neuf", 20: "vingt",
-            21: "vingt et une", 22: "vingt-deux", 23: "vingt-trois", 
-            30: "trente", 40: "quarante", 50: "cinquante"
+            21: "vingt et une", 22: "vingt-deux", 23: "vingt-trois", 30: "trente",
+            40: "quarante", 50: "cinquante"
         }
         txt_h = conv.get(h, str(h)) + (" heure" if h <= 1 else " heures")
         txt_m = ""
@@ -29,11 +33,9 @@ def voir_extrait(request, pk):
             else:
                 d, u = divmod(m, 10)
                 txt_m = f" {conv.get(d*10)}{' et ' if u == 1 else '-'}{conv.get(u)}"
-        complement_heure = f" à {txt_h}{txt_m}"
-    
-    date_heure_complete = f"Le {date_lettres}{complement_heure}"
+        [span_1](start_span)phrase_naissance += f" à {txt_h}{txt_m}"[span_1](end_span)
 
-    # --- PARENTS (Père ET Mère) ---
+    # 2. FILIATION (Père et Mère)
     # Logique Père
     if acte.nom_pere:
         nat_p = getattr(acte, 'nationalite_pere', None)
@@ -54,7 +56,7 @@ def voir_extrait(request, pk):
 
     context = {
         'acte': acte,
-        'date_heure_complete': date_heure_complete,
+        'date_heure_complete': phrase_naissance,
         'pere_info': pere_info,
         'pere_label': pere_label,
         'mere_info': mere_info,
