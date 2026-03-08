@@ -12,12 +12,7 @@
             display: flex; justify-content: center; background-color: #f0f0f0; 
         }
         
-        .cadre-exterieur {
-            border: 1.5px solid black; padding: 5mm; width: 190mm; 
-            min-height: 277mm; margin: 10mm 0; box-sizing: border-box; 
-            position: relative; background-color: white; overflow: hidden;
-        }
-
+       
         .armoiries-filigrane {
             position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -120,13 +115,13 @@
                 <div class="bloc-droite">
                 <h1 class="titre-extrait">EXTRAIT</h1>
                 <p style="font-weight: bold;">DU REGISTRE DES ACTE DE L'ETAT<br>
-                CIVIL POUR L'ANNEE  {{ acte.annee_registre }}</p>
+                CIVIL POUR L'ANNEE  <h3>{{ acte.annee_registre }}</h3></p>
                 
                 <div class="bloc-naissance-compact">
                     <p>{{ date_heure_complete }}</p>
                     <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
                     <p style="margin-top:15px;  font-size: 20px;"> est né(e)<strong>{{ acte.prenoms_enfant }}</strong></p>
-                    <p>Fils de {{ acte.nom_pere|default:"..........." }}</p>
+                    <p>Fils de <strong>{{ acte.nom_pere|default:"..........." }}</strong></p>
                     <p>et de <strong>{{ acte.nom_mere|default:"..........." }}</strong></p>
                 </div>
             </div>
