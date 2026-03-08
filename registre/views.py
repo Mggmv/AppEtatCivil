@@ -3,12 +3,12 @@ from django.contrib.auth.decorators import login_required
 from .models import ActeNaissance
 
 def home(request):
-    """Indispensable pour corriger l'erreur : module 'views' has no attribute 'home'"""
+    """Corrige l'erreur de déploiement pour la route 'home'"""
     return render(request, 'registre/home.html')
 
 @login_required
 def dashboard(request):
-    """Indispensable pour corriger l'erreur : module 'views' has no attribute 'dashboard'"""
+    """Corrige l'erreur de déploiement pour la route 'dashboard'"""
     actes = ActeNaissance.objects.all().order_by('-date_declaration')
     return render(request, 'registre/dashboard.html', {'actes': actes})
 
@@ -16,8 +16,8 @@ def dashboard(request):
 def voir_extrait(request, pk):
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # --- Traitement de la Date et de l'Heure ---
-    [span_1](start_span)date_lettres = acte.infos_naissance_lettres() # Utilise 'mil' et 'premier'[span_1](end_span)
+    # --- Date et Heure en lettres ---
+    date_lettres = acte.infos_naissance_lettres()
     phrase_naissance = f"Le {date_lettres}"
     
     if acte.heure_naissance:
@@ -41,12 +41,12 @@ def voir_extrait(request, pk):
                 txt_m = f" {conv.get(d*10)}{' et ' if u == 1 else '-'}{conv.get(u)}"
         phrase_naissance += f" à {txt_h}{txt_m}"
 
-    # --- Traitement de la Filiation (Père et Mère) ---
+    # --- Filiation (Père et Mère) ---
     # Logique pour le Père
     if acte.nom_pere:
         pere_info = acte.nom_pere
         if acte.nationalite_pere:
-            [span_2](start_span)pere_info += f" de nationalité {acte.nationalite_pere}"[span_2](end_span)
+            pere_info += f" de nationalité {acte.nationalite_pere}"
         pere_label = "Fils de "
     else:
         pere_info = "de père inconnu"
@@ -56,7 +56,7 @@ def voir_extrait(request, pk):
     if acte.nom_mere:
         mere_info = acte.nom_mere
         if acte.nationalite_mere:
-            [span_3](start_span)mere_info += f" de nationalité {acte.nationalite_mere}"[span_3](end_span)
+            mere_info += f" de nationalité {acte.nationalite_mere}"
         mere_label = "et de "
     else:
         mere_info = "de mère inconnue"
