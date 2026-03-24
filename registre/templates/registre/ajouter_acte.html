@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvel Acte - État Civil</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .form-container { background: white; max-width: 800px; margin: auto; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #004494; border-bottom: 2px solid #28a745; padding-bottom: 10px; }
+        .btn-save { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-cancel { color: #666; text-decoration: none; margin-left: 15px; }
+        form p { margin-bottom: 15px; display: flex; flex-direction: column; }
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Enregistrer une nouvelle naissance</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <hr>
+            <button type="submit" class="btn-save">ENREGISTRER L'ACTE</button>
+            <a href="{% url 'dashboard' %}" class="btn-cancel">Annuler</a>
+        </form>
+    </div>
+</body>
+</html>

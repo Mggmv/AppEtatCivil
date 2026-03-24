@@ -1,0 +1,45 @@
+{# templates/admin/base_site.html #}
+{% extends "admin/base.html" %}
+{% load static %}
+
+{# 1. Personnalisation du titre dans l'onglet du navigateur #}
+{% block title %}{{ title }} | État Civil CI{% endblock %}
+
+{# 2. Personnalisation de l'en-tête (le bandeau supérieur gauche) #}
+{% block branding %}
+<div style="display: flex; align-items: center; gap: 15px; padding: 5px 0;">
+    
+    <img src="{% static 'registre/logo.png' %}" alt="Armoiries CI" 
+         style="height: 55px; width: auto; background-color: white; border-radius: 4px; padding: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+    
+    <div style="display: flex; flex-direction: column; line-height: 1.2;">
+        <h1 id="site-name" style="margin: 0; font-size: 19px; font-weight: bold; color: #f5dd5d; text-transform: uppercase;">
+            République de Côte d'Ivoire
+        </h1>
+        <span style="color: rgba(255,255,255,0.9); font-size: 14px; font-weight: normal; text-transform: uppercase;">
+            Système d'État Civil - {{ nom_structure_dynamique }}
+        </span>
+    </div>
+
+</div>
+
+{# Couleurs officielles du bandeau #}
+<style>
+    #header {
+        background: #004494 !important; /* Bleu profond */
+        border-bottom: 3px solid #ff8200 !important; /* Bordure Orange */
+    }
+    #user-tools a { color: white !important; }
+    #user-tools { color: rgba(255,255,255,0.8) !important; }
+</style>
+{% endblock %}
+
+{# 3. Ajout du nom de l'application en haut à droite avec text-transform: none !important #}
+{% block welcome-msg %}
+    <span style="color: #f5dd5d; font-weight: 900; font-size: 16px; letter-spacing: 1px; margin-right: 15px; padding-right: 15px; border-right: 2px solid rgba(255, 255, 255, 0.3); text-transform: none !important;">
+        Mgg_AppEtatCivil
+    </span>
+    {{ block.super }}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

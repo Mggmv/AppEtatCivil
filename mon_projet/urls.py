@@ -15,4 +15,10 @@ urlpatterns = [
     # Vos pages de travail
     path('dashboard/', views.dashboard, name='dashboard'),
     path('extrait/<int:pk>/', views.voir_extrait, name='voir_extrait'),
+    
+    # NOUVEAU : Exportation du registre vers Excel
+    path('exporter-registre/', views.exporter_actes_csv, name='exporter_actes'),
+
+  # Le lien magique pour l'impression du certificat
+    path('certificat/<int:certificat_id>/imprimer/', views.imprimer_certificat_residence, name='imprimer_certificat'),
 ]

@@ -33,19 +33,21 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'mon_projet.urls'
 
-# --- GESTION DES TEMPLATES (CORRIGÉ) ---
+# --- GESTION DES TEMPLATES ---
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # DIRS configuré pour trouver vos dossiers templates
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth', # Indispensable pour l'agent
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
+                # ---> AJOUTEZ CETTE LIGNE ICI <---
+                'registre.context_processors.infos_structure', 
             ],
         },
     },
@@ -73,7 +75,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'registre/static')]
 
-# --- CONFIGURATION DES ACCÈS (CORRIGÉ POUR L'ERREUR 404 PROFILE) ---
+# --- CONFIGURATION DES ACCÈS ---
 # Redirige l'agent vers le Dashboard après connexion au lieu de /accounts/profile/
 LOGIN_REDIRECT_URL = 'dashboard'
 # Redirige vers la page d'accueil après déconnexion

@@ -135,14 +135,14 @@
                 <p style="margin: 0; font-weight: bold; font-size: 14px;">ETAT CIVIL</p>
                 <p class="txt-admin" style="margin-top: 2px;">CIRCONSCRIPTION D'ETAT CIVIL<br>DE {{ acte.structure.sous_prefecture|upper }}</p>
                 <p style="margin: 5px 0 0 0;">CENTRE DE <strong>{{ acte.structure.nom_centre|upper }}</strong></p>
-                <p style="margin-top:10px;">N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}</p>
+                <p style="margin-top:10px;"><strong>N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}</strong> <br> DU REGISTRE</p>
                 <div style="margin-top:20px;">
                     <span style="font-size: 12px;">NAISSANCE DE :</span><br>
                     <span style="font-size: 16px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
                     <span style="font-size: 18px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
                 </div>
                 <div class="transcription-zone-interne">
-                    {% if acte.transcription_justice %}<strong>TRANSCRIPTION :</strong><br>{{ acte.transcription_justice }}{% endif %}
+                    {{ acte.transcription_justice }}
                 </div>
             </div>
 
@@ -155,7 +155,7 @@
                 <div class="bloc-naissance-compact">
                     <p>{{ date_heure_complete }}</p>
                     <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
-                    <p style="margin: 15px 0; font-size: 20px;">est né(e)<strong>{{ acte.prenoms_enfant }}</strong> </p>
+                    <p style="margin: 15px 0; font-size: 20px;">est {{ accord_ne }} <strong>{{ acte.prenoms_enfant }}</strong> </p>
                     
                     <p>{{ pere_label }}<strong>{{ pere_info }}</strong></p>
                     <p>{{ mere_label }}<strong>{{ mere_info }}</strong></p>
@@ -182,9 +182,9 @@
         <div class="bas-de-page-fixe">
             <div class="container-sceau-qr">
                 <div class="mention-sceau-bas">sceau</div>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=SOUS-PRÉFECTURE DE {{ acte.structure.sous_prefecture|upper }}%0ANOM: {{ acte.nom_enfant|upper }}%0APRÉNOMS: {{ acte.prenoms_enfant }}%0AACTE N°: {{ acte.numero_registre }} DU {{ acte.date_declaration|date:'d/m/Y' }}" 
-                     style="width: 90px; height: 90px;" 
-                     alt="QR Code de validation">
+                <img src="data:image/png;base64,{{ qr_base64 }}" 
+                style="width: 90px; height: 90px;" 
+                alt="QR Code de validation officiel">
             </div>
             <p style="font-size: 9px; margin-top: 5px;">Validation numérique officielle</p>
         </div>

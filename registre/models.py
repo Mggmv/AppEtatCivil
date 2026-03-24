@@ -2,9 +2,10 @@ from django.db import models
 from num2words import num2words
 
 class Structure(models.Model):
-    prefecture = models.CharField(max_length=255, verbose_name="Préfecture", default="Non précisée")
-    sous_prefecture = models.CharField(max_length=255, verbose_name="Sous-Préfecture")
-    nom_centre = models.CharField(max_length=255, verbose_name="Nom du Centre")
+    region = models.CharField(max_length=100, verbose_name="Région", null=True, blank=True, help_text="Ex: DU CAVALLY")
+    prefecture = models.CharField(max_length=100, verbose_name="Département / Préfecture")
+    sous_prefecture = models.CharField(max_length=100, verbose_name="Sous-Préfecture")
+    nom_centre = models.CharField(max_length=100, verbose_name="Nom du centre")
 
     class Meta:
         verbose_name = "Structure Administrative"
@@ -12,6 +13,33 @@ class Structure(models.Model):
 
     def __str__(self):
         return f"{self.prefecture} > {self.sous_prefecture} > {self.nom_centre}"
+
+class CertificatResidence(models.Model):
+    numero_certificat = models.CharField(max_length=50, verbose_name="Numéro de Registre", unique=True)
+    date_etablissement = models.DateField(verbose_name="Date d'établissement")
+    
+    nom = models.CharField(max_length=100, verbose_name="Nom")
+    prenoms = models.CharField(max_length=150, verbose_name="Prénoms")
+    sexe = models.CharField(max_length=1, choices=[('M', 'Masculin'), ('F', 'Féminin')], default='M', verbose_name="Sexe")
+    date_naissance = models.DateField(verbose_name="Date de naissance")
+    lieu_naissance = models.CharField(max_length=100, verbose_name="Lieu de naissance")
+    nationalite = models.CharField(max_length=100, verbose_name="Nationalité")
+    profession = models.CharField(max_length=100, verbose_name="Profession", blank=True, null=True)
+    
+    piece_identite = models.CharField(max_length=100, verbose_name="Pièce d'identité (Type et N°)", help_text="Ex: CNI (CC) : BF. 38400...")
+    adresse_locale = models.CharField(max_length=200, verbose_name="Adresse / Quartier")
+
+    # --- NOUVEAUX CHAMPS AJOUTÉS ---
+    nom_pere = models.CharField(max_length=150, verbose_name="Fils/Fille de (Nom du père)", null=True, blank=True)
+    nom_mere = models.CharField(max_length=150, verbose_name="et de (Nom de la mère)", null=True, blank=True)
+    resident_depuis = models.CharField(max_length=4, verbose_name="Résident depuis (Année)", help_text="Ex: 2020", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Certificat de Résidence"
+        verbose_name_plural = "Certificats de Résidence"
+
+    def __str__(self):
+        return f"Certificat N°{self.numero_certificat} - {self.nom} {self.prenoms}"
 
 class ActeNaissance(models.Model):
     structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
@@ -25,6 +53,14 @@ class ActeNaissance(models.Model):
     date_naissance = models.DateField(verbose_name="Né(e) le")
     heure_naissance = models.TimeField(verbose_name="À (Heure)", null=True, blank=True)
     lieu_naissance = models.CharField(max_length=255, verbose_name="Lieu de naissance")
+# Ajoutez ces choix juste au début de votre modèle ActeNaissance
+    SEXE_CHOICES = [
+        ('M', 'Masculin'),
+        ('F', 'Féminin'),
+    ]
+    
+    # Ajoutez ce champ avec les autres (nom, prénoms, etc.)
+    sexe = models.CharField(max_length=1, choices=SEXE_CHOICES, default='M', verbose_name="Sexe de l'enfant")
 
     # Filiation (Parents)
     nom_pere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom du Père")

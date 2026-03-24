@@ -17,77 +17,101 @@
             justify-content: space-between; 
             align-items: center; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            border-bottom: 4px solid #ff8200; /* Ajout d'une touche Orange CI */
         }
         
         .nav-brand { display: flex; align-items: center; gap: 15px; }
-        .logo-nav { height: 50px; width: auto; background-color: white; border-radius: 4px; padding: 2px; }
+        /* Logo ajusté avec fond blanc */
+        .logo-nav { height: 60px; width: auto; background-color: white; border-radius: 4px; padding: 4px; }
         
         .container { padding: 30px; max-width: 1100px; margin: auto; }
-        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        h1, h2 { color: #004494; margin-top: 0; }
         
-        /* Bouton d'ajout */
-        .btn-add { display: inline-block; padding: 12px 25px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
-        .btn-add:hover { background: #218838; }
+        /* Cartes et Tableaux */
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        h2 { color: #004494; margin-top: 0; margin-bottom: 0; }
+        .table-header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #28a745; padding-bottom: 10px; margin-bottom: 15px; }
 
-        /* Tableau des actes */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background-color: #f8f9fa; color: #666; text-transform: uppercase; font-size: 0.85em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #666; font-weight: 600; }
         
-        .btn-view { padding: 6px 12px; background: #17a2b8; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
-        .btn-logout { color: #ffcccc; text-decoration: none; font-size: 0.9em; border: 1px solid #ffcccc; padding: 5px 10px; border-radius: 4px; }
+        /* Boutons */
+        .btn-add { 
+            background: #28a745; color: white; padding: 12px 20px; 
+            text-decoration: none; border-radius: 5px; font-weight: bold; 
+            display: inline-block; transition: 0.3s;
+        }
+        .btn-add:hover { background: #218838; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
+        /* Nouveau bouton Export Excel */
+        .btn-export {
+            background: #1d6f42; color: white; padding: 8px 15px; 
+            text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px;
+            display: inline-flex; align-items: center; transition: 0.3s;
+        }
+        .btn-export:hover { background: #144c2d; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
+        .btn-view { background: #004494; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; }
+        .btn-edit { background: #ffc107; color: #212529; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; margin-left: 5px; }
+        
+        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
+    <nav class="navbar">
         <div class="nav-brand">
-            <img src="{% static 'registre/logo.png' %}" alt="Emblème CI" class="logo-nav">
+            <img src="{% static 'registre/logo.png' %}" alt="Armoiries CI" class="logo-nav">
             <div>
-                <div style="font-size: 0.75em; opacity: 0.9; font-weight: 300;">RÉPUBLIQUE DE CÔTE D'IVOIRE</div>
-                <div style="font-weight: bold; letter-spacing: 1px; font-size: 1.1em;">SYSTÈME ÉTAT CIVIL</div>
+                <span style="font-weight: bold; font-size: 18px; display: block;">RÉPUBLIQUE DE CÔTE D'IVOIRE</span>
+                <span style="font-size: 14px; color: #e0e0e0;">Système d'État Civil - Sous-Préfecture</span>
             </div>
         </div>
         <div>
-            <span style="font-size: 0.9em;">Agent : <strong>{{ user.username }}</strong></span> &nbsp;
-            <a href="{% url 'logout' %}" class="btn-logout">Déconnexion</a>
+            <span>Utilisateur : <strong>{{ user.username }}</strong></span>
+            <a href="{% url 'logout' %}" style="color: white; margin-left: 20px; font-size: 13px;">Déconnexion</a>
         </div>
-    </div>
+    </nav>
 
     <div class="container">
-        <h1>Tableau de Bord Administratif</h1>
-
-        <div class="card">
-            <h2>Nouvel Enregistrement</h2>
-            <p>Utilisez ce bouton pour accéder au formulaire officiel de déclaration de naissance.</p>
-            <a href="/admin/registre/actenaissance/add/" class="btn-add">+ Enregistrer une naissance</a>
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #28a745;">
+            <div>
+                <h3 style="margin: 0;">Gestion des Naissances</h3>
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Enregistrez un nouvel acte ou modifiez les informations existantes.</p>
+            </div>
+            <a href="{% url 'ajouter_acte' %}" class="btn-add">+ ENREGISTRER UNE NAISSANCE</a>
         </div>
 
         <div class="card">
-            <h2>Registre des Naissances (Derniers actes)</h2>
+            <div class="table-header-box">
+                <h2>Registre des Dernières Déclarations</h2>
+                <a href="{% url 'exporter_actes' %}" class="btn-export">📊 Exporter en Excel</a>
+            </div>
+            
             <table>
                 <thead>
                     <tr>
-                        <th>Nom et Prénoms</th>
-                        <th>Date de naissance</th>
+                        <th>Nom et Prénoms de l'Enfant</th>
+                        <th>Date de Naissance</th>
                         <th>Lieu</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for acte in actes %}
                     <tr>
-                        <td><strong>{{ acte.nom_complet_officiel }}</strong></td>
+                        <td><strong>{{ acte.nom_complet_officiel|upper }}</strong></td>
                         <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
                         <td>{{ acte.lieu_naissance }}</td>
                         <td>
-                            <a href="{% url 'voir_extrait' acte.pk %}" class="btn-view">Voir l'extrait</a>
+                            <a href="{% url 'voir_extrait' acte.pk %}" class="btn-view">🖨️ Extrait</a>
+                            <a href="{% url 'modifier_acte' acte.pk %}" class="btn-edit">✏️ Modifier</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #999; padding: 30px;">
+                        <td colspan="4" style="text-align: center; color: #999; padding: 40px;">
                             Aucun acte n'est encore enregistré dans le système.
                         </td>
                     </tr>

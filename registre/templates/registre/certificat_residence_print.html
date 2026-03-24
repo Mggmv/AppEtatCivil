@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificat de Résidence - {{ certificat.nom }}</title>
+    <style>
+        /* STYLE POUR L'ÉCRAN (Fond gris, effet feuille de papier) */
+        body { background: #e9ecef; font-family: "Arial", sans-serif; color: #000; margin: 0; padding: 20px; font-size: 13px; line-height: 1.6; }
+        .page { background: #fff; width: 210mm; min-height: 148mm; margin: 0 auto; padding: 10mm; box-sizing: border-box; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.2); overflow: hidden; }
+        
+        /* STYLE DU FILIGRANE (WATERMARK) */
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50%; opacity: 0.1; pointer-events: none; z-index: 0; }
+        .content-wrapper { position: relative; z-index: 1; }
+        
+        /* EN-TÊTE EN 3 COLONNES */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; font-size: 11px; }
+        .header-gauche, .header-droite { width: 35%; text-align: center; }
+        .header-centre { width: 20%; text-align: center; }
+        .logo-ci-header { width: 75px; height: auto; }
+        
+        .titre-doc { text-align: center; font-weight: bold; font-size: 15px; margin: 15px 0 20px 0; text-decoration: underline; }
+        .corps-texte { text-align: justify; }
+        .intro-sp { margin-bottom: 5px; }
+        .signature { margin-top: 25px; text-align: right; }
+        
+        /* --- REGLAGES SPECIFIQUES POUR L'IMPRIMANTE --- */
+        @page { size: A5 landscape; margin: 0; }
+        @media print { 
+            body { background: #fff; padding: 0; }
+            .page { box-shadow: none; width: 100%; min-height: auto; padding: 10mm; }
+            .btn-print { display: none !important; } 
+        }
+    </style>
+</head>
+<body>
+    
+    <div style="text-align: center; margin-bottom: 15px;" class="btn-print">
+        <button onclick="window.print()" style="background: #28a745; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            🖨️ Lancer l'impression (A5 Paysage)
+        </button>
+    </div>
+
+    <div class="page">
+        <img src="{% static 'registre/logo.png' %}" class="watermark" alt="Emblème CI Filigrane">
+
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="header-gauche">
+                    <div>REGION {% if structure.region %}{{ structure.region|upper }}{% else %}................{% endif %}</div>
+                    <div>DEPARTEMENT DE {% if structure.prefecture %}{{ structure.prefecture|upper }}{% else %}................{% endif %}</div>
+                    <div>SOUS-PREFECTURE DE {% if structure.sous_prefecture %}{{ structure.sous_prefecture|upper }}{% else %}................{% endif %}</div>
+                    <div>-----------------</div>
+                </div>
+                <div class="header-centre">
+                    <img src="{% static 'registre/logo.png' %}" class="logo-ci-header" alt="Armoiries CI Header">
+                </div>
+                <div class="header-droite">
+                    <div>REPUBLIQUE DE COTE D'IVOIRE</div>
+                    <div style="font-style: italic;">Union-Discipline-Travail</div>
+                    <div>-----------------</div>
+                </div>
+            </div>
+
+            <div class="titre-doc">
+                CERTIFICAT DE RESIDENCE N° {{ certificat.numero_certificat }}</div>
+
+            <div class="corps-texte">
+                <strong class="intro-sp">Le sous-préfet de {% if structure.sous_prefecture %}{{ structure.sous_prefecture|upper }}{% else %}................{% endif %}, soussigné, certifie que :</strong><br>
+                <strong>Mr (Mme) {{ certificat.nom|upper }} {{ certificat.prenoms|upper }}</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; né (e) le <strong>{{ certificat.date_naissance|date:"d/m/Y" }}</strong><br>
+                A <strong>{{ certificat.lieu_naissance|upper }}</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nationalité : <strong>{{ certificat.nationalite|upper }}</strong><br>
+                CNI (CC) : <strong>{{ certificat.piece_identite }}</strong> &nbsp;&nbsp;&nbsp; Profession : <strong>{% if certificat.profession %}{{ certificat.profession }}{% else %}NEANT{% endif %}</strong> &nbsp;&nbsp;&nbsp; Adresse : <strong>{{ certificat.adresse_locale }}</strong><br>
+                Fils (Fille) de <strong>{% if certificat.nom_pere %}{{ certificat.nom_pere|upper }}{% else %}.............................{% endif %}</strong> &nbsp;&nbsp;&nbsp;&nbsp; et de <strong>{% if certificat.nom_mere %}{{ certificat.nom_mere|upper }}{% else %}.............................{% endif %}</strong><br><br>
+                A déclaré être en résidence régulière à <strong>{% if structure.sous_prefecture %}{{ structure.sous_prefecture|upper }}{% else %}................{% endif %}</strong>, Sous-préfecture dudit Depuis <strong>{{ certificat.resident_depuis }}</strong>.<br>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    En foi de quoi, le présent certificat lui a été délivré pour servir et valoir ce que de droit.<br>
+                    Validité six (06) mois
+                </div>
+            </div>
+
+            <div class="signature">
+                Délivré le <strong>
+                {% if certificat.date_etablissement.day == 1 %}
+                    premier
+                {% else %}
+                    {{ certificat.date_etablissement|date:"d" }}
+                {% endif %}
+                {{ certificat.date_etablissement|date:"F Y"|upper }}
+                </strong> à <strong>{% if structure.sous_prefecture %}{{ structure.sous_prefecture|upper }}{% else %}................{% endif %}</strong>.<br>
+                <strong>L'officier de l'état civil</strong>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

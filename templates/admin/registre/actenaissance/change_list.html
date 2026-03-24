@@ -1,0 +1,47 @@
+{% extends "admin/change_list.html" %}
+
+{% block search %}
+    <!-- On garde la barre de recherche standard de Django au cas où -->
+    {{ block.super }}
+
+    <!-- NOS ZONES DE RECHERCHE PERSONNALISÉES -->
+    <div style="background: #f4f6f8; padding: 15px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px;">
+        
+        <!-- ZONE 1 : RECHERCHE PAR NUMÉRO ET DATE (RÉFÉRENCE COMPLÈTE) -->
+        <form method="GET" action="" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc;">
+            <h3 style="margin-top: 0; color: #004494;">1. Recherche par Référence de l'Acte</h3>
+            <div style="display: flex; gap: 15px; align-items: flex-end;">
+                <div style="flex-grow: 1; max-width: 400px;">
+                    <label style="display: block; font-weight: bold;">Référence complète :</label>
+                    <input type="text" name="q_reference" placeholder="Ex: 23 du 12/04/2005" value="{{ request.GET.q_reference }}" style="padding: 5px; width: 100%;">
+                </div>
+                <button type="submit" class="button" style="background: #004494; color: white;">🔍 Chercher l'acte</button>
+            </div>
+        </form>
+
+        <!-- ZONE 2 : RECHERCHE PAR IDENTITÉ -->
+        <form method="GET" action="">
+            <h3 style="margin-top: 0; color: #004494;">2. Recherche par Identité du Citoyen</h3>
+            <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                <div>
+                    <label style="display: block; font-weight: bold;">Nom :</label>
+                    <input type="text" name="q_nom" value="{{ request.GET.q_nom }}" style="padding: 5px;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold;">Prénoms :</label>
+                    <input type="text" name="q_prenoms" value="{{ request.GET.q_prenoms }}" style="padding: 5px;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold;">Date de naissance :</label>
+                    <input type="date" name="q_date" value="{{ request.GET.q_date }}" style="padding: 5px;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold;">Nom de la mère :</label>
+                    <input type="text" name="q_mere" value="{{ request.GET.q_mere }}" style="padding: 5px;">
+                </div>
+                <button type="submit" class="button" style="background: #004494; color: white;">🔍 Chercher la personne</button>
+                <a href="?" class="button" style="background: #dc3545; color: white; text-decoration: none;">❌ Réinitialiser</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
