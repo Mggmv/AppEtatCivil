@@ -225,5 +225,5 @@ class CustomAdminSite(admin.AdminSite):
 # custom_admin_site.register(Structure) ...
 
 custom_admin_site = CustomAdminSite(name='custom_admin')
-custom_admin_site.register(Structure)
+custom_admin_site.register(Structure) 
 custom_admin_site.register(ActeNaissance)
