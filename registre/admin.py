@@ -199,7 +199,7 @@ class CustomAdminSite(admin.AdminSite):
 # ==============================================================================
 # 3. ACTIVATION DE NOTRE INTERFACE PERSONNALISÉE
 # ==============================================================================
-custom_admin_site = CustomAdminSite(name='custom_admin')
+custom_admin_site = CustomAdminSite(name='admin')
 
 # On enregistre les modèles pour qu'ils apparaissent dans l'interface
 custom_admin_site.register(Structure)
