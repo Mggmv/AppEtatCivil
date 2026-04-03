@@ -34,6 +34,18 @@
 
 </div>
 
+<div style="margin-bottom: 30px; display: flex; gap: 15px; justify-content: flex-end; flex-wrap: wrap;">
+    
+    <a href="{% url 'admin:print_registre' %}" target="_blank" style="background: #17a2b8; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        🖨️ IMPRIMER LE REGISTRE ANNUEL
+    </a>
+
+    <a href="{% url 'admin:backup_db' %}" style="background: #dc3545; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        ⚠️ SAUVEGARDE D'URGENCE
+    </a>
+
+</div>
+
 {{ block.super }}
 
 {% endblock %}
