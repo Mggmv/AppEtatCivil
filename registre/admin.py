@@ -24,8 +24,8 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
     
     # --- BOUTON IMPRIMER L'ACTE ---
     def bouton_imprimer(self, obj):
-        # ⚠️ REMPLACEZ LE LIEN ICI PAR VOTRE VRAI LIEN D'IMPRESSION D'ACTE (si besoin)
-        url = f"/imprimer_acte/{obj.id}/" 
+        # L'adresse a été corrigée grâce à votre capture d'écran !
+        url = f"/extrait/{obj.id}/" 
         return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
     bouton_imprimer.short_description = "Action"
 
@@ -126,8 +126,8 @@ class CertificatResidenceAdmin(admin.ModelAdmin):
 
     # --- BOUTON IMPRIMER LE CERTIFICAT ---
     def bouton_imprimer(self, obj):
-        # ⚠️ REMPLACEZ LE LIEN ICI PAR VOTRE VRAI LIEN D'IMPRESSION DE CERTIFICAT (si besoin)
-        url = f"/imprimer_certificat/{obj.id}/" 
+        # L'adresse a été corrigée grâce à votre capture d'écran !
+        url = f"/certificat/{obj.id}/imprimer/" 
         return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
     bouton_imprimer.short_description = "Action"
 
