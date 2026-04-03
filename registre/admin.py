@@ -63,6 +63,9 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
         ])
 
         for acte in queryset:
+           # Fabrication du Numéro Complet (ex: 01 du 12/01/2014)
             if acte.date_declaration:
                 date_decl_str = acte.date_declaration.strftime('%d/%m/%Y')
-                numero_complet = f"{
+                numero_complet = f"{acte.numero_registre} du {date_decl_str}"
+            else:
+                numero_complet = str(acte.numero_registre)
