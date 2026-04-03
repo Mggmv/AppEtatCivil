@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .page-garde { text-align: center; margin-top: 200px; page-break-after: always; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        .header { text-align: center; text-transform: uppercase; }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="page-garde">
+        <div class="header">
+            <h2>République de Côte d'Ivoire</h2>
+            <h3>{{ structure.region }}</h3>
+            <h4>{{ structure.nom_sous_prefecture }}</h4>
+        </div>
+        <h1 style="margin-top: 100px;">REGISTRE DES ACTES DE NAISSANCE</h1>
+        <h2 style="font-size: 40px;">ANNÉE {{ annee }}</h2>
+        <p style="margin-top: 50px;">Nombre d'actes contenus dans le présent registre : <strong>{{ total }}</strong></p>
+    </div>
+
+    <h2 class="header">Récapitulatif des actes de l'année {{ annee }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>N° Acte</th>
+                <th>Date de déclaration</th>
+                <th>Nom et Prénoms</th>
+                <th>Date de Naissance</th>
+                <th>Père / Mère</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for acte in actes %}
+            <tr>
+                <td>{{ acte.numero_registre }}</td>
+                <td>{{ acte.date_declaration|date:"d/m/Y" }}</td>
+                <td><strong>{{ acte.nom_enfant }}</strong> {{ acte.prenoms_enfant }}</td>
+                <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
+                <td>P: {{ acte.nom_pere }}<br>M: {{ acte.nom_mere }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p style="margin-top: 30px; text-align: right;">
+        Arrêté le présent registre à la somme de {{ total }} actes.<br>
+        Fait à {{ structure.ville_sous_prefecture }}, le {{ date_edition|date:"d F" }} deux <strong>mil</strong> vingt-six.
+    </p>
+</body>
+</html>
