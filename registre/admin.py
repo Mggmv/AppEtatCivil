@@ -6,9 +6,10 @@ from django.db.models import Q
 from django.http import HttpResponse, FileResponse
 from django.utils import timezone
 from django.conf import settings
-
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
 # Importation de vos modèles (assurez-vous que les noms correspondent bien à votre fichier models.py)
-from .models import Structure, ActeNaissance 
+from .models import Structure, ActeNaissance, CertificatResidence
 
 # ==============================================================================
 # 1. ADMINISTRATION DES ACTES DE NAISSANCE
@@ -201,6 +202,12 @@ class CustomAdminSite(admin.AdminSite):
 # ==============================================================================
 custom_admin_site = CustomAdminSite(name='admin')
 
-# On enregistre les modèles pour qu'ils apparaissent dans l'interface
 custom_admin_site.register(Structure)
 custom_admin_site.register(ActeNaissance, ActeNaissanceAdmin)
+
+# --- RAMENER LES UTILISATEURS ET LES GROUPES ---
+custom_admin_site.register(User, UserAdmin)
+custom_admin_site.register(Group, GroupAdmin)
+
+# --- RAMENER LES CERTIFICATS DE RÉSIDENCE ---
+custom_admin_site.register(CertificatResidence)
