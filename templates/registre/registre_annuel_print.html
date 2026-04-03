@@ -26,8 +26,7 @@
     <table>
         <thead>
             <tr>
-                <th>N° Acte</th>
-                <th>Date de déclaration</th>
+                <th>N° Acte Complet</th>
                 <th>Nom et Prénoms</th>
                 <th>Date de Naissance</th>
                 <th>Père / Mère</th>
@@ -36,8 +35,7 @@
         <tbody>
             {% for acte in actes %}
             <tr>
-                <td>{{ acte.numero_registre }}</td>
-                <td>{{ acte.date_declaration|date:"d/m/Y" }}</td>
+                <td>{{ acte.numero_registre }}{% if acte.date_declaration %} du {{ acte.date_declaration|date:"d/m/Y" }}{% endif %}</td>
                 <td><strong>{{ acte.nom_enfant }}</strong> {{ acte.prenoms_enfant }}</td>
                 <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
                 <td>P: {{ acte.nom_pere }}<br>M: {{ acte.nom_mere }}</td>
