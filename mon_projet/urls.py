@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from registre import views
+from registre.admin import custom_admin_site
+
 
 urlpatterns = [
     # Page d'accueil (sans /admin/)
@@ -10,7 +12,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     
     # Administration
-    path('admin/', admin.site.urls),
+     path('admin/', custom_admin_site.urls),
     
     # Vos pages de travail
     path('dashboard/', views.dashboard, name='dashboard'),
