@@ -6,19 +6,30 @@ from django.db.models import Q
 from django.http import HttpResponse, FileResponse
 from django.utils import timezone
 from django.conf import settings
+from django.utils.html import format_html
+
+# --- IMPORTATION POUR LES UTILISATEURS ET MOTS DE PASSE ---
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
-# Importation de vos modèles (assurez-vous que les noms correspondent bien à votre fichier models.py)
-from .models import Structure, ActeNaissance, CertificatResidence
+
+# --- IMPORTATION DE VOS MODÈLES ---
+from .models import Structure, ActeNaissance, CertificatResidence 
 
 # ==============================================================================
 # 1. ADMINISTRATION DES ACTES DE NAISSANCE
 # ==============================================================================
 class ActeNaissanceAdmin(admin.ModelAdmin):
-    # Les colonnes affichées dans le tableau par défaut
-    list_display = ('numero_registre', 'nom_enfant', 'prenoms_enfant', 'date_naissance', 'sexe', 'date_declaration')
+    # Les colonnes affichées dans le tableau (avec le bouton imprimer à la fin)
+    list_display = ('numero_registre', 'nom_enfant', 'prenoms_enfant', 'date_naissance', 'sexe', 'date_declaration', 'bouton_imprimer')
     
-    # --- INTERCEPTEUR POUR ÉVITER LE CRASH DJANGO (?e=1) ---
+    # --- BOUTON IMPRIMER L'ACTE ---
+    def bouton_imprimer(self, obj):
+        # ⚠️ REMPLACEZ LE LIEN ICI PAR VOTRE VRAI LIEN D'IMPRESSION D'ACTE (si besoin)
+        url = f"/imprimer_acte/{obj.id}/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
+    bouton_imprimer.short_description = "Action"
+
+    # --- LE MOTEUR DE RECHERCHE ---
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         custom_params = ['q_reference', 'q_nom', 'q_prenoms', 'q_date', 'q_mere']
@@ -37,7 +48,6 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
         request.GET = mutable_get
         return super().changelist_view(request, extra_context=extra_context)
 
-    # --- LE MOTEUR DE RECHERCHE CLASSIQUE ET SÉCURISÉ ---
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         
@@ -51,7 +61,6 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
         if not any([q_reference, q_nom, q_prenoms, q_date, q_mere]):
             return qs.order_by('-id')
 
-        # Filtrage strict de la recherche
         if q_reference:
             q_reference = q_reference.strip().lower()
             if " du " in q_reference:
@@ -78,30 +87,21 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
 
         return qs.order_by('-id')
 
-    # --- NOTRE OUTIL D'EXPORTATION EXCEL SUR-MESURE ---
+    # --- L'EXPORT EXCEL ---
     @admin.action(description="Exporter la sélection vers Excel (CSV)")
     def exporter_vers_excel(self, request, queryset):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="Registre_Naissances.csv"'
         
-        # Pour forcer Excel à bien lire les accents français
         response.write('\ufeff'.encode('utf8')) 
         writer = csv.writer(response, delimiter=';')
 
         writer.writerow([
-            'N° ACTE COMPLET', 
-            'NOM DE L\'ENFANT', 
-            'PRÉNOMS', 
-            'DATE DE NAISSANCE', 
-            'SEXE',
-            'NOM DU PÈRE',
-            'NATIONALITÉ PÈRE',
-            'NOM DE LA MÈRE',
-            'NATIONALITÉ MÈRE'
+            'N° ACTE COMPLET', 'NOM DE L\'ENFANT', 'PRÉNOMS', 'DATE DE NAISSANCE', 
+            'SEXE', 'NOM DU PÈRE', 'NATIONALITÉ PÈRE', 'NOM DE LA MÈRE', 'NATIONALITÉ MÈRE'
         ])
 
         for acte in queryset:
-            # Fabrication du Numéro Complet (ex: 01 du 12/01/2014)
             if acte.date_declaration:
                 date_decl_str = acte.date_declaration.strftime('%d/%m/%Y')
                 numero_complet = f"{acte.numero_registre} du {date_decl_str}"
@@ -109,30 +109,36 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
                 numero_complet = str(acte.numero_registre)
 
             writer.writerow([
-                numero_complet,
-                acte.nom_enfant,
-                acte.prenoms_enfant,
+                numero_complet, acte.nom_enfant, acte.prenoms_enfant,
                 acte.date_naissance.strftime('%d/%m/%Y') if acte.date_naissance else '',
-                acte.sexe,
-                acte.nom_pere,
-                acte.nationalite_pere,
-                acte.nom_mere,
-                acte.nationalite_mere
+                acte.sexe, acte.nom_pere, acte.nationalite_pere,
+                acte.nom_mere, acte.nationalite_mere
             ])
 
         return response
-
     actions = ['exporter_vers_excel']
 
 # ==============================================================================
-# 2. CONFIGURATION DU TABLEAU DE BORD GÉNÉRAL (CustomAdminSite)
+# 2. ADMINISTRATION DES CERTIFICATS DE RÉSIDENCE
+# ==============================================================================
+class CertificatResidenceAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'bouton_imprimer') 
+
+    # --- BOUTON IMPRIMER LE CERTIFICAT ---
+    def bouton_imprimer(self, obj):
+        # ⚠️ REMPLACEZ LE LIEN ICI PAR VOTRE VRAI LIEN D'IMPRESSION DE CERTIFICAT (si besoin)
+        url = f"/imprimer_certificat/{obj.id}/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
+    bouton_imprimer.short_description = "Action"
+
+# ==============================================================================
+# 3. CONFIGURATION DU TABLEAU DE BORD GÉNÉRAL (CustomAdminSite)
 # ==============================================================================
 class CustomAdminSite(admin.AdminSite):
     site_header = "Administration de l'État Civil"
     site_title = "État Civil"
     index_title = "Tableau de Bord"
 
-    # --- AFFICHAGE DES STATISTIQUES SUR LA PAGE D'ACCUEIL ---
     def index(self, request, extra_context=None):
         structure = Structure.objects.first()
         extra_context = extra_context or {}
@@ -142,25 +148,21 @@ class CustomAdminSite(admin.AdminSite):
         annee_en_cours = maintenant.year
         mois_en_cours = maintenant.month
 
-        # Calculs via la base de données
         total_naissances = ActeNaissance.objects.count()
         naissances_garcons = ActeNaissance.objects.filter(sexe='M').count()
         naissances_filles = ActeNaissance.objects.filter(sexe='F').count()
         naissances_annee = ActeNaissance.objects.filter(date_declaration__year=annee_en_cours).count()
-        naissances_mois = ActeNaissance.objects.filter(date_declaration__year=annee_en_cours, date_declaration__month=mois_en_cours).count()
 
         extra_context.update({
             'total_naissances': total_naissances,
             'naissances_garcons': naissances_garcons,
             'naissances_filles': naissances_filles,
             'naissances_annee': naissances_annee,
-            'naissances_mois': naissances_mois,
             'annee_en_cours': annee_en_cours,
         })
 
         return super().index(request, extra_context=extra_context)
 
-    # --- FONCTION DE SAUVEGARDE DE LA BASE DE DONNÉES ---
     def backup_database(self, request):
         db_path = os.path.join(settings.BASE_DIR, 'db.sqlite3')
         if os.path.exists(db_path):
@@ -168,7 +170,6 @@ class CustomAdminSite(admin.AdminSite):
             return FileResponse(open(db_path, 'rb'), as_attachment=True, filename=f'sauvegarde_etat_civil_{date_str}.sqlite3')
         return HttpResponse("Fichier de base de données introuvable.", status=404)
 
-    # --- FONCTION D'IMPRESSION DU REGISTRE ANNUEL ---
     def imprimer_registre_annuel(self, request):
         annee = timezone.now().year
         actes = ActeNaissance.objects.filter(date_declaration__year=annee).order_by('numero_registre')
@@ -185,7 +186,6 @@ class CustomAdminSite(admin.AdminSite):
         html_content = render_to_string('registre/registre_annuel_print.html', context)
         return HttpResponse(html_content)
 
-    # --- ENREGISTREMENT DES NOUVELLES ADRESSES WEB ---
     def get_urls(self):
         from django.urls import path
         urls = super().get_urls()
@@ -198,16 +198,15 @@ class CustomAdminSite(admin.AdminSite):
         return custom_urls + urls
 
 # ==============================================================================
-# 3. ACTIVATION DE NOTRE INTERFACE PERSONNALISÉE
+# 4. ENREGISTREMENT DANS NOTRE INTERFACE PERSONNALISÉE
 # ==============================================================================
 custom_admin_site = CustomAdminSite(name='admin')
 
-custom_admin_site.register(Structure)
-custom_admin_site.register(ActeNaissance, ActeNaissanceAdmin)
-
-# --- RAMENER LES UTILISATEURS ET LES GROUPES ---
+# 1. On réenregistre les Utilisateurs et les Groupes (Pour ne pas perdre vos accès)
 custom_admin_site.register(User, UserAdmin)
 custom_admin_site.register(Group, GroupAdmin)
 
-# --- RAMENER LES CERTIFICATS DE RÉSIDENCE ---
-custom_admin_site.register(CertificatResidence)
+# 2. On enregistre les modèles de l'État Civil
+custom_admin_site.register(Structure)
+custom_admin_site.register(ActeNaissance, ActeNaissanceAdmin)
+custom_admin_site.register(CertificatResidence, CertificatResidenceAdmin)
