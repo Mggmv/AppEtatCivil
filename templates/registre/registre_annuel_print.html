@@ -1,52 +1,51 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; }
-        .page-garde { text-align: center; margin-top: 200px; page-break-after: always; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
-        .header { text-align: center; text-transform: uppercase; }
-    </style>
-</head>
-<body onload="window.print()">
-    <div class="page-garde">
-        <div class="header">
-            <h2>République de Côte d'Ivoire</h2>
-            <h3>{{ structure.region }}</h3>
-            <h4>{{ structure.nom_sous_prefecture }}</h4>
-        </div>
-        <h1 style="margin-top: 100px;">REGISTRE DES ACTES DE NAISSANCE</h1>
-        <h2 style="font-size: 40px;">ANNÉE {{ annee }}</h2>
-        <p style="margin-top: 50px;">Nombre d'actes contenus dans le présent registre : <strong>{{ total }}</strong></p>
-    </div>
+{% extends "admin/index.html" %}
+{% load static %}
 
-    <h2 class="header">Récapitulatif des actes de l'année {{ annee }}</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>N° Acte Complet</th>
-                <th>Nom et Prénoms</th>
-                <th>Date de Naissance</th>
-                <th>Père / Mère</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for acte in actes %}
-            <tr>
-                <td>{{ acte.numero_registre }}{% if acte.date_declaration %} du {{ acte.date_declaration|date:"d/m/Y" }}{% endif %}</td>
-                <td><strong>{{ acte.nom_enfant }}</strong> {{ acte.prenoms_enfant }}</td>
-                <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
-                <td>P: {{ acte.nom_pere }}<br>M: {{ acte.nom_mere }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block content %}
+<div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
     
-    <p style="margin-top: 30px; text-align: right;">
-        Arrêté le présent registre à la somme de {{ total }} actes.<br>
-        Fait à {{ structure.ville_sous_prefecture }}, le {{ date_edition|date:"d F" }} deux <strong>mil</strong> vingt-six.
-    </p>
-</body>
-</html>
+    <a href="/admin/registre/actenaissance/" style="text-decoration: none; flex: 1 1 120px;">
+        <div style="background: #417690; color: white; padding: 6px; border-radius: 5px; text-align: center; box-shadow: 0 2px 3px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 2px 0; color: white; font-size: 11px; text-transform: uppercase;">Total Général</h3>
+            <p style="font-size: 20px; font-weight: bold; margin: 0;">{{ total_naissances }}</p>
+        </div>
+    </a>
+
+    <a href="/admin/registre/actenaissance/?sexe__exact=M" style="text-decoration: none; flex: 1 1 120px;">
+        <div style="background: #28a745; color: white; padding: 6px; border-radius: 5px; text-align: center; box-shadow: 0 2px 3px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 2px 0; color: white; font-size: 11px; text-transform: uppercase;">Garçons</h3>
+            <p style="font-size: 20px; font-weight: bold; margin: 0;">{{ naissances_garcons }}</p>
+        </div>
+    </a>
+
+    <a href="/admin/registre/actenaissance/?sexe__exact=F" style="text-decoration: none; flex: 1 1 120px;">
+        <div style="background: #e83e8c; color: white; padding: 6px; border-radius: 5px; text-align: center; box-shadow: 0 2px 3px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 2px 0; color: white; font-size: 11px; text-transform: uppercase;">Filles</h3>
+            <p style="font-size: 20px; font-weight: bold; margin: 0;">{{ naissances_filles }}</p>
+        </div>
+    </a> 
+
+    <a href="/admin/registre/actenaissance/?date_declaration__year={{ annee_en_cours }}" style="text-decoration: none; flex: 1 1 120px;">
+        <div style="background: #ffc107; color: #333; padding: 6px; border-radius: 5px; text-align: center; box-shadow: 0 2px 3px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 2px 0; color: #333; font-size: 11px; text-transform: uppercase;">Cette Année</h3>
+            <p style="font-size: 20px; font-weight: bold; margin: 0;">{{ naissances_annee }}</p>
+        </div>
+    </a>
+
+</div>
+
+<div style="margin-bottom: 25px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+    
+    <a href="{% url 'admin:print_registre' %}" target="_blank" style="background: #17a2b8; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 11px; box-shadow: 0 2px 3px rgba(0,0,0,0.2);">
+        🖨️ IMPRIMER LE REGISTRE ANNUEL
+    </a>
+
+    <a href="{% url 'admin:backup_db' %}" style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 11px; box-shadow: 0 2px 3px rgba(0,0,0,0.2);">
+        ⚠️ SAUVEGARDE D'URGENCE
+    </a>
+
+</div>
+
+{{ block.super }}
+
+{% endblock %}
