@@ -11,17 +11,16 @@
             display: flex; justify-content: center; background-color: #f0f0f0; 
         }
         .cadre-exterieur {
-    border: 1.5px solid white; 
-    padding: 5mm; 
-    width: 190mm; 
-    /* Réduction de la hauteur minimale pour diminuer la marge inférieure */
-    min-height: 287mm; 
-    margin: 5mm auto; 
-    box-sizing: border-box; 
-    position: relative; 
-    background-color: white; 
-    overflow: hidden;
-}
+            border: 1.5px solid white; 
+            padding: 5mm; 
+            width: 190mm; 
+            min-height: 287mm; 
+            margin: 5mm auto; 
+            box-sizing: border-box; 
+            position: relative; 
+            background-color: white; 
+            overflow: hidden;
+        }
         .armoiries-filigrane {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 14cm; opacity: 0.08; z-index: 0; pointer-events: none;
@@ -29,89 +28,58 @@
         .contenu-officiel { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
         .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
         
-        /* BLOC GAUCHE */
         .bloc-gauche { text-align: center; width: 300px; }
         .logo-embleme { width: 140px; height: auto; margin: 5px 0 0 0; }
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.1; }
         .transcription-zone-interne {
-        margin-top: 10px;
-        font-size: 11px;
-        font-style: italic;
-        text-align: center;
-        width: 100%;
-        max-width: 200px; /* Limite la largeur au bloc gauche */
-        line-height: 1.2;
-        color: black;
-        word-wrap: break-word; /* Force le retour à la ligne des mots longs */
-        overflow-wrap: break-word;
-        display: inline-block;
-    }
+            margin-top: 10px;
+            font-size: 11px;
+            font-style: italic;
+            text-align: center;
+            width: 100%;
+            max-width: 200px;
+            line-height: 1.2;
+            color: black;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            display: inline-block;
         }
 
-        /* BLOC DROITE */
-      
-.bloc-droite { 
-    text-align: center; 
-    width: 370px; /* Réglage optimal pour laisser de l'espace à gauche */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centre les éléments enfants horizontalement */
-}
+        .bloc-droite { 
+            text-align: center; 
+            width: 365px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
 
-/* Centrage rigoureux du titre */
-.titre-extrait { 
-    font-size: 17px; 
-    font-weight: bold; 
-    text-decoration: underline; 
-    text-transform: uppercase; 
-    margin: 0; 
-    padding: 0;
-    width: 100%; /* Occupe toute la colonne pour que text-align: center fonctionne */
-    text-align: center;
-}
+        .titre-extrait { 
+            font-size: 40px; 
+            font-weight: bold; 
+            text-decoration: underline; 
+            text-transform: uppercase; 
+            margin: 0; 
+            padding: 0;
+            width: 100%; 
+            text-align: center;
+        }
 
-/* Bloc d'informations sous le titre */
-.bloc-naissance-compact { 
-    margin-top: 25px; 
-    text-align: left; 
-    line-height: 1.4; 
-    font-size: 18px; 
-    width: 90%; /* Évite que le texte ne touche les bords du bloc */
-}.bloc-droite { 
-    text-align: center; 
-    width: 365px; /* Réglage optimal pour laisser de l'espace à gauche */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centre les éléments enfants horizontalement */
-}
-
-/* Centrage rigoureux du titre */
-.titre-extrait { 
-    font-size: 28px; 
-    font-weight: bold; 
-    text-decoration: underline; 
-    text-transform: uppercase; 
-    margin: 0; 
-    padding: 0;
-    width: 100%; /* Occupe toute la colonne pour que text-align: center fonctionne */
-    text-align: center;
-}
-
-/* Bloc d'informations sous le titre */
-.bloc-naissance-compact { 
-    margin-top: 17px; 
-    text-align: left; 
-    line-height: 1.4; 
-    font-size: 18px; 
-    width: 90%; /* Évite que le texte ne touche les bords du bloc */
-}
-        /* MENTIONS & SIGNATURE */
+        .bloc-naissance-compact { 
+            margin-top: 75px; 
+            text-align: left; 
+            line-height: 1.4; 
+            font-size: 18px; 
+            width: 90%; 
+        }
+        
         .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin: 1cm 0 5px 0; }
         .titre-mention-centre { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 15px; display: block; }
         .ligne-mention-pointillee { display: flex; align-items: baseline; width: 100%; margin-bottom: 8px; }
         .pointilles { flex-grow: 1; border-bottom: 1px dotted black; height: 1em; margin: 0 10px; }
         .valeur-officielle { font-weight: bold; text-transform: uppercase; font-size: 14px; }
-        .signature-zone { text-align: right; margin-top: 25px; padding-right: 20px; line-height: 1.3; }
+        
+        /* LA MARGE A ÉTÉ RÉDUITE ICI POUR REMONTER LA SIGNATURE */
+        .signature-zone { text-align: right; margin-top: 5px; padding-right: 20px; line-height: 1.3; }
         
         .bas-de-page-fixe { 
             position: absolute; bottom: 30px; width: 100%; 
@@ -130,7 +98,10 @@
         <div class="section-superieure">
             <div class="bloc-gauche">
                 <p class="txt-admin">REPUBLIQUE DE COTE D'IVOIRE</p>
-                <p class="txt-admin">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
+                <p class="txt-admin" style="margin-top: 2px;">RÉGION DU {{ acte.structure.region|upper }}</p>
+                <p class="txt-admin" style="margin-top: 2px;">DÉPARTEMENT DE {{ acte.structure.prefecture|upper }}</p>
+                <p class="txt-admin" style="margin-top: 2px;">SOUS-PREFECTURE DE {{ acte.structure.sous_prefecture|upper }}</p>
+
                 <img src="{% static 'registre/logo.png' %}" class="logo-embleme">
                 <p style="margin: 0; font-weight: bold; font-size: 14px;">ETAT CIVIL</p>
                 <p class="txt-admin" style="margin-top: 2px;">CIRCONSCRIPTION D'ETAT CIVIL<br>DE {{ acte.structure.sous_prefecture|upper }}</p>
@@ -147,11 +118,11 @@
             </div>
 
             <div class="bloc-droite">
-            <h1 class="titre-extrait">EXTRAIT</h1>
-            <p style="font-weight: bold; width: 100%; text-align: center; margin-top: 5px;">
-            DU REGISTRE DES ACTES D'ÉTAT CIVIL<br>
-            POUR L'ANNÉE {{ acte.annee_registre }}
-            </p>
+                <h1 class="titre-extrait">EXTRAIT</h1>
+                <p style="font-weight: bold; width: 100%; text-align: center; margin-top: 5px;">
+                    DU REGISTRE DES ACTES D'ÉTAT CIVIL<br>
+                    POUR L'ANNÉE {{ acte.annee_registre }}
+                </p>
                 <div class="bloc-naissance-compact">
                     <p>{{ date_heure_complete }}</p>
                     <p> à <strong>{{ acte.lieu_naissance }}</strong></p>
@@ -174,10 +145,10 @@
 
          <p style="font-style: italic; margin-top: 22px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
          <div class="signature-zone">
-        <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
-        <p class="officier-titre">L'Officier de l'État Civil</p>
-        <p class="signature-mention">(Signature)</p>
-    </div>
+            <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
+            <p class="officier-titre">L'Officier de l'État Civil</p>
+            <p class="signature-mention">(Signature)</p>
+        </div>
 
         <div class="bas-de-page-fixe">
             <div class="container-sceau-qr">
@@ -188,6 +159,7 @@
             </div>
             <p style="font-size: 9px; margin-top: 5px;">Validation numérique officielle</p>
         </div>
+        
     </div>
 </div>
 

@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificat de Non Déclaration de Décès - {{ c.nom_defunt }}</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { 
+            font-family: "Times New Roman", Times, serif; font-size: 15px; margin: 0; padding: 0; color: black; 
+            background-color: #f0f0f0; display: flex; justify-content: center;
+        }
+        
+        .cadre-exterieur {
+            background-color: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* FILIGRANE ARMOIRIES EN ARRIÈRE-PLAN */
+        .armoiries-filigrane {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 14cm; opacity: 0.06; z-index: 0; pointer-events: none;
+        }
+
+        .contenu { position: relative; z-index: 1; }
+
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: flex-start; }
+        
+        /* 1. STRUCTURE AGRANDIE */
+        .bloc-gauche { text-align: center; width: 50%; font-weight: bold; text-transform: uppercase; font-size: 13px; line-height: 1.4; }
+        .separateur-court { border-top: 1.5px solid black; width: 40px; margin: 5px auto; }
+        
+        .bloc-droite { text-align: center; width: 45%; }
+        .devise { font-size: 12px; font-style: italic; margin-top: 5px; }
+
+        /* 2. NUMÉRO DE CERTIFICAT AGRANDI */
+        .n-certificat { 
+            margin-top: 40px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-align: left; 
+            padding-left: 10px;
+        }
+
+        /* 3. TITRE DESCENDU ET AGRANDI */
+        .titre-doc { 
+            text-align: center; 
+            font-size: 22px; 
+            font-weight: bold; 
+            margin-top: 80px; /* Espace augmenté */
+            margin-bottom: 60px; 
+            line-height: 1.2;
+            text-decoration: underline;
+        }
+
+        /* 4. CORPS DU TEXTE DESCENDU */
+        .corps-texte { 
+            text-align: justify; 
+            text-indent: 60px; 
+            margin-top: 20px;
+            margin-bottom: 40px; 
+            font-size: 17px; /* Texte un peu plus grand pour la lisibilité */
+            line-height: 1.6;
+        }
+
+        .info-bloc { margin-bottom: 12px; font-size: 16px; }
+        .info-bloc strong { min-width: 120px; display: inline-block; }
+        
+        .signature-container { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end; 
+            margin-top: 70px; /* Plus d'espace avant la signature */
+        }
+        
+        .signature-zone { text-align: right; padding-right: 20px; line-height: 1.4; font-size: 16px; }
+        .signature-mention { font-style: italic; font-size: 13px; margin-top: 5px; }
+
+        @media print { 
+            body { background: none; }
+            .cadre-exterieur { box-shadow: none; margin: 0; }
+            .btn-print { display: none !important; } 
+        }
+
+        .btn-print {
+            position: fixed; top: 20px; right: 20px; padding: 12px 20px; 
+            background: #28a745; color: white; border: none; 
+            cursor: pointer; border-radius: 5px; font-weight: bold; z-index: 100;
+        }
+    </style>
+</head>
+<body onload="window.print()">
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimer le Certificat</button>
+
+    <div class="cadre-exterieur">
+        <img src="{% static 'registre/armoirie ci.png' %}" class="armoiries-filigrane">
+        
+        <div class="contenu">
+            <div class="header">
+                <div class="bloc-gauche">
+                    RÉGION DU {{ s.region|upper }}
+                    <div class="separateur-court"></div>
+                    DÉPARTEMENT DE {{ s.prefecture|upper }}
+                    <div class="separateur-court"></div>
+                    SOUS-PRÉFECTURE DE {{ s.sous_prefecture|upper }}
+                    <div class="separateur-court"></div>
+                </div>
+                <div class="bloc-droite">
+                    <strong style="font-size: 15px;">RÉPUBLIQUE DE COTE D’IVOIRE</strong><br>
+                    <span class="devise">Union – Discipline – Travail</span><br>
+                    <div style="border-top: 1.5px solid black; width: 60px; margin: 10px auto;"></div>
+                </div>
+            </div>
+
+            <div class="n-certificat">
+                N° {{ c.numero_certificat }}
+            </div>
+
+            <h1 class="titre-doc">
+                CERTIFICAT DE NON DECLARATION<br>
+                DE DECES SUR LES REGISTRES DE L’ETAT CIVIL
+            </h1>
+
+            <div class="corps-texte">
+                Le Sous-Préfet de {{ s.sous_prefecture }}, Officier de l’état civil de {{ s.sous_prefecture }}, soussigné, atteste que le décès de 
+                <strong>Monsieur/Madame {{ c.nom_defunt }}</strong>, né(e) {{ c.date_lieu_naissance_defunt }}, 
+                fils de <strong>{{ c.nom_pere }}</strong> et de <strong>{{ c.nom_mere }}</strong>, 
+                qui serait décédé(e) le {{ c.date_deces }} à <strong>{{ c.lieu_deces }}</strong>, 
+                n’existe sur aucun registre de décès du centre de la Sous-Préfecture de {{ s.sous_prefecture }} pour l’année <strong>{{ c.annee_registre }}</strong>.
+            </div>
+
+            <div class="info-bloc"><strong>Déclarant :</strong> {{ c.nom_declarant }}, {{ c.infos_declarant }}.</div>
+            
+            <div class="info-bloc"><strong>1<sup>er</sup> témoin :</strong> {{ c.nom_temoin1 }}, {{ c.infos_temoin1 }}.<br>
+            {% if c.cni_temoin1 %}<strong>CNI N° :</strong> {{ c.cni_temoin1 }}.{% endif %}</div>
+
+            {% if c.nom_temoin2 %}
+            <div class="info-bloc"><strong>2<sup>ème</sup> témoin :</strong> {{ c.nom_temoin2 }}, {{ c.infos_temoin2 }}.<br>
+            {% if c.cni_temoin2 %}<strong>CNI N° :</strong> {{ c.cni_temoin2 }}.{% endif %}</div>
+            {% endif %}
+
+            <p style="margin-top: 30px; font-size: 16px;">En foi de quoi, le présent certificat est établi pour servir et valoir ce que de Droit.</p>
+
+            <div class="signature-container">
+                <div style="text-align: center; margin-left: 5%;">
+                    <img src="data:image/png;base64,{{ qr_base64 }}" style="width: 100px; height: 100px;" alt="QR Code">
+                    <p style="font-size: 9px; margin-top: 5px; color: #555; font-weight: bold;">Validation Numérique</p>
+                </div>
+
+                <div class="signature-zone">
+                    Fait à <strong>{{ s.sous_prefecture|upper }}</strong>, le {{ c.date_etablissement|date:"d F Y" }}<br><br>
+                    <strong>L’Officier de l’état civil</strong><br>
+                    <div class="signature-mention">(Signature)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

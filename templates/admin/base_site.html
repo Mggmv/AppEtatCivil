@@ -43,3 +43,12 @@
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
+
+{# 4. LA NOUVELLE SIGNATURE EN PIED DE PAGE (Affichage forcé) #}
+{% block footer %}
+    {{ block.super }}
+    <div style="display: block !important; text-align: center; padding: 20px; color: #666; font-size: 12px; margin-top: 30px; border-top: 1px solid #eaeaea; background-color: #f8f9fa; width: 100%;">
+        Système Intégré d'État Civil &copy; {% now "Y" %} <br>
+        Conçu et développé par <strong style="color: #417690;">Mgg Consulting</strong>
+    </div>
+{% endblock %}
