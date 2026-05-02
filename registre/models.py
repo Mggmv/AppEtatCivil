@@ -158,3 +158,115 @@ class CertificatNonDeces(models.Model):
 
     def __str__(self):
         return f"N°{self.numero_certificat} - Défunt: {self.nom_defunt}"
+
+# ==========================================
+# CERTIFICAT DE NON DIVORCE
+# ==========================================
+class CertificatNonDivorce(models.Model):
+    numero_certificat = models.CharField(max_length=50, verbose_name="Numéro du Certificat", blank=True, null=True)
+    date_etablissement = models.DateField(verbose_name="Date d'établissement")
+    nom_officier = models.CharField(max_length=150, verbose_name="Nom de l'Officier (Sous-préfet)")
+    
+    annee_registre_naissance = models.CharField(max_length=4, verbose_name="Année du Registre de Naissance")
+    numero_acte_naissance = models.CharField(max_length=50, verbose_name="N° de l'acte de naissance")
+    date_acte_naissance = models.DateField(verbose_name="Date de l'acte de naissance")
+
+    nom_prenoms = models.CharField(max_length=200, verbose_name="Nom et Prénoms")
+    date_naissance = models.DateField(verbose_name="Date de naissance")
+    lieu_naissance = models.CharField(max_length=100, verbose_name="Lieu de naissance")
+    nom_pere = models.CharField(max_length=150, verbose_name="Fils / Fille de (Père)")
+    nom_mere = models.CharField(max_length=150, verbose_name="Et de (Mère)")
+    nationalite = models.CharField(max_length=100, verbose_name="Nationalité", default="Ivoirienne")
+    domicile = models.CharField(max_length=150, verbose_name="Domicile")
+    profession = models.CharField(max_length=100, verbose_name="Profession")
+
+    class Meta:
+        verbose_name = "Certificat de Non Divorce"
+        verbose_name_plural = "Certificats de Non Divorce"
+
+    def __str__(self):
+        return f"Non Divorce - {self.nom_prenoms}"
+
+# ==========================================
+# CERTIFICAT DE NON REMARIAGE
+# ==========================================
+class CertificatNonRemariage(models.Model):
+    numero_certificat = models.CharField(max_length=50, verbose_name="Numéro du Certificat", blank=True, null=True)
+    date_etablissement = models.DateField(verbose_name="Date d'établissement")
+    nom_officier = models.CharField(max_length=150, verbose_name="Nom de l'Officier (Sous-préfet)")
+    
+    annee_registre_naissance = models.CharField(max_length=4, verbose_name="Année du Registre de Naissance")
+    numero_acte_naissance = models.CharField(max_length=50, verbose_name="N° de l'acte de naissance")
+    date_acte_naissance = models.DateField(verbose_name="Date de l'acte de naissance")
+
+    nom_prenoms = models.CharField(max_length=200, verbose_name="Nom et Prénoms")
+    date_naissance = models.DateField(verbose_name="Date de naissance")
+    lieu_naissance = models.CharField(max_length=100, verbose_name="Lieu de naissance")
+    nom_pere = models.CharField(max_length=150, verbose_name="Fils / Fille de (Père)")
+    nom_mere = models.CharField(max_length=150, verbose_name="Et de (Mère)")
+    nationalite = models.CharField(max_length=100, verbose_name="Nationalité", default="Ivoirienne")
+    domicile = models.CharField(max_length=150, verbose_name="Domicile")
+    profession = models.CharField(max_length=100, verbose_name="Profession")
+
+    class Meta:
+        verbose_name = "Certificat de Non Remariage"
+        verbose_name_plural = "Certificats de Non Remariage"
+
+    def __str__(self):
+        return f"Non Remariage - {self.nom_prenoms}"
+
+# ==========================================
+# CERTIFICAT DE NON SÉPARATION DE CORPS
+# ==========================================
+class CertificatNonSeparationCorps(models.Model):
+    numero_certificat = models.CharField(max_length=50, verbose_name="Numéro du Certificat", blank=True, null=True)
+    date_etablissement = models.DateField(verbose_name="Date d'établissement")
+    nom_officier = models.CharField(max_length=150, verbose_name="Nom de l'Officier (Sous-préfet)")
+    
+    annee_registre_naissance = models.CharField(max_length=4, verbose_name="Année du Registre")
+    numero_acte_naissance = models.CharField(max_length=50, verbose_name="N° de l'acte de naissance")
+    date_acte_naissance = models.CharField(max_length=100, verbose_name="Date de l'acte de naissance", help_text="Ex: 07/01/1985")
+
+    nom_prenoms = models.CharField(max_length=200, verbose_name="Nom et Prénoms")
+    date_naissance = models.CharField(max_length=100, verbose_name="Né(e) le / vers", help_text="Ex: 01/01/1985 ou Vers 1925")
+    lieu_naissance = models.CharField(max_length=100, verbose_name="Lieu de naissance")
+    nom_pere = models.CharField(max_length=150, verbose_name="Fils / Fille de (Père)")
+    nom_mere = models.CharField(max_length=150, verbose_name="Et de (Mère)")
+    nationalite = models.CharField(max_length=100, verbose_name="Nationalité", default="Ivoirienne")
+    domicile = models.CharField(max_length=150, verbose_name="Domicile")
+    profession = models.CharField(max_length=100, verbose_name="Profession")
+
+    class Meta:
+        verbose_name = "Certificat de Non Séparation de Corps"
+        verbose_name_plural = "Certificats de Non Séparation de Corps"
+
+    def __str__(self):
+        return f"Non Séparation - {self.nom_prenoms}"
+
+# ==========================================
+# CERTIFICAT DE VIE
+# ==========================================
+class CertificatVie(models.Model):
+    numero_certificat = models.CharField(max_length=50, verbose_name="Numéro du Certificat", blank=True, null=True)
+    date_etablissement = models.DateField(verbose_name="Date d'établissement")
+    nom_officier = models.CharField(max_length=150, verbose_name="Nom de l'Officier (Sous-préfet)")
+    
+    annee_registre_naissance = models.CharField(max_length=4, verbose_name="Année du Registre")
+    numero_acte_naissance = models.CharField(max_length=50, verbose_name="N° de l'acte de naissance")
+    date_acte_naissance = models.CharField(max_length=100, verbose_name="Date de l'acte de naissance")
+
+    nom_prenoms = models.CharField(max_length=200, verbose_name="Nom et Prénoms")
+    date_naissance = models.CharField(max_length=100, verbose_name="Né(e) le / vers", help_text="Ex: 31/12/1950 ou Vers 1925")
+    lieu_naissance = models.CharField(max_length=100, verbose_name="Lieu de naissance")
+    nom_pere = models.CharField(max_length=150, verbose_name="Fils / Fille de (Père)")
+    nom_mere = models.CharField(max_length=150, verbose_name="Et de (Mère)")
+    nationalite = models.CharField(max_length=100, verbose_name="Nationalité", default="Ivoirienne")
+    domicile = models.CharField(max_length=150, verbose_name="Domicile")
+    profession = models.CharField(max_length=100, verbose_name="Profession")
+
+    class Meta:
+        verbose_name = "Certificat de Vie"
+        verbose_name_plural = "Certificats de Vie"
+
+    def __str__(self):
+        return f"Certificat de Vie - {self.nom_prenoms}"

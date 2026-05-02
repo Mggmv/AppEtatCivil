@@ -17,7 +17,12 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 
 # --- IMPORTATION DE VOS MODÈLES ---
-from .models import Structure, ActeNaissance, CertificatResidence, CertificatCelibat, CertificatNonDeces 
+from .models import (
+    Structure, ActeNaissance, CertificatResidence, 
+    CertificatCelibat, CertificatNonDeces,
+    CertificatNonDivorce, CertificatNonRemariage,
+    CertificatNonSeparationCorps, CertificatVie
+)
 
 # ==============================================================================
 # 1. ADMINISTRATION DES ACTES DE NAISSANCE
@@ -30,7 +35,6 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
         return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
     bouton_imprimer.short_description = "Action"
 
-    # --- LE MOTEUR DE RECHERCHE ---
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         custom_params = ['q_reference', 'q_nom', 'q_prenoms', 'q_date', 'q_mere']
@@ -96,6 +100,34 @@ class CertificatCelibatAdmin(admin.ModelAdmin):
         url = f"/admin/certificat_celibat/{obj.id}/imprimer/" 
         return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
 
+class CertificatNonDivorceAdmin(admin.ModelAdmin):
+    list_display = ('numero_certificat', 'nom_prenoms', 'date_etablissement', 'bouton_imprimer')
+    search_fields = ('numero_certificat', 'nom_prenoms')
+    def bouton_imprimer(self, obj):
+        url = f"/admin/certificat_non_divorce/{obj.id}/imprimer/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
+
+class CertificatNonRemariageAdmin(admin.ModelAdmin):
+    list_display = ('numero_certificat', 'nom_prenoms', 'date_etablissement', 'bouton_imprimer')
+    search_fields = ('numero_certificat', 'nom_prenoms')
+    def bouton_imprimer(self, obj):
+        url = f"/admin/certificat_non_remariage/{obj.id}/imprimer/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
+
+class CertificatNonSeparationCorpsAdmin(admin.ModelAdmin):
+    list_display = ('numero_certificat', 'nom_prenoms', 'date_etablissement', 'bouton_imprimer')
+    search_fields = ('numero_certificat', 'nom_prenoms')
+    def bouton_imprimer(self, obj):
+        url = f"/admin/certificat_non_separation/{obj.id}/imprimer/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
+
+class CertificatVieAdmin(admin.ModelAdmin):
+    list_display = ('numero_certificat', 'nom_prenoms', 'date_etablissement', 'bouton_imprimer')
+    search_fields = ('numero_certificat', 'nom_prenoms')
+    def bouton_imprimer(self, obj):
+        url = f"/admin/certificat_vie/{obj.id}/imprimer/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
+
 class CertificatResidenceAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'bouton_imprimer') 
     def bouton_imprimer(self, obj):
@@ -131,6 +163,15 @@ class CustomAdminSite(admin.AdminSite):
         db_path = os.path.join(settings.BASE_DIR, 'db.sqlite3')
         return FileResponse(open(db_path, 'rb'), as_attachment=True, filename=f'sauvegarde_etat_civil_{timezone.now().strftime("%d_%m_%Y")}.sqlite3')
 
+    # --- MÉTHODE GÉNÉRIQUE POUR LES QR CODES ---
+    def generer_qr_code(self, titre, numero, nom, date, sp):
+        qr_data = f"{titre}\nN°: {numero}\nNom: {nom}\nDate: {date}\nDélivré par: SP {sp}"
+        qr = qrcode.QRCode(version=1, box_size=10, border=1)
+        qr.add_data(qr_data); qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        buffer = BytesIO(); img.save(buffer, format="PNG")
+        return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
     # --- IMPRESSIONS ---
     def imprimer_registre_annuel(self, request):
         context = {'actes': ActeNaissance.objects.filter(date_declaration__year=timezone.now().year).order_by('numero_registre'), 'structure': Structure.objects.first()}
@@ -138,13 +179,28 @@ class CustomAdminSite(admin.AdminSite):
 
     def imprimer_certificat_celibat(self, request, pk):
         c, s = CertificatCelibat.objects.get(pk=pk), Structure.objects.first()
-        qr_data = f"CÉLIBAT\nN°: {c.numero_certificat}\nNom: {c.nom_prenoms}\nDate: {c.date_etablissement.strftime('%d/%m/%Y')}"
-        qr = qrcode.QRCode(version=1, box_size=10, border=1)
-        qr.add_data(qr_data); qr.make(fit=True)
-        img = qr.make_image(fill_color="black", back_color="white")
-        buffer = BytesIO(); img.save(buffer, format="PNG")
-        qr_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-        return HttpResponse(render_to_string('registre/certificat_celibat_print.html', {'c': c, 's': s, 'qr_base64': qr_base64}))
+        qr = self.generer_qr_code("CÉLIBAT", c.numero_certificat, c.nom_prenoms, c.date_etablissement.strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/certificat_celibat_print.html', {'c': c, 's': s, 'qr_base64': qr}))
+
+    def imprimer_certificat_non_divorce(self, request, pk):
+        c, s = CertificatNonDivorce.objects.get(pk=pk), Structure.objects.first()
+        qr = self.generer_qr_code("NON DIVORCE", c.numero_certificat, c.nom_prenoms, c.date_etablissement.strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/certificat_non_divorce_print.html', {'c': c, 's': s, 'qr_base64': qr}))
+
+    def imprimer_certificat_non_remariage(self, request, pk):
+        c, s = CertificatNonRemariage.objects.get(pk=pk), Structure.objects.first()
+        qr = self.generer_qr_code("NON REMARIAGE", c.numero_certificat, c.nom_prenoms, c.date_etablissement.strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/certificat_non_remariage_print.html', {'c': c, 's': s, 'qr_base64': qr}))
+
+    def imprimer_certificat_non_separation(self, request, pk):
+        c, s = CertificatNonSeparationCorps.objects.get(pk=pk), Structure.objects.first()
+        qr = self.generer_qr_code("NON SÉPARATION", c.numero_certificat, c.nom_prenoms, c.date_etablissement.strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/certificat_non_separation_print.html', {'c': c, 's': s, 'qr_base64': qr}))
+
+    def imprimer_certificat_vie(self, request, pk):
+        c, s = CertificatVie.objects.get(pk=pk), Structure.objects.first()
+        qr = self.generer_qr_code("CERTIFICAT DE VIE", c.numero_certificat, c.nom_prenoms, c.date_etablissement.strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/certificat_vie_print.html', {'c': c, 's': s, 'qr_base64': qr}))
 
     def imprimer_certificat_non_deces(self, request, pk):
         c, s = CertificatNonDeces.objects.get(pk=pk), Structure.objects.first()
@@ -163,6 +219,10 @@ class CustomAdminSite(admin.AdminSite):
             path('backup-db/', self.admin_view(self.backup_database), name='backup_db'),
             path('print-registre/', self.admin_view(self.imprimer_registre_annuel), name='print_registre'),
             path('certificat_celibat/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_celibat), name='print_celibat'),
+            path('certificat_non_divorce/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_divorce), name='print_non_divorce'),
+            path('certificat_non_remariage/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_remariage), name='print_non_remariage'),
+            path('certificat_non_separation/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_separation), name='print_non_separation'),
+            path('certificat_vie/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_vie), name='print_vie'),
             path('certificat_non_deces/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_deces), name='print_non_deces'),
         ]
         return custom_urls + urls
@@ -177,4 +237,8 @@ custom_admin_site.register(Structure)
 custom_admin_site.register(ActeNaissance, ActeNaissanceAdmin)
 custom_admin_site.register(CertificatResidence, CertificatResidenceAdmin)
 custom_admin_site.register(CertificatCelibat, CertificatCelibatAdmin)
+custom_admin_site.register(CertificatNonDivorce, CertificatNonDivorceAdmin)
+custom_admin_site.register(CertificatNonRemariage, CertificatNonRemariageAdmin)
+custom_admin_site.register(CertificatNonSeparationCorps, CertificatNonSeparationCorpsAdmin)
+custom_admin_site.register(CertificatVie, CertificatVieAdmin)
 custom_admin_site.register(CertificatNonDeces, CertificatNonDecesAdmin)

@@ -3,7 +3,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Certificat de Célibat - {{ c.nom_prenoms }}</title>
+    <title>Certificat de Non Remariage - {{ c.nom_prenoms }}</title>
     <style>
         @page { size: A4; margin: 0; }
         body { 
@@ -22,10 +22,10 @@
         .header { display: flex; justify-content: space-between; margin-bottom: 30px; }
         .bloc-gauche { text-align: center; width: 45%; font-weight: bold; text-transform: uppercase; font-size: 11px; }
         .bloc-droite { text-align: center; width: 45%; }
-        .titre-doc { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; margin: 30px 0; }
-        .loi-bloc { font-size: 13px; line-height: 1.15; margin-bottom: 20px; }
+        .titre-doc { text-align: center; font-size: 22px; font-weight: bold; text-decoration: underline; margin: 30px 0; }
+        .loi-bloc { font-size: 13px; line-height: 1.2; margin-bottom: 20px; }
         .table-info { width: 100%; margin-top: 15px; border-collapse: collapse; }
-        .table-info td { padding: 1px 5px; vertical-align: top; }
+        .table-info td { padding: 2px 5px; vertical-align: top; }
         .label { width: 30%; font-weight: normal; }
         .colon { width: 5%; text-align: center; }
         .valeur { width: 65%; font-weight: bold; }
@@ -49,7 +49,7 @@
                     <small>Union – Discipline – Travail</small><br>---------------
                 </div>
             </div>
-            <h1 class="titre-doc">CERTIFICAT DE CÉLIBAT</h1>
+            <h1 class="titre-doc">CERTIFICAT DE NON REMARIAGE</h1>
             <p>Nous, Monsieur <strong>{{ c.nom_officier }}</strong>, Sous-préfet de {{ s.sous_prefecture }} (Côte d’Ivoire) ;</p>
             <p>En notre qualité d’Officier de l’état civil ;</p>
             <div class="loi-bloc">
@@ -58,7 +58,7 @@
                 Vu le Décret n°2019-805 du 02 octobre 2019 fixant les modalités d’application de la Loi n°2018-862 du 19 novembre 2018 relative à l’état civil ;<br>
                 Vu le Registre d’état civil tenu au titre de l’année <strong>{{ c.annee_registre_naissance }}</strong>.
             </div>
-            <p>Certifions que l’examen de l’acte de naissance n° <strong>{{ c.numero_acte_naissance }}</strong> du <strong>{{ c.date_acte_naissance|date:"d/m/Y" }}</strong>, inscrit dans le registre d’état civil ci-dessous visé, ne révèle <strong>aucune mention marginale de mariage</strong> de :</p>
+            <p>Certifions que l’examen de l’acte de naissance n° <strong>{{ c.numero_acte_naissance }}</strong> du <strong>{{ c.date_acte_naissance|date:"d/m/Y" }}</strong>, inscrit dans le registre d’état civil ci-dessous visé, ne révèle <strong>aucune mention marginale de remariage</strong> de :</p>
             <table class="table-info">
                 <tr><td class="label">Monsieur / Madame</td><td class="colon">:</td><td class="valeur">{{ c.nom_prenoms|upper }}</td></tr>
                 <tr><td class="label">Né(e) le</td><td class="colon">:</td><td class="valeur">{{ c.date_naissance|date:"d/m/Y" }}</td></tr>
@@ -69,16 +69,16 @@
                 <tr><td class="label">Domicile</td><td class="colon">:</td><td class="valeur">{{ c.domicile }}</td></tr>
                 <tr><td class="label">Profession</td><td class="colon">:</td><td class="valeur">{{ c.profession }}</td></tr>
             </table>
-            <p style="margin-top: 30px;">En foi de quoi, le présent certificat de célibat lui est délivré pour servir et valoir ce que de droit.</p>
+            <p style="margin-top: 30px;">En foi de quoi, le présent certificat de non remariage lui est délivré pour servir et valoir ce que de droit.</p>
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;">
-                <div style="text-align: center; margin-left: 20%;">
+                <div style="text-align: center; margin-left: 15%;">
                     <img src="data:image/png;base64,{{ qr_base64 }}" style="width: 90px; height: 90px;">
                     <p style="font-size: 9px; margin-top: 2px;">Validation numérique</p>
                 </div>
                 <div class="signature-zone">
                     Fait à <strong>{{ s.sous_prefecture|upper }}</strong>, le {{ c.date_etablissement|date:"d F Y" }}<br><br>
                     <strong>L'Officier de l'État Civil</strong><br>
-                    <div style="font-style: italic; font-size: 12px;">(Signature)</div>
+                    <span style="font-style: italic; font-size: 12px;">(Signature)</span>
                 </div>
             </div>
         </div>
