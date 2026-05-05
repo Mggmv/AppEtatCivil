@@ -41,68 +41,109 @@ class CertificatResidence(models.Model):
     def __str__(self):
         return f"Certificat N°{self.numero_certificat} - {self.nom} {self.prenoms}"
 
+# ==========================================
+# ACTE DE NAISSANCE
+# ==========================================
 class ActeNaissance(models.Model):
-    structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
-    numero_registre = models.IntegerField(default=1, verbose_name="N° Acte")
-    annee_registre = models.IntegerField(default=2026, verbose_name="Année")
-    date_declaration = models.DateField(verbose_name="Date de déclaration")
+    # 1. L'ENFANT ET LE REGISTRE
+    structure = models.ForeignKey('Structure', on_delete=models.CASCADE, null=True, blank=True, verbose_name="Structure d'état civil")
+    numero_registre = models.CharField(max_length=50, verbose_name="N° de l'acte")
+    annee_registre = models.CharField(max_length=4, verbose_name="Année du registre")
+    date_declaration = models.DateField(verbose_name="Date de déclaration", null=True, blank=True)
 
-    # Identité de l'Enfant
-    prenoms_enfant = models.CharField(max_length=255, verbose_name="Prénoms")
-    nom_enfant = models.CharField(max_length=255, verbose_name="Nom")
-    date_naissance = models.DateField(verbose_name="Né(e) le")
-    heure_naissance = models.TimeField(verbose_name="À (Heure)", null=True, blank=True)
-    lieu_naissance = models.CharField(max_length=255, verbose_name="Lieu de naissance")
+    nom_enfant = models.CharField(max_length=150, verbose_name="Nom de l'enfant")
+    prenoms_enfant = models.CharField(max_length=200, verbose_name="Prénoms de l'enfant")
+    sexe = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')], verbose_name="Sexe")
+    date_naissance = models.DateField(verbose_name="Date de naissance", null=True, blank=True)
+    heure_naissance = models.TimeField(verbose_name="Heure de naissance", null=True, blank=True)
+    lieu_naissance = models.CharField(max_length=200, verbose_name="Lieu de naissance")
 
-    SEXE_CHOICES = [
-        ('M', 'Masculin'),
-        ('F', 'Féminin'),
-    ]
-    sexe = models.CharField(max_length=1, choices=SEXE_CHOICES, default='M', verbose_name="Sexe de l'enfant")
-
-    # ==========================================
-    # FILIATION (PARENTS) - SECTION MISE À JOUR
-    # ==========================================
-    # --- INFORMATIONS SUR LE PÈRE ---
-    nom_pere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom du Père")
-    date_naissance_pere = models.CharField(max_length=100, verbose_name="Date de naissance du père", blank=True, null=True, help_text="Ex: 12/05/1970 ou Vers 1970")
+    # 2. FILIATION (PÈRE ET MÈRE)
+    nom_pere = models.CharField(max_length=200, verbose_name="Nom et prénoms du père", blank=True, null=True)
+    date_naissance_pere = models.CharField(max_length=150, verbose_name="Né le/vers (Père)", blank=True, null=True)
     profession_pere = models.CharField(max_length=150, verbose_name="Profession du père", blank=True, null=True)
-    domicile_pere = models.CharField(max_length=150, verbose_name="Domicile du père", blank=True, null=True)
-    nationalite_pere = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nationalité Père")
+    domicile_pere = models.CharField(max_length=200, verbose_name="Domicilié à (Père)", blank=True, null=True)
+    nationalite_pere = models.CharField(max_length=100, verbose_name="Nationalité du père", default="Ivoirienne", blank=True, null=True)
 
-    # --- INFORMATIONS SUR LA MÈRE ---
-    nom_mere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom de la Mère")
-    date_naissance_mere = models.CharField(max_length=100, verbose_name="Date de naissance de la mère", blank=True, null=True, help_text="Ex: 25/08/1975 ou Vers 1975")
+    nom_mere = models.CharField(max_length=200, verbose_name="Nom et prénoms de la mère", blank=True, null=True)
+    date_naissance_mere = models.CharField(max_length=150, verbose_name="Née le/vers (Mère)", blank=True, null=True)
     profession_mere = models.CharField(max_length=150, verbose_name="Profession de la mère", blank=True, null=True)
-    domicile_mere = models.CharField(max_length=150, verbose_name="Domicile de la mère", blank=True, null=True)
-    nationalite_mere = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nationalité Mère")
+    domicile_mere = models.CharField(max_length=200, verbose_name="Domiciliée à (Mère)", blank=True, null=True)
+    nationalite_mere = models.CharField(max_length=100, verbose_name="Nationalité de la mère", default="Ivoirienne", blank=True, null=True)
 
-    # Mentions de Justice et Transcription
-    transcription_justice = models.TextField(blank=True, null=True, verbose_name="Transcription / Jugement Supplétif")
+    # 3. MENTIONS ÉVENTUELLES ET JUSTICE
+    date_mariage = models.CharField(max_length=150, verbose_name="Date de mariage", blank=True, null=True)
+    conjoint_mariage = models.CharField(max_length=200, verbose_name="Conjoint(e)", blank=True, null=True)
+    dissolution_mariage = models.CharField(max_length=150, verbose_name="Date de dissolution du mariage", blank=True, null=True)
+    date_deces = models.CharField(max_length=150, verbose_name="Date de décès", blank=True, null=True)
+    lieu_deces = models.CharField(max_length=200, verbose_name="Lieu de décès", blank=True, null=True)
+    
+    transcription_justice = models.TextField(verbose_name="Transcription de décision de justice", blank=True, null=True)
+    nom_sous_prefet = models.CharField(max_length=150, verbose_name="Nom et Prénoms du Sous-préfet", blank=True, null=True, help_text="Ex: TRA Bi Bah Albert")
 
-    # Mentions Marginales (Mariage & Décès)
-    date_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Marié(e) le")
-    conjoint_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Avec")
-    dissolution_mariage = models.CharField(max_length=255, blank=True, null=True, verbose_name="Mariage dissous le")
-    date_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Décédé(e) le")
-    lieu_deces = models.CharField(max_length=255, blank=True, null=True, verbose_name="Lieu de décès")
+    class Meta:
+        verbose_name = "Acte de Naissance"
+        verbose_name_plural = "Actes de Naissance"
 
+    def __str__(self):
+        return f"Acte N°{self.numero_registre} - {self.nom_enfant} {self.prenoms_enfant}"
+
+    # ==========================================
+    # FONCTIONS DE CONVERSION EN LETTRES
+    # ==========================================
+    
     @property
-    def numero_acte_complet(self):
-        """Format : '01 du 02/12/2014'"""
-        date_str = self.date_declaration.strftime('%d/%m/%Y')
-        return f"{self.numero_registre:02d} du {date_str}"
-
     def infos_naissance_lettres(self):
-        """Conversion conforme : 'mil' et 'premier' [cite: 2026-02-28]"""
+        if not self.date_naissance:
+            return ""
+        from num2words import num2words
         jours = ["premier", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", 
                  "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", 
                  "dix-neuf", "vingt", "vingt et un", "vingt-deux", "vingt-trois", "vingt-quatre", 
                  "vingt-cinq", "vingt-six", "vingt-sept", "vingt-huit", "vingt-neuf", "trente", "trente et un"]
+        mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
         
         d = self.date_naissance
         annee_lettres = num2words(d.year, lang='fr').replace('mille', 'mil')
-        return f"{jours[d.day-1]} {d.strftime('%B')} {annee_lettres}"
+        return f"{jours[d.day-1]} {mois[d.month-1]} {annee_lettres}"
+
+    @property
+    def date_declaration_lettres(self):
+        if not self.date_declaration:
+            return ""
+        if isinstance(self.date_declaration, str):
+            return self.date_declaration
+
+        from num2words import num2words
+        jours = ["premier", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", 
+                 "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", 
+                 "dix-neuf", "vingt", "vingt et un", "vingt-deux", "vingt-trois", "vingt-quatre", 
+                 "vingt-cinq", "vingt-six", "vingt-sept", "vingt-huit", "vingt-neuf", "trente", "trente et un"]
+        mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+        
+        d = self.date_declaration
+        annee_lettres = num2words(d.year, lang='fr').replace('mille', 'mil')
+        return f"{jours[d.day-1]} {mois[d.month-1]} {annee_lettres}"
+
+    @property
+    def heure_naissance_lettres(self):
+        if not self.heure_naissance:
+            return ""
+        if isinstance(self.heure_naissance, str):
+            return self.heure_naissance
+        
+        from num2words import num2words
+        h = self.heure_naissance.hour
+        m = self.heure_naissance.minute
+        
+        if h == 0 and m == 0:
+            return "minuit"
+        elif h == 12 and m == 0:
+            return "midi"
+        
+        heure_str = "minuit" if h == 0 else "midi" if h == 12 else f"{num2words(h, lang='fr')} heure{'s' if h > 1 else ''}"
+        minute_str = "" if m == 0 else f" {num2words(m, lang='fr')} minute{'s' if m > 1 else ''}"
+        return f"{heure_str}{minute_str}"
 
 class CertificatCelibat(models.Model):
     # Informations administratives

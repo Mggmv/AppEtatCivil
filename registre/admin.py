@@ -29,7 +29,7 @@ from .models import (
 # 1. ADMINISTRATION DES ACTES DE NAISSANCE
 # ==============================================================================
 class ActeNaissanceAdmin(admin.ModelAdmin):
-    list_display = ('numero_registre', 'nom_enfant', 'prenoms_enfant', 'date_naissance', 'sexe', 'date_declaration', 'bouton_imprimer')
+    list_display = ('numero_registre', 'nom_enfant', 'prenoms_enfant', 'date_naissance', 'sexe', 'date_declaration', 'boutons_impression')
     
     # --- ORGANISATION DES CHAMPS EN 3 BLOCS ---
     fieldsets = (
@@ -37,7 +37,7 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
             'fields': (
                 'structure', 'numero_registre', 'annee_registre', 'date_declaration',
                 'nom_enfant', 'prenoms_enfant', 'sexe', 'date_naissance', 'heure_naissance', 'lieu_naissance',
-                'transcription_justice'
+                'transcription_justice', 'nom_sous_prefet'
             )
         }),
         ('2. FILIATION (PÈRE ET MÈRE)', {
@@ -58,10 +58,16 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
         }),
     )
 
-    def bouton_imprimer(self, obj):
-        url = f"/extrait/{obj.id}/" 
-        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
-    bouton_imprimer.short_description = "Action"
+    # --- NOUVEAU : LES DEUX BOUTONS D'IMPRESSION ---
+    def boutons_impression(self, obj):
+        url_extrait = f"/extrait/{obj.id}/" 
+        url_copie = f"/admin/acte_naissance/{obj.id}/copie_integrale/"
+        return format_html(
+            '<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-right: 5px;">🖨️ Extrait</a>'
+            '<a href="{}" target="_blank" style="background: #28a745; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">📄 Copie Intégrale</a>',
+            url_extrait, url_copie
+        )
+    boutons_impression.short_description = "Actions"
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
@@ -236,6 +242,14 @@ class CustomAdminSite(admin.AdminSite):
         return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
     # --- IMPRESSIONS ---
+    
+    # NOUVEAU : IMPRESSION DE LA COPIE INTÉGRALE
+    def imprimer_copie_integrale(self, request, pk):
+        a = ActeNaissance.objects.get(pk=pk)
+        s = Structure.objects.first()
+        qr = self.generer_qr_code("COPIE INTÉGRALE", a.numero_registre, f"{a.nom_enfant} {a.prenoms_enfant}", timezone.now().strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/copie_integrale_print.html', {'a': a, 's': s, 'qr_base64': qr}))
+
     def imprimer_acte_mariage(self, request, pk):
         m, s = ActeMariage.objects.get(pk=pk), Structure.objects.first()
         noms_couple = f"{m.nom_prenoms_epoux} & {m.nom_prenoms_epouse}"
@@ -287,6 +301,10 @@ class CustomAdminSite(admin.AdminSite):
         custom_urls = [
             path('backup-db/', self.admin_view(self.backup_database), name='backup_db'),
             path('print-registre/', self.admin_view(self.imprimer_registre_annuel), name='print_registre'),
+            
+            # --- NOUVELLE ROUTE POUR LA COPIE INTÉGRALE ---
+            path('acte_naissance/<int:pk>/copie_integrale/', self.admin_view(self.imprimer_copie_integrale), name='print_copie_integrale'),
+            
             path('acte_mariage/<int:pk>/imprimer/', self.admin_view(self.imprimer_acte_mariage), name='print_mariage'),
             path('certificat_celibat/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_celibat), name='print_celibat'),
             path('certificat_non_divorce/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_divorce), name='print_non_divorce'),

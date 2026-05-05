@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Copie Intégrale - Acte N° {{ a.numero_registre }}</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { 
+            font-family: "Times New Roman", Times, serif; font-size: 14pt; margin: 0; padding: 0; color: black; 
+            background-color: #f0f0f0; display: flex; justify-content: center;
+        }
+        
+        .cadre {
+            background-color: white; width: 210mm; min-height: 297mm; 
+            padding: 8mm 15mm; 
+            box-sizing: border-box; position: relative;
+            display: flex; flex-direction: column;
+        }
+
+        .armoiries-filigrane {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 14cm; opacity: 0.06; z-index: 0; pointer-events: none;
+        }
+
+        /* En-tête en 3 colonnes */
+        .header-trois-colonnes {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 15px; z-index: 1; position: relative;
+        }
+        .header-gauche, .header-droite { width: 38%; text-align: center; font-weight: bold; font-size: 10pt; line-height: 1.3; }
+        .header-centre { width: 24%; text-align: center; }
+        .header-centre img { width: 80px; height: auto; }
+        .devise { font-style: italic; font-weight: normal; }
+
+        .colonnes-container { display: flex; width: 100%; z-index: 1; }
+
+        /* Colonne Gauche (Mentions) */
+        .col-gauche {
+            width: 30%; border-right: 1.5px solid black; padding-right: 15px; margin-right: 15px;
+            display: flex; flex-direction: column; height: fit-content;
+        }
+        .acte-num { font-weight: bold; font-size: 14pt; margin-bottom: 10px; }
+        .naissance-de { font-size: 14pt; line-height: 1.2; margin-bottom: 20px; }
+        .mentions-texte { font-size: 11pt; line-height: 1.3; text-align: justify; }
+
+        /* Colonne Droite */
+        .col-droite { width: 70%; display: flex; flex-direction: column; }
+        .titre-copie { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
+        .sous-titre-copie { text-align: center; font-size: 12pt; font-style: italic; margin-bottom: 15px; line-height: 1.2; }
+
+        .table-transcription { width: 100%; border-collapse: collapse; font-size: 12.5pt; line-height: 1.1; }
+        .table-transcription td { padding: 1px 0; vertical-align: bottom; }
+        .td-num { width: 6%; font-weight: bold; text-align: left; }
+        .td-label { width: 35%; font-weight: normal; }
+        .td-valeur { font-weight: bold; }
+
+        /* Certification placée DANS la colonne droite pour s'aligner parfaitement */
+        .texte-certification { 
+            font-size: 13pt; text-align: justify; line-height: 1.3; margin-top: 20px; margin-bottom: 10px;
+        }
+
+        /* ZONE BASSE (Signatures et QR) */
+        .section-inferieure { width: 100%; z-index: 1; margin-top: 10px; }
+        .zone-finale { position: relative; width: 100%; min-height: 140px; }
+        
+        .sceau-bloc { position: absolute; bottom: 30px; left: 10%; font-size: 13pt; font-weight: bold; }
+        .qr-code-wrap { position: absolute; bottom: 0; left: 45%; transform: translateX(-50%); text-align: center; }
+        .qr-code-wrap img { width: 90px; height: 90px; }
+        
+        .signature-bloc { text-align: right; width: 100%; }
+        .date-delivrance { font-weight: bold; margin-bottom: 5px; font-size: 13pt; }
+        .officier-titre { font-weight: bold; margin-bottom: 5px; display: block; font-size: 13pt; }
+        .sign-mention { font-style: italic; font-size: 11pt; padding-right: 40px; }
+
+        @media print { body { background: none; } .btn-print { display: none !important; } }
+    </style>
+</head>
+<body>
+    <div class="cadre">
+        <img src="{% static 'registre/armoirie ci.png' %}" class="armoiries-filigrane" alt="Filigrane">
+
+        <div class="header-trois-colonnes">
+            <div class="header-gauche">
+                RÉGION DU {{ s.region|upper }}<br>
+                DÉPARTEMENT DE {{ s.prefecture|upper }}<br>
+                SOUS-PRÉFECTURE DE {{ s.sous_prefecture|upper }}
+            </div>
+            <div class="header-centre">
+                <img src="{% static 'registre/logo.png' %}" alt="Logo">
+            </div>
+            <div class="header-droite">
+                RÉPUBLIQUE DE CÔTE D'IVOIRE<br>
+                <span class="devise">Union – Discipline – Travail</span>
+                <div style="border-top: 1px solid black; width: 40px; margin: 5px auto;"></div>
+            </div>
+        </div>
+
+        <div class="colonnes-container">
+            <div class="col-gauche">
+                <div class="acte-num">Acte n° {{ a.numero_registre }}</div>
+                <div class="naissance-de">
+                    Naissance de :<br>
+                    <strong>{{ a.nom_enfant|upper }}<br>{{ a.prenoms_enfant }}</strong>
+                </div>
+                
+                {% if a.transcription_justice and a.transcription_justice != 'None' %}
+                <div class="mentions-texte">
+                    {{ a.transcription_justice|linebreaksbr }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-droite">
+                <div class="titre-copie">COPIE INTÉGRALE</div>
+                <div class="sous-titre-copie">
+                    Du registre des Actes de l'état civil de la<br>
+                    Sous-préfecture de {{ s.sous_prefecture }} pour l'année {{ a.annee_registre }}
+                </div>
+
+                <table class="table-transcription">
+                    <tr><td class="td-num">1.</td><td class="td-label">Le</td><td class="td-valeur">{{ a.infos_naissance_lettres }}</td></tr>
+                    
+                    <tr><td class="td-num">2.</td><td class="td-label">à</td><td class="td-valeur">{% if a.heure_naissance %}{{ a.heure_naissance_lettres }}{% else %}................................................{% endif %}</td></tr>
+                    
+                    <tr><td class="td-num">3.</td><td class="td-label">est né(e) à</td><td class="td-valeur">{% if a.lieu_naissance and a.lieu_naissance != "None" %}{{ a.lieu_naissance }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">4.</td><td class="td-label">sous-préfecture de</td><td class="td-valeur">{{ s.sous_prefecture }}</td></tr>
+                    <tr><td class="td-num">5.</td><td class="td-label">l'enfant</td><td class="td-valeur">{{ a.nom_enfant|upper }} {{ a.prenoms_enfant }}</td></tr>
+                    <tr><td class="td-num">6.</td><td class="td-label">du sexe</td><td class="td-valeur">{% if a.sexe == 'M' %}Masculin{% else %}Féminin{% endif %}</td></tr>
+                    
+                    <tr><td class="td-num">7.</td><td class="td-label">ayant pour père</td><td class="td-valeur">{% if a.nom_pere and a.nom_pere != "None" %}{{ a.nom_pere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">8.</td><td class="td-label">né le / vers</td><td class="td-valeur">{% if a.date_naissance_pere and a.date_naissance_pere != "None" %}{{ a.date_naissance_pere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">9.</td><td class="td-label">Profession</td><td class="td-valeur">{% if a.profession_pere and a.profession_pere != "None" %}{{ a.profession_pere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">10.</td><td class="td-label">domicilié à</td><td class="td-valeur">{% if a.domicile_pere and a.domicile_pere != "None" %}{{ a.domicile_pere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">11.</td><td class="td-label">nationalité</td><td class="td-valeur">{% if a.nationalite_pere and a.nationalite_pere != "None" %}{{ a.nationalite_pere }}{% else %}................................................{% endif %}</td></tr>
+                    
+                    <tr><td class="td-num">12.</td><td class="td-label">et pour mère</td><td class="td-valeur">{% if a.nom_mere and a.nom_mere != "None" %}{{ a.nom_mere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">13.</td><td class="td-label">née le / vers</td><td class="td-valeur">{% if a.date_naissance_mere and a.date_naissance_mere != "None" %}{{ a.date_naissance_mere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">14.</td><td class="td-label">Profession</td><td class="td-valeur">{% if a.profession_mere and a.profession_mere != "None" %}{{ a.profession_mere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">15.</td><td class="td-label">domiciliée à</td><td class="td-valeur">{% if a.domicile_mere and a.domicile_mere != "None" %}{{ a.domicile_mere }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">16.</td><td class="td-label">nationalité</td><td class="td-valeur">{% if a.nationalite_mere and a.nationalite_mere != "None" %}{{ a.nationalite_mere }}{% else %}................................................{% endif %}</td></tr>
+                    
+                    <tr><td class="td-num">17.</td><td class="td-label">dressé le</td><td class="td-valeur">{% if a.date_declaration %}{{ a.date_declaration_lettres }}{% else %}................................................{% endif %}</td></tr>
+                    
+                    <tr><td class="td-num">18.</td><td class="td-label">à</td><td class="td-valeur">................................................</td></tr>
+                    <tr><td class="td-num">19.</td><td class="td-label">sur la déclaration de</td><td class="td-valeur">................................................</td></tr>
+                    <tr><td class="td-num">20.</td><td class="td-label">reçue en langue</td><td class="td-valeur">................................................</td></tr>
+                    <tr><td class="td-num">21.</td><td class="td-label">avec l'assistance de</td><td class="td-valeur">................................................</td></tr>
+                    <tr><td class="td-num">22.</td><td colspan="2">Par Nous, Officier de l'état civil.</td></tr>
+                    <tr><td class="td-num">23.</td><td colspan="2">Lecture faite, et le déclarant invité à lire l'acte.</td></tr>
+                    <tr><td class="td-num">24.</td><td colspan="2">L'acte ayant été traduit par l'interprète.</td></tr>
+                    <tr><td class="td-num">25.</td><td colspan="2">Nous avons signé avec le déclarant.</td></tr>
+                </table>
+
+                <div class="texte-certification">
+                    Pour copie certifiée conforme, par nous, <strong>{% if a.nom_sous_prefet and a.nom_sous_prefet != 'None' %}{{ a.nom_sous_prefet }}{% else %}................................................{% endif %}</strong>,<br>
+                    Sous-préfet, Officier d’état civil de la Circonscription Administrative de {{ s.sous_prefecture|upper }}.
+                </div>
+            </div>
+        </div>
+
+        <div class="section-inferieure">
+            <div class="zone-finale">
+                <div class="sceau-bloc">Sceau</div>
+                <div class="qr-code-wrap">
+                    <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code">
+                    <div style="font-size: 7pt; margin-top: 2px;">Validation Numérique</div>
+                </div>
+                <div class="signature-bloc">
+                    <div class="date-delivrance">Fait à {{ s.sous_prefecture|upper }}, le <span id="date-jour"></span></div>
+                    <span class="officier-titre">L’Officier de l'état civil</span>
+                    <div class="sign-mention">(Signature)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px 15px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold;">🖨️ Imprimer</button>
+
+    <script>
+        const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('date-jour').innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
+    </script>
+</body>
+</html>
