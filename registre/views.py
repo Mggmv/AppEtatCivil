@@ -24,8 +24,8 @@ def dashboard(request):
 def voir_extrait(request, pk):
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # --- Date et Heure en lettres ---
-    date_lettres = acte.infos_naissance_lettres()
+    # --- CORRECTION ICI : Retrait des parenthèses ---
+    date_lettres = acte.infos_naissance_lettres
     
     # ==========================================
     # --- BOUCLIER DE TRADUCTION (PyInstaller) ---
@@ -71,7 +71,6 @@ def voir_extrait(request, pk):
     # ==========================================
     # --- GESTION DU SEXE ET DE LA GRAMMAIRE ---
     # ==========================================
-    # Récupération sécurisée du sexe (par défaut 'M' si le champ n'est pas encore créé)
     sexe_enfant = getattr(acte, 'sexe', 'M')
     
     enfant_label = "Fille de " if sexe_enfant == 'F' else "Fils de "
@@ -120,7 +119,7 @@ def voir_extrait(request, pk):
         'mere_info': mere_info,
         'mere_label': mere_label,
         'qr_base64': qr_base64,
-        'accord_ne': accord_ne, # On envoie "né" ou "née" au HTML
+        'accord_ne': accord_ne,
     }
     return render(request, 'registre/extrait_naissance.html', context)
 
@@ -129,24 +128,19 @@ def voir_extrait(request, pk):
 # ==========================================
 @login_required
 def exporter_actes_csv(request):
-    # Prépare le fichier avec l'encodage 'utf-8-sig' pour qu'Excel lise bien les accents
     response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
     response['Content-Disposition'] = 'attachment; filename="Registre_Etat_Civil_2026.csv"'
 
     writer = csv.writer(response, delimiter=';')
 
-    # Ligne 1 : Les en-têtes des colonnes avec le Sexe ajouté !
     writer.writerow([
         'Numéro Acte', 'Date de Déclaration', 'Sexe', 'Nom', 'Prénoms', 
         'Lieu de Naissance', 'Nom du Père', 'Nom de la Mère'
     ])
 
-    # Récupération et écriture des données
     actes = ActeNaissance.objects.all().order_by('-date_declaration')
     for acte in actes:
         date_dec = acte.date_declaration.strftime('%d/%m/%Y') if acte.date_declaration else ''
-        
-        # Récupération sécurisée du sexe pour le tableau Excel
         sexe_val = getattr(acte, 'sexe', 'M')
         sexe_display = "Féminin" if sexe_val == 'F' else "Masculin"
 
@@ -163,13 +157,10 @@ def exporter_actes_csv(request):
 
     return response
 
-       # registre/views.py
-       
-       
-
-# --- AJOUTEZ CECI À LA FIN DU FICHIER ---
+# ==========================================
+# --- IMPRESSION CERTIFICAT DE RÉSIDENCE ---
+# ==========================================
 def imprimer_certificat_residence(request, certificat_id):
-    # On récupère les infos de l'étranger et de la sous-préfecture
     certificat = get_object_or_404(CertificatResidence, id=certificat_id)
     structure = Structure.objects.first()
     

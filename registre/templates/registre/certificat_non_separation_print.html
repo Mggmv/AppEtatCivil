@@ -20,16 +20,16 @@
         }
         .contenu { position: relative; z-index: 1; }
         .header { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .bloc-gauche { text-align: center; width: 45%; font-weight: bold; text-transform: uppercase; font-size: 14pt; }
-        .bloc-droite { text-align: center; width: 45%; font-size: 14pt; }
+        .bloc-gauche { text-align: center; width: 45%; font-weight: bold; text-transform: uppercase; font-size: 12pt; }
+        .bloc-droite { text-align: center; width: 45%; font-size: 12pt; }
         .n-certificat { font-weight: bold; font-size: 14pt; margin-top: 10px; }
-        .titre-doc { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin: 30px 0; }
-        .loi-bloc { font-size: 14pt; line-height: 1.2; margin-bottom: 20px; }
+        .titre-doc { text-align: center; font-size: 18pt; font-weight: bold; text-decoration: underline; margin: 20px 0; }
+        .loi-bloc { font-size: 13pt; line-height: 1.0; margin-bottom: 10px; }
         .table-info { width: 100%; margin-top: 15px; border-collapse: collapse; }
-        .table-info td { padding: 3px 5px; vertical-align: top; font-size: 14pt; }
+        .table-info td { padding: 3px 5px; vertical-align: top; font-size: 13pt; }
         .label { width: 35%; font-weight: normal; }
         .valeur { width: 60%; font-weight: bold; }
-        .signature-zone { text-align: right; line-height: 1.3; font-size: 14pt; }
+        .signature-zone { text-align: right; line-height: 1.0; font-size: 13pt; }
         @media print { body { background: none; } .btn-print { display: none !important; } }
     </style>
 </head>
@@ -45,7 +45,7 @@
                     <div class="n-certificat">N° {{ c.numero_certificat|default:"........" }}</div>
                 </div>
                 <div class="bloc-droite">
-                    <strong style="font-size: 14pt;">RÉPUBLIQUE DE CÔTE D'IVOIRE</strong><br>
+                    <strong style="font-size: 12pt;">RÉPUBLIQUE DE CÔTE D'IVOIRE</strong><br>
                     <small>Union – Discipline – Travail</small><br>---------------
                 </div>
             </div>
@@ -69,8 +69,8 @@
                 <tr><td class="label">Domicile</td><td>:</td><td class="valeur">{{ c.domicile }}</td></tr>
                 <tr><td class="label">Profession</td><td>:</td><td class="valeur">{{ c.profession }}</td></tr>
             </table>
-            <p style="margin-top: 30px;">En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.</p>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;">
+            <p style="margin-top: 15px;">En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px;">
                 <div style="text-align: center; margin-left: 10%;">
                     <img src="data:image/png;base64,{{ qr_base64 }}" style="width: 100px; height: 100px;">
                     <p style="font-size: 9pt; margin-top: 5px;">Validation numérique</p>
