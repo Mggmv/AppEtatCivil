@@ -74,15 +74,34 @@
 
         .mentions-bloc { font-size: 12pt; border: 1px dashed black; padding: 10px; margin-bottom: 20px; }
         
-        /* Ce bloc est poussé au pied de la page A4 (margin-top: auto) */
+        /* Ce bloc prend l'espace restant pour repousser le QR code en bas */
         .zone-finale { 
             position: relative; 
-            margin-top: 20px; 
+            margin-top: 10px; 
             width: 100%; 
-            min-height: 260px; /* Garantit l'espace pour le sceau */
+            flex-grow: 1; 
+            min-height: 200px; 
+        }
+
+        /* NOUVEAU : Bloc des textes remontés juste après la certification */
+        .signature-bloc { 
+            text-align: right; 
+            width: 100%;
+        }
+        .date-delivrance { font-weight: bold; margin-bottom: 10px; }
+        .officier-titre { font-weight: bold; margin-bottom: 5px; display: block; }
+        .signature-mention { font-style: italic; font-size: 12pt; padding-right: 15px; }
+
+        /* NOUVEAU : La mention Sceau rapprochée du centre / QR Code */
+        .sceau-bloc {
+            position: absolute;
+            bottom: 40px; 
+            left: 18%; /* Positionné près du centre */
+            font-size: 14pt;
+            font-weight: bold;
         }
         
-        /* Le QR Code est ancré en bas (bottom: 0) et au centre (left: 50%) */
+        /* Le QR Code est ancré au pied de la page, au centre */
         .qr-code-wrap { 
             position: absolute; 
             bottom: 0; 
@@ -91,19 +110,6 @@
             text-align: center; 
         }
         .qr-code-wrap img { width: 110px; height: 110px; }
-        
-        /* La signature est ancrée en haut à droite (top: 0), libérant tout l'espace en dessous */
-        .signature-bloc { 
-            position: absolute; 
-            top: 0; 
-            right: 0; 
-            text-align: right; 
-            width: 50%;
-        }
-        .date-delivrance { font-weight: bold; margin-bottom: 15px; }
-        
-        /* Grand espace vide pour apposer le sceau physique */
-        .officier-titre { font-weight: bold; margin-bottom: 20px; display: block; } 
 
         @media print { body { background: none; } .btn-print { display: none !important; } }
     </style>
@@ -177,16 +183,22 @@
             {% endif %}
             
             <div class="zone-finale">
+                
+                <div class="signature-bloc">
+                    <div class="date-delivrance">Délivré à <strong>{{ s.sous_prefecture|upper }}</strong>, le {{ m.date_etablissement|date:"d/m/Y" }}</div>
+                    <span class="officier-titre">L’Officier de l'État Civil</span>
+                    <div class="signature-mention">(Signature)</div>
+                </div>
+
+                <div class="sceau-bloc">
+                    Sceau
+                </div>
+
                 <div class="qr-code-wrap">
                     <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code">
                     <div style="font-size: 8pt; margin-top: 2px;">Validation Numérique</div>
                 </div>
                 
-                <div class="signature-bloc">
-                    <div class="date-delivrance">Délivré à {{ s.sous_prefecture|upper }}, le {{ m.date_etablissement|date:"d/m/Y" }}</div>
-                    <span class="officier-titre">L’Officier de l'État Civil</span>
-                    <div style="font-style: italic; font-size: 11pt;">(Signature et Sceau)</div>
-                </div>
             </div>
         </div>
     </div>
