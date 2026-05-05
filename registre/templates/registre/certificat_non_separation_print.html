@@ -7,7 +7,7 @@
     <style>
         @page { size: A4; margin: 0; }
         body { 
-            font-family: "Times New Roman", Times, serif; font-size: 14px; margin: 0; padding: 0; color: black; 
+            font-family: "Times New Roman", serif; font-size: 14pt; margin: 0; padding: 0; color: black; 
             background-color: #f0f0f0; display: flex; justify-content: center;
         }
         .cadre-exterieur {
@@ -19,17 +19,17 @@
             width: 14cm; opacity: 0.06; z-index: 0; pointer-events: none;
         }
         .contenu { position: relative; z-index: 1; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 30px; }
-        .bloc-gauche { text-align: center; width: 45%; font-weight: bold; text-transform: uppercase; font-size: 11px; }
-        .bloc-droite { text-align: center; width: 45%; }
-        .titre-doc { text-align: center; font-size: 22px; font-weight: bold; text-decoration: underline; margin: 30px 0; }
-        .loi-bloc { font-size: 13px; line-height: 1.2; margin-bottom: 20px; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .bloc-gauche { text-align: center; width: 45%; font-weight: bold; text-transform: uppercase; font-size: 14pt; }
+        .bloc-droite { text-align: center; width: 45%; font-size: 14pt; }
+        .n-certificat { font-weight: bold; font-size: 14pt; margin-top: 10px; }
+        .titre-doc { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin: 30px 0; }
+        .loi-bloc { font-size: 14pt; line-height: 1.2; margin-bottom: 20px; }
         .table-info { width: 100%; margin-top: 15px; border-collapse: collapse; }
-        .table-info td { padding: 2px 5px; vertical-align: top; }
-        .label { width: 30%; font-weight: normal; }
-        .colon { width: 5%; text-align: center; }
-        .valeur { width: 65%; font-weight: bold; }
-        .signature-zone { text-align: right; padding-right: 20px; line-height: 1.2; }
+        .table-info td { padding: 3px 5px; vertical-align: top; font-size: 14pt; }
+        .label { width: 35%; font-weight: normal; }
+        .valeur { width: 60%; font-weight: bold; }
+        .signature-zone { text-align: right; line-height: 1.3; font-size: 14pt; }
         @media print { body { background: none; } .btn-print { display: none !important; } }
     </style>
 </head>
@@ -41,11 +41,11 @@
                 <div class="bloc-gauche">
                     RÉGION DU {{ s.region|upper }}<br>-----------<br>
                     DÉPARTEMENT DE {{ s.prefecture|upper }}<br>-----------<br>
-                    SOUS-PRÉFECTURE DE {{ s.sous_prefecture|upper }}<br>-----------<br><br>
-                    N° {{ c.numero_certificat|default:"........" }}
+                    SOUS-PRÉFECTURE DE {{ s.sous_prefecture|upper }}<br>-----------<br>
+                    <div class="n-certificat">N° {{ c.numero_certificat|default:"........" }}</div>
                 </div>
                 <div class="bloc-droite">
-                    <strong>RÉPUBLIQUE DE CÔTE D'IVOIRE</strong><br>
+                    <strong style="font-size: 14pt;">RÉPUBLIQUE DE CÔTE D'IVOIRE</strong><br>
                     <small>Union – Discipline – Travail</small><br>---------------
                 </div>
             </div>
@@ -60,25 +60,25 @@
             </div>
             <p>Certifions que l’examen de l’acte de naissance n° <strong>{{ c.numero_acte_naissance }}</strong> du <strong>{{ c.date_acte_naissance }}</strong>, inscrit dans le registre d’état civil ci-dessous visé, ne révèle <strong>aucune mention marginale de séparation de corps</strong> de :</p>
             <table class="table-info">
-                <tr><td class="label">Monsieur / Madame</td><td class="colon">:</td><td class="valeur">{{ c.nom_prenoms|upper }}</td></tr>
-                <tr><td class="label">Né(e) le</td><td class="colon">:</td><td class="valeur">{{ c.date_naissance }}</td></tr>
-                <tr><td class="label">À</td><td class="colon">:</td><td class="valeur">{{ c.lieu_naissance|upper }}</td></tr>
-                <tr><td class="label">Fils / Fille de</td><td class="colon">:</td><td class="valeur">{{ c.nom_pere }}</td></tr>
-                <tr><td class="label">Et de</td><td class="colon">:</td><td class="valeur">{{ c.nom_mere }}</td></tr>
-                <tr><td class="label">Nationalité</td><td class="colon">:</td><td class="valeur">{{ c.nationalite }}</td></tr>
-                <tr><td class="label">Domicile</td><td class="colon">:</td><td class="valeur">{{ c.domicile }}</td></tr>
-                <tr><td class="label">Profession</td><td class="colon">:</td><td class="valeur">{{ c.profession }}</td></tr>
+                <tr><td class="label">Monsieur / Madame</td><td>:</td><td class="valeur">{{ c.nom_prenoms|upper }}</td></tr>
+                <tr><td class="label">Né(e) le</td><td>:</td><td class="valeur">{{ c.date_naissance }}</td></tr>
+                <tr><td class="label">À</td><td>:</td><td class="valeur">{{ c.lieu_naissance|upper }}</td></tr>
+                <tr><td class="label">Fils / Fille de</td><td>:</td><td class="valeur">{{ c.nom_pere }}</td></tr>
+                <tr><td class="label">Et de</td><td>:</td><td class="valeur">{{ c.nom_mere }}</td></tr>
+                <tr><td class="label">Nationalité</td><td>:</td><td class="valeur">{{ c.nationalite }}</td></tr>
+                <tr><td class="label">Domicile</td><td>:</td><td class="valeur">{{ c.domicile }}</td></tr>
+                <tr><td class="label">Profession</td><td>:</td><td class="valeur">{{ c.profession }}</td></tr>
             </table>
-            <p style="margin-top: 30px;">En foi de quoi, le présent certificat de non séparation de corps lui est délivré pour servir et valoir ce que de droit.</p>
+            <p style="margin-top: 30px;">En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.</p>
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;">
-                <div style="text-align: center; margin-left: 15%;">
-                    <img src="data:image/png;base64,{{ qr_base64 }}" style="width: 90px; height: 90px;">
-                    <p style="font-size: 9px; margin-top: 2px;">Validation numérique</p>
+                <div style="text-align: center; margin-left: 10%;">
+                    <img src="data:image/png;base64,{{ qr_base64 }}" style="width: 100px; height: 100px;">
+                    <p style="font-size: 9pt; margin-top: 5px;">Validation numérique</p>
                 </div>
                 <div class="signature-zone">
                     Fait à <strong>{{ s.sous_prefecture|upper }}</strong>, le {{ c.date_etablissement|date:"d F Y" }}<br><br>
                     <strong>L'Officier de l'État Civil</strong><br>
-                    <span style="font-style: italic; font-size: 12px;">(Signature)</span>
+                    <div style="font-style: italic; font-size: 12pt;">(Signature)</div>
                 </div>
             </div>
         </div>

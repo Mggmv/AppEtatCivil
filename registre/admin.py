@@ -21,7 +21,8 @@ from .models import (
     Structure, ActeNaissance, CertificatResidence, 
     CertificatCelibat, CertificatNonDeces,
     CertificatNonDivorce, CertificatNonRemariage,
-    CertificatNonSeparationCorps, CertificatVie
+    CertificatNonSeparationCorps, CertificatVie,
+    ActeMariage
 )
 
 # ==============================================================================
@@ -30,6 +31,33 @@ from .models import (
 class ActeNaissanceAdmin(admin.ModelAdmin):
     list_display = ('numero_registre', 'nom_enfant', 'prenoms_enfant', 'date_naissance', 'sexe', 'date_declaration', 'bouton_imprimer')
     
+    # --- ORGANISATION DES CHAMPS EN 3 BLOCS ---
+    fieldsets = (
+        ('1. L\'ENFANT ET LE REGISTRE', {
+            'fields': (
+                'structure', 'numero_registre', 'annee_registre', 'date_declaration',
+                'nom_enfant', 'prenoms_enfant', 'sexe', 'date_naissance', 'heure_naissance', 'lieu_naissance',
+                'transcription_justice'
+            )
+        }),
+        ('2. FILIATION (PÈRE ET MÈRE)', {
+            'description': 'Informations détaillées sur les parents de l\'enfant',
+            'fields': (
+                # Père
+                'nom_pere', 'date_naissance_pere', 'profession_pere', 'domicile_pere', 'nationalite_pere',
+                # Mère
+                'nom_mere', 'date_naissance_mere', 'profession_mere', 'domicile_mere', 'nationalite_mere'
+            )
+        }),
+        ('3. MENTIONS ÉVENTUELLES', {
+            'classes': ('collapse',), # Le bloc reste replié pour plus de clarté
+            'fields': (
+                'date_mariage', 'conjoint_mariage', 'dissolution_mariage', 
+                'date_deces', 'lieu_deces'
+            )
+        }),
+    )
+
     def bouton_imprimer(self, obj):
         url = f"/extrait/{obj.id}/" 
         return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; white-space: nowrap;">🖨️ Imprimer</a>', url)
@@ -91,7 +119,41 @@ class ActeNaissanceAdmin(admin.ModelAdmin):
     actions = ['exporter_vers_excel']
 
 # ==============================================================================
-# 2. ADMINISTRATION DES CERTIFICATS
+# 2. ADMINISTRATION DES ACTES DE MARIAGE
+# ==============================================================================
+class ActeMariageAdmin(admin.ModelAdmin):
+    list_display = ('numero_registre', 'nom_prenoms_epoux', 'nom_prenoms_epouse', 'date_mariage', 'bouton_imprimer')
+    search_fields = ('numero_registre', 'nom_prenoms_epoux', 'nom_prenoms_epouse')
+
+    fieldsets = (
+        ('1. INFORMATIONS DU REGISTRE', {
+            'fields': ('numero_registre', 'annee_registre', 'date_mariage', 'date_etablissement', 'nom_officier')
+        }),
+        ('2. L\'ÉPOUX (LE MARI)', {
+            'fields': (
+                'nom_prenoms_epoux', 'date_naissance_epoux', 'lieu_naissance_epoux', 'nationalite_epoux',
+                'pere_epoux', 'nationalite_pere_epoux', 'mere_epoux', 'nationalite_mere_epoux', 'domicile_parents_epoux'
+            )
+        }),
+        ('3. L\'ÉPOUSE (LA FEMME)', {
+            'fields': (
+                'nom_prenoms_epouse', 'date_naissance_epouse', 'lieu_naissance_epouse', 'nationalite_epouse',
+                'pere_epouse', 'nationalite_pere_epouse', 'mere_epouse', 'nationalite_mere_epouse', 'domicile_parents_epouse'
+            )
+        }),
+        ('4. MENTIONS MARGINALES', {
+            'classes': ('collapse',),
+            'fields': ('mentions_marginales',)
+        }),
+    )
+
+    def bouton_imprimer(self, obj):
+        url = f"/admin/acte_mariage/{obj.id}/imprimer/" 
+        return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
+    bouton_imprimer.short_description = "Action"
+
+# ==============================================================================
+# 3. ADMINISTRATION DES CERTIFICATS
 # ==============================================================================
 class CertificatCelibatAdmin(admin.ModelAdmin):
     list_display = ('numero_certificat', 'nom_prenoms', 'date_etablissement', 'bouton_imprimer')
@@ -142,7 +204,7 @@ class CertificatNonDecesAdmin(admin.ModelAdmin):
         return format_html('<a href="{}" target="_blank" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold;">🖨️ Imprimer</a>', url)
 
 # ==============================================================================
-# 3. CONFIGURATION DU TABLEAU DE BORD (CustomAdminSite)
+# 4. CONFIGURATION DU TABLEAU DE BORD (CustomAdminSite)
 # ==============================================================================
 class CustomAdminSite(admin.AdminSite):
     site_header = "Administration de l'État Civil"
@@ -155,6 +217,7 @@ class CustomAdminSite(admin.AdminSite):
         extra_context.update({
             'structure': structure,
             'total_naissances': ActeNaissance.objects.count(),
+            'total_mariages': ActeMariage.objects.count(),
             'naissances_annee': ActeNaissance.objects.filter(date_declaration__year=timezone.now().year).count(),
         })
         return super().index(request, extra_context=extra_context)
@@ -165,7 +228,7 @@ class CustomAdminSite(admin.AdminSite):
 
     # --- MÉTHODE GÉNÉRIQUE POUR LES QR CODES ---
     def generer_qr_code(self, titre, numero, nom, date, sp):
-        qr_data = f"{titre}\nN°: {numero}\nNom: {nom}\nDate: {date}\nDélivré par: SP {sp}"
+        qr_data = f"{titre}\nN°: {numero}\nNoms: {nom}\nDate: {date}\nDélivré par: SP {sp}"
         qr = qrcode.QRCode(version=1, box_size=10, border=1)
         qr.add_data(qr_data); qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white")
@@ -173,6 +236,12 @@ class CustomAdminSite(admin.AdminSite):
         return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
     # --- IMPRESSIONS ---
+    def imprimer_acte_mariage(self, request, pk):
+        m, s = ActeMariage.objects.get(pk=pk), Structure.objects.first()
+        noms_couple = f"{m.nom_prenoms_epoux} & {m.nom_prenoms_epouse}"
+        qr = self.generer_qr_code("MARIAGE", m.numero_registre, noms_couple, m.date_etablissement.strftime('%d/%m/%Y'), s.sous_prefecture if s else '')
+        return HttpResponse(render_to_string('registre/acte_mariage_print.html', {'m': m, 's': s, 'qr_base64': qr}))
+
     def imprimer_registre_annuel(self, request):
         context = {'actes': ActeNaissance.objects.filter(date_declaration__year=timezone.now().year).order_by('numero_registre'), 'structure': Structure.objects.first()}
         return HttpResponse(render_to_string('registre/registre_annuel_print.html', context))
@@ -218,6 +287,7 @@ class CustomAdminSite(admin.AdminSite):
         custom_urls = [
             path('backup-db/', self.admin_view(self.backup_database), name='backup_db'),
             path('print-registre/', self.admin_view(self.imprimer_registre_annuel), name='print_registre'),
+            path('acte_mariage/<int:pk>/imprimer/', self.admin_view(self.imprimer_acte_mariage), name='print_mariage'),
             path('certificat_celibat/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_celibat), name='print_celibat'),
             path('certificat_non_divorce/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_divorce), name='print_non_divorce'),
             path('certificat_non_remariage/<int:pk>/imprimer/', self.admin_view(self.imprimer_certificat_non_remariage), name='print_non_remariage'),
@@ -228,13 +298,14 @@ class CustomAdminSite(admin.AdminSite):
         return custom_urls + urls
 
 # ==============================================================================
-# 4. ENREGISTREMENT FINAL
+# 5. ENREGISTREMENT FINAL
 # ==============================================================================
 custom_admin_site = CustomAdminSite(name='admin')
 custom_admin_site.register(User, UserAdmin)
 custom_admin_site.register(Group, GroupAdmin)
 custom_admin_site.register(Structure)
 custom_admin_site.register(ActeNaissance, ActeNaissanceAdmin)
+custom_admin_site.register(ActeMariage, ActeMariageAdmin)
 custom_admin_site.register(CertificatResidence, CertificatResidenceAdmin)
 custom_admin_site.register(CertificatCelibat, CertificatCelibatAdmin)
 custom_admin_site.register(CertificatNonDivorce, CertificatNonDivorceAdmin)

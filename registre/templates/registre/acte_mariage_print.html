@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Extrait d'Acte de Mariage - {{ m.numero_registre }}</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { 
+            font-family: "Times New Roman", Times, serif; font-size: 14pt; margin: 0; padding: 0; color: black; 
+            background-color: #f0f0f0; display: flex; justify-content: center;
+        }
+        
+        .cadre {
+            background-color: white; width: 210mm; min-height: 297mm; 
+            padding: 8mm 15mm 15mm 15mm; 
+            box-sizing: border-box; position: relative;
+            display: flex; flex-direction: column;
+        }
+
+        .armoiries-filigrane {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 14cm; opacity: 0.06; z-index: 0; pointer-events: none;
+        }
+
+        /* Conteneur pour les deux colonnes du haut */
+        .section-superieure { display: flex; width: 100%; z-index: 1; }
+
+        /* ========================================= */
+        /* COLONNE GAUCHE                            */
+        /* ========================================= */
+        .col-gauche {
+            width: 35%; padding-right: 15px; margin-right: 15px; 
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        
+        .en-tete-rep { font-size: 9pt; font-weight: bold; margin-bottom: 5px; line-height: 1.2; }
+        .armoirie-gauche { width: 120px; height: auto; margin: 10px 0; }
+        .etat-civil-box { font-size: 10pt; font-weight: bold; line-height: 1.2; margin: 10px 0; text-transform: uppercase; }
+        .num-registre-box { font-size: 11pt; font-weight: bold; padding: 5px; width: 90%; margin-top: 10px; }
+        .noms-conjoints-gauche { margin-top: 30px; margin-bottom: 20px; font-size: 14pt; font-weight: bold; line-height: 1.5; }
+
+        /* ========================================= */
+        /* COLONNE DROITE                            */
+        /* ========================================= */
+        .col-droite { width: 65%; display: flex; flex-direction: column; }
+        
+        .mot-extrait { text-align: center; font-size: 32pt; font-weight: bold; margin-top: 0; margin-bottom: 5px; }
+        .reste-titre { text-align: center; font-size: 16pt; font-weight: bold; margin-bottom: 15px; line-height: 1.3; }
+        .date-mariage { font-size: 14pt; text-align: left; margin-bottom: 20px; font-weight: bold; }
+        
+        .bloc-epoux { margin-bottom: 15px; }
+        .titre-bloc { font-size: 15pt; font-weight: bold; margin-bottom: 8px; background-color: #f8f9fa; padding: 4px; border-left: 4px solid black; }
+        
+        .table-info { width: 100%; border-collapse: collapse; font-size: 13.5pt; line-height: 1.3; }
+        .table-info td { vertical-align: top; padding: 2px 0; }
+        .t-label { width: 28%; font-weight: normal; }
+        .t-sep { width: 5%; text-align: center; }
+        .t-valeur { font-weight: bold; }
+
+        /* ========================================= */
+        /* ZONE BASSE (PLEINE LARGEUR ET FIN DE PAGE)*/
+        /* ========================================= */
+        .section-inferieure { 
+            width: 100%; z-index: 1; 
+            display: flex; flex-direction: column; flex-grow: 1;
+        }
+
+        .certification { 
+            font-size: 14pt; font-weight: bold; text-align: center; 
+            width: 100%; margin-top: 15px; margin-bottom: 20px; 
+            padding-top: 10px; border-top: 1px solid #eee;
+        }
+
+        .mentions-bloc { font-size: 12pt; border: 1px dashed black; padding: 10px; margin-bottom: 20px; }
+        
+        /* Ce bloc est poussé au pied de la page A4 (margin-top: auto) */
+        .zone-finale { 
+            position: relative; 
+            margin-top: 20px; 
+            width: 100%; 
+            min-height: 260px; /* Garantit l'espace pour le sceau */
+        }
+        
+        /* Le QR Code est ancré en bas (bottom: 0) et au centre (left: 50%) */
+        .qr-code-wrap { 
+            position: absolute; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            text-align: center; 
+        }
+        .qr-code-wrap img { width: 110px; height: 110px; }
+        
+        /* La signature est ancrée en haut à droite (top: 0), libérant tout l'espace en dessous */
+        .signature-bloc { 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            text-align: right; 
+            width: 50%;
+        }
+        .date-delivrance { font-weight: bold; margin-bottom: 15px; }
+        
+        /* Grand espace vide pour apposer le sceau physique */
+        .officier-titre { font-weight: bold; margin-bottom: 20px; display: block; } 
+
+        @media print { body { background: none; } .btn-print { display: none !important; } }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="cadre">
+        
+        <img src="{% static 'registre/armoirie ci.png' %}" class="armoiries-filigrane" alt="Filigrane">
+
+        <div class="section-superieure">
+            <div class="col-gauche">
+                <div class="en-tete-rep">
+                    RÉPUBLIQUE DE CÔTE D'IVOIRE<br>
+                    RÉGION DU {{ s.region|upper }}<br>
+                    DÉPARTEMENT DE {{ s.prefecture|upper }}<br>
+                    SOUS-PRÉFECTURE DE {{ s.sous_prefecture|upper }}
+                </div>
+                <img src="{% static 'registre/logo.png' %}" class="armoirie-gauche" alt="Logo">
+                <div class="etat-civil-box">
+                    ÉTAT CIVIL<br>CIRCONSCRIPTION D'ÉTAT CIVIL<br>
+                    DE {{ s.sous_prefecture|upper }}<br>
+                    CENTRE DE {{ s.nom_centre|default:s.sous_prefecture|upper }}
+                </div>
+                <div class="num-registre-box">N° {{ m.numero_registre }}<br>DU REGISTRE</div>
+                <div class="noms-conjoints-gauche">
+                    MARIAGE ENTRE :<br><br>
+                    <span style="font-size: 16pt;">{{ m.nom_prenoms_epoux|upper }}</span><br><br>
+                    ET<br><br>
+                    <span style="font-size: 16pt;">{{ m.nom_prenoms_epouse|upper }}</span>
+                </div>
+            </div>
+
+            <div class="col-droite">
+                <div class="mot-extrait">EXTRAIT</div>
+                <div class="reste-titre">DU REGISTRE DES ACTES DE MARIAGE<br>POUR L'ANNÉE {{ m.annee_registre }}</div>
+                <div class="date-mariage">Le {{ m.date_mariage_lettres }}</div>
+                
+                <div class="bloc-epoux">
+                    <div class="titre-bloc">L'ÉPOUX : {{ m.nom_prenoms_epoux|upper }}</div>
+                    <table class="table-info">
+                        <tr><td class="t-label">Né le / Vers</td><td class="t-sep">:</td><td class="t-valeur">{{ m.date_naissance_epoux }}</td></tr>
+                        <tr><td class="t-label">À</td><td class="t-sep">:</td><td class="t-valeur">{{ m.lieu_naissance_epoux|upper }}</td></tr>
+                        <tr><td class="t-label">Nationalité</td><td class="t-sep">:</td><td class="t-valeur">{{ m.nationalite_epoux }}</td></tr>
+                        <tr><td class="t-label">Fils de</td><td class="t-sep">:</td><td class="t-valeur">{{ m.pere_epoux }}</td></tr>
+                        <tr><td class="t-label">Et de</td><td class="t-sep">:</td><td class="t-valeur">{{ m.mere_epoux }}</td></tr>
+                    </table>
+                </div>
+
+                <div class="bloc-epoux">
+                    <div class="titre-bloc">L'ÉPOUSE : {{ m.nom_prenoms_epouse|upper }}</div>
+                    <table class="table-info">
+                        <tr><td class="t-label">Née le / Vers</td><td class="t-sep">:</td><td class="t-valeur">{{ m.date_naissance_epouse }}</td></tr>
+                        <tr><td class="t-label">À</td><td class="t-sep">:</td><td class="t-valeur">{{ m.lieu_naissance_epouse|upper }}</td></tr>
+                        <tr><td class="t-label">Nationalité</td><td class="t-sep">:</td><td class="t-valeur">{{ m.nationalite_epouse }}</td></tr>
+                        <tr><td class="t-label">Fille de</td><td class="t-sep">:</td><td class="t-valeur">{{ m.pere_epouse }}</td></tr>
+                        <tr><td class="t-label">Et de</td><td class="t-sep">:</td><td class="t-valeur">{{ m.mere_epouse }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-inferieure">
+            <div class="certification">
+                Certifié le présent extrait conforme aux indications portées au registre.
+            </div>
+
+            {% if m.mentions_marginales %}
+            <div class="mentions-bloc">
+                <strong>Mentions :</strong> {{ m.mentions_marginales|linebreaksbr }}
+            </div>
+            {% endif %}
+            
+            <div class="zone-finale">
+                <div class="qr-code-wrap">
+                    <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code">
+                    <div style="font-size: 8pt; margin-top: 2px;">Validation Numérique</div>
+                </div>
+                
+                <div class="signature-bloc">
+                    <div class="date-delivrance">Délivré à {{ s.sous_prefecture|upper }}, le {{ m.date_etablissement|date:"d/m/Y" }}</div>
+                    <span class="officier-titre">L’Officier de l'État Civil</span>
+                    <div style="font-style: italic; font-size: 11pt;">(Signature et Sceau)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px 15px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold;">🖨️ Imprimer</button>
+</body>
+</html>

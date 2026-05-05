@@ -53,19 +53,28 @@ class ActeNaissance(models.Model):
     date_naissance = models.DateField(verbose_name="Né(e) le")
     heure_naissance = models.TimeField(verbose_name="À (Heure)", null=True, blank=True)
     lieu_naissance = models.CharField(max_length=255, verbose_name="Lieu de naissance")
-# Ajoutez ces choix juste au début de votre modèle ActeNaissance
+
     SEXE_CHOICES = [
         ('M', 'Masculin'),
         ('F', 'Féminin'),
     ]
-    
-    # Ajoutez ce champ avec les autres (nom, prénoms, etc.)
     sexe = models.CharField(max_length=1, choices=SEXE_CHOICES, default='M', verbose_name="Sexe de l'enfant")
 
-    # Filiation (Parents)
+    # ==========================================
+    # FILIATION (PARENTS) - SECTION MISE À JOUR
+    # ==========================================
+    # --- INFORMATIONS SUR LE PÈRE ---
     nom_pere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom du Père")
+    date_naissance_pere = models.CharField(max_length=100, verbose_name="Date de naissance du père", blank=True, null=True, help_text="Ex: 12/05/1970 ou Vers 1970")
+    profession_pere = models.CharField(max_length=150, verbose_name="Profession du père", blank=True, null=True)
+    domicile_pere = models.CharField(max_length=150, verbose_name="Domicile du père", blank=True, null=True)
     nationalite_pere = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nationalité Père")
+
+    # --- INFORMATIONS SUR LA MÈRE ---
     nom_mere = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nom de la Mère")
+    date_naissance_mere = models.CharField(max_length=100, verbose_name="Date de naissance de la mère", blank=True, null=True, help_text="Ex: 25/08/1975 ou Vers 1975")
+    profession_mere = models.CharField(max_length=150, verbose_name="Profession de la mère", blank=True, null=True)
+    domicile_mere = models.CharField(max_length=150, verbose_name="Domicile de la mère", blank=True, null=True)
     nationalite_mere = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nationalité Mère")
 
     # Mentions de Justice et Transcription
@@ -270,3 +279,75 @@ class CertificatVie(models.Model):
 
     def __str__(self):
         return f"Certificat de Vie - {self.nom_prenoms}"
+
+# ==========================================
+# EXTRAIT D'ACTE DE MARIAGE
+# ==========================================
+class ActeMariage(models.Model):
+    # Informations du Registre
+    numero_registre = models.CharField(max_length=50, verbose_name="N° de l'acte")
+    annee_registre = models.CharField(max_length=4, verbose_name="Année du registre")
+    
+    # --- MODIFICATION ICI : DateField au lieu de CharField ---
+    date_mariage = models.DateField(verbose_name="Date du mariage")
+    
+    date_etablissement = models.DateField(verbose_name="Date d'établissement de l'extrait")
+    nom_officier = models.CharField(max_length=150, verbose_name="Nom de l'Officier d'état civil")
+
+    # ==========================================
+    # L'ÉPOUX (LE MARI)
+    # ==========================================
+    nom_prenoms_epoux = models.CharField(max_length=255, verbose_name="Nom et Prénoms de l'Époux")
+    date_naissance_epoux = models.CharField(max_length=150, verbose_name="Né le / Vers", help_text="Ex: Vers 1920 ou 12/05/1980")
+    lieu_naissance_epoux = models.CharField(max_length=150, verbose_name="À (Lieu de naissance)")
+    nationalite_epoux = models.CharField(max_length=100, verbose_name="Nationalité de l'époux", default="Ivoirienne")
+    
+    pere_epoux = models.CharField(max_length=150, verbose_name="Fils de (Père)")
+    nationalite_pere_epoux = models.CharField(max_length=100, verbose_name="Nationalité du père", blank=True, null=True)
+    mere_epoux = models.CharField(max_length=150, verbose_name="Et de (Mère)")
+    nationalite_mere_epoux = models.CharField(max_length=100, verbose_name="Nationalité de la mère", blank=True, null=True)
+    domicile_parents_epoux = models.CharField(max_length=200, verbose_name="Domiciliés à (Parents)", blank=True, null=True)
+
+    # ==========================================
+    # L'ÉPOUSE (LA FEMME)
+    # ==========================================
+    nom_prenoms_epouse = models.CharField(max_length=255, verbose_name="Nom et Prénoms de l'Épouse")
+    date_naissance_epouse = models.CharField(max_length=150, verbose_name="Née le / Vers")
+    lieu_naissance_epouse = models.CharField(max_length=150, verbose_name="À (Lieu de naissance)")
+    nationalite_epouse = models.CharField(max_length=100, verbose_name="Nationalité de l'épouse", default="Ivoirienne")
+    
+    pere_epouse = models.CharField(max_length=150, verbose_name="Fille de (Père)")
+    nationalite_pere_epouse = models.CharField(max_length=100, verbose_name="Nationalité du père", blank=True, null=True)
+    mere_epouse = models.CharField(max_length=150, verbose_name="Et de (Mère)")
+    nationalite_mere_epouse = models.CharField(max_length=100, verbose_name="Nationalité de la mère", blank=True, null=True)
+    domicile_parents_epouse = models.CharField(max_length=200, verbose_name="Domiciliés à (Parents)", blank=True, null=True)
+
+    # ==========================================
+    # MENTIONS MARGINALES
+    # ==========================================
+    mentions_marginales = models.TextField(blank=True, null=True, verbose_name="Mentions (Divorce, Décès, etc.)")
+
+    class Meta:
+        verbose_name = "Extrait de Mariage"
+        verbose_name_plural = "Extraits de Mariage"
+
+    def __str__(self):
+        return f"Mariage N°{self.numero_registre} : {self.nom_prenoms_epoux} & {self.nom_prenoms_epouse}"
+
+    # --- NOUVELLE MÉTHODE DE CONVERSION EN LETTRES ---
+    @property
+    def date_mariage_lettres(self):
+        if not self.date_mariage:
+            return ""
+        from num2words import num2words
+        jours = ["premier", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", 
+                 "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", 
+                 "dix-neuf", "vingt", "vingt et un", "vingt-deux", "vingt-trois", "vingt-quatre", 
+                 "vingt-cinq", "vingt-six", "vingt-sept", "vingt-huit", "vingt-neuf", "trente", "trente et un"]
+        mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+        
+        d = self.date_mariage
+        # Remplacement de 'mille' par 'mil' selon la règle administrative ivoirienne
+        annee_lettres = num2words(d.year, lang='fr').replace('mille', 'mil')
+        
+        return f"{jours[d.day-1]} {mois[d.month-1]} {annee_lettres}"
