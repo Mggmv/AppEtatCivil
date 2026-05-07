@@ -24,7 +24,7 @@ def dashboard(request):
 def voir_extrait(request, pk):
     acte = get_object_or_404(ActeNaissance, pk=pk)
     
-    # --- CORRECTION ICI : Retrait des parenthèses ---
+    # --- Date en lettres (sans parenthèses) ---
     date_lettres = acte.infos_naissance_lettres
     
     # ==========================================
@@ -37,16 +37,19 @@ def voir_extrait(request, pk):
         "October": "octobre", "November": "novembre", "December": "décembre"
     }
     for en, fr in traductions_mois.items():
-        date_lettres = date_lettres.replace(en, fr)
-        date_lettres = date_lettres.replace(en.lower(), fr)
+        if date_lettres:
+            date_lettres = date_lettres.replace(en, fr)
+            date_lettres = date_lettres.replace(en.lower(), fr)
         
-    date_lettres = date_lettres.replace("mille", "mil")
-    if date_lettres.startswith("un "):
-        date_lettres = date_lettres.replace("un ", "premier ", 1)
+    if date_lettres:
+        date_lettres = date_lettres.replace("mille", "mil")
+        if date_lettres.startswith("un "):
+            date_lettres = date_lettres.replace("un ", "premier ", 1)
     # ==========================================
 
     phrase_naissance = f"Le {date_lettres}"
     
+    # Gestion de l'heure
     if acte.heure_naissance:
         h = acte.heure_naissance.hour
         m = acte.heure_naissance.minute
@@ -72,24 +75,40 @@ def voir_extrait(request, pk):
     # --- GESTION DU SEXE ET DE LA GRAMMAIRE ---
     # ==========================================
     sexe_enfant = getattr(acte, 'sexe', 'M')
-    
     enfant_label = "Fille de " if sexe_enfant == 'F' else "Fils de "
     accord_ne = "née" if sexe_enfant == 'F' else "né"
 
-    # --- Filiation (Père et Mère) ---
-    if acte.nom_pere:
-        pere_info = acte.nom_pere
-        if getattr(acte, 'nationalite_pere', None):
-            pere_info += f" de nationalité {acte.nationalite_pere}"
+    # ==========================================
+    # --- FILIATION DÉTAILLÉE (Père et Mère) ---
+    # ==========================================
+    
+    # PÈRE
+    if acte.nom_pere and str(acte.nom_pere).strip() != 'None':
+        pere_info = f"{acte.nom_pere}"
+        if acte.date_naissance_pere and str(acte.date_naissance_pere).strip() != 'None':
+            pere_info += f", né le {acte.date_naissance_pere}"
+        if acte.profession_pere and str(acte.profession_pere).strip() != 'None':
+            pere_info += f", {acte.profession_pere}"
+        if acte.nationalite_pere and str(acte.nationalite_pere).strip() != 'None':
+            pere_info += f" {acte.nationalite_pere}"
+        if acte.domicile_pere and str(acte.domicile_pere).strip() != 'None':
+            pere_info += f" domicilié à {acte.domicile_pere}"
         pere_label = enfant_label
     else:
         pere_info = "de père inconnu"
         pere_label = ""
 
-    if acte.nom_mere:
-        mere_info = acte.nom_mere
-        if getattr(acte, 'nationalite_mere', None):
-            mere_info += f" de nationalité {acte.nationalite_mere}"
+    # MÈRE
+    if acte.nom_mere and str(acte.nom_mere).strip() != 'None':
+        mere_info = f"{acte.nom_mere}"
+        if acte.date_naissance_mere and str(acte.date_naissance_mere).strip() != 'None':
+            mere_info += f", née le {acte.date_naissance_mere}"
+        if acte.profession_mere and str(acte.profession_mere).strip() != 'None':
+            mere_info += f", {acte.profession_mere}"
+        if acte.nationalite_mere and str(acte.nationalite_mere).strip() != 'None':
+            mere_info += f" {acte.nationalite_mere}"
+        if acte.domicile_mere and str(acte.domicile_mere).strip() != 'None':
+            mere_info += f" domiciliée à {acte.domicile_mere}"
         mere_label = "et de "
     else:
         mere_info = "de mère inconnue"
@@ -99,7 +118,10 @@ def voir_extrait(request, pk):
     # --- GÉNÉRATION DU QR CODE HORS-LIGNE ---
     # ==========================================
     date_str = acte.date_declaration.strftime('%d/%m/%Y') if acte.date_declaration else ""
-    qr_data = f"SOUS-PREFECTURE DE {acte.structure.sous_prefecture}\nACTE N: {acte.numero_registre} DU {date_str}\nNOM: {acte.nom_enfant}\nPRENOMS: {acte.prenoms_enfant}\nSEXE: {sexe_enfant}".upper()
+    # Sécurisation en cas d'absence de structure
+    sp_nom = acte.structure.sous_prefecture if hasattr(acte, 'structure') and acte.structure else ""
+    
+    qr_data = f"SOUS-PREFECTURE DE {sp_nom}\nACTE N: {acte.numero_registre} DU {date_str}\nNOM: {acte.nom_enfant}\nPRENOMS: {acte.prenoms_enfant}\nSEXE: {sexe_enfant}".upper()
     
     qr = qrcode.QRCode(version=1, box_size=4, border=0)
     qr.add_data(qr_data)
