@@ -35,7 +35,14 @@ def backup_database():
         timestamp = datetime.now().strftime('%Y-%m-%d_%Hh%M')
         destination = os.path.join(sauvegardes_dir, f'backup_{timestamp}.sqlite3')
         try:
+            # Copie de la base de données
             shutil.copy2(source, destination)
+            
+            # Nettoyage : on ne garde que les 30 dernières sauvegardes pour ne pas saturer le disque
+            liste_sauvegardes = sorted([os.path.join(sauvegardes_dir, f) for f in os.listdir(sauvegardes_dir) if f.endswith('.sqlite3')])
+            if len(liste_sauvegardes) > 30:
+                os.remove(liste_sauvegardes[0]) # Supprime la plus ancienne
+                
         except Exception:
             pass
 
@@ -53,11 +60,15 @@ def start_django():
 def open_browser():
     time.sleep(3)
     try:
+        # Ouvre directement la page d'administration comme dans votre ancien fichier
         os.startfile('http://127.0.0.1:8026/admin/')
     except Exception:
         pass
 
 if __name__ == "__main__":
+    # 1. Effectue la sauvegarde
     backup_database()
+    # 2. Prépare l'ouverture de la page web
     threading.Thread(target=open_browser, daemon=True).start()
+    # 3. Lance le serveur
     start_django()

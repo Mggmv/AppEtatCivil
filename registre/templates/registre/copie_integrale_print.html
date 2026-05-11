@@ -35,32 +35,66 @@
 
         .colonnes-container { display: flex; width: 100%; z-index: 1; }
 
-        /* Colonne Gauche (Mentions) */
+        /* ================= COLONNE GAUCHE ================= */
         .col-gauche {
             width: 30%; border-right: 1.5px solid black; padding-right: 15px; margin-right: 15px;
             display: flex; flex-direction: column; height: fit-content;
         }
         .acte-num { font-weight: bold; font-size: 14pt; margin-bottom: 10px; }
         .naissance-de { font-size: 14pt; line-height: 1.2; margin-bottom: 20px; }
-        .mentions-texte { font-size: 11pt; line-height: 1.3; text-align: justify; }
+        
+        /* Styles pour la transcription et les mentions à gauche */
+        .mentions-texte, .mention-item { 
+            font-size: 11pt; 
+            line-height: 1.3; 
+            text-align: justify; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            word-break: break-word; /* Protection contre les débordements */
+            max-width: 100%; 
+        }
+        
+        .mentions-texte {
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
 
-        /* Colonne Droite */
+        .mention-item {
+            margin-bottom: 10px;
+        }
+
+        /* ================= COLONNE DROITE ================= */
         .col-droite { width: 70%; display: flex; flex-direction: column; }
         .titre-copie { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
         .sous-titre-copie { text-align: center; font-size: 12pt; font-style: italic; margin-bottom: 15px; line-height: 1.2; }
 
-        .table-transcription { width: 100%; border-collapse: collapse; font-size: 12.5pt; line-height: 1.1; }
-        .table-transcription td { padding: 1px 0; vertical-align: bottom; }
+        /* Tableau de la copie */
+        .table-transcription { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 12.5pt; 
+            line-height: 1.1; 
+            table-layout: fixed; 
+        }
+        
+        .table-transcription td { padding: 1px 0; vertical-align: top; }
         .td-num { width: 6%; font-weight: bold; text-align: left; }
         .td-label { width: 35%; font-weight: normal; }
-        .td-valeur { font-weight: bold; }
+        .td-valeur { 
+            width: 59%; 
+            font-weight: bold; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            word-break: break-word; 
+        }
 
-        /* Certification placée DANS la colonne droite pour s'aligner parfaitement */
+        /* Certification */
         .texte-certification { 
             font-size: 13pt; text-align: justify; line-height: 1.3; margin-top: 20px; margin-bottom: 10px;
         }
 
-        /* ZONE BASSE (Signatures et QR) */
+        /* ================= ZONE BASSE ================= */
         .section-inferieure { width: 100%; z-index: 1; margin-top: 10px; }
         .zone-finale { position: relative; width: 100%; min-height: 140px; }
         
@@ -104,11 +138,36 @@
                     <strong>{{ a.nom_enfant|upper }}<br>{{ a.prenoms_enfant }}</strong>
                 </div>
                 
-                {% if a.transcription_justice and a.transcription_justice != 'None' %}
+                {% if a.transcription_justice and a.transcription_justice != 'None' and a.transcription_justice != '' %}
                 <div class="mentions-texte">
                     {{ a.transcription_justice|linebreaksbr }}
                 </div>
                 {% endif %}
+
+                {% if a.date_mariage and a.date_mariage != 'None' and a.date_mariage != '' or a.dissolution_mariage and a.dissolution_mariage != 'None' and a.dissolution_mariage != '' or a.date_deces and a.date_deces != 'None' and a.date_deces != '' %}
+                    <div class="mentions-marginales-gauche" style="border-top: 1px solid #ccc; padding-top: 10px; margin-top: 5px;">
+                        
+                        {% if a.date_mariage and a.date_mariage != 'None' and a.date_mariage != '' %}
+                            <div class="mention-item">
+                                Marié(e) le <strong>{{ a.date_mariage }}</strong> avec <strong>{{ a.conjoint_mariage }}</strong>
+                            </div>
+                        {% endif %}
+                        
+                        {% if a.dissolution_mariage and a.dissolution_mariage != 'None' and a.dissolution_mariage != '' %}
+                            <div class="mention-item">
+                                Mariage dissous le <strong>{{ a.dissolution_mariage }}</strong>
+                            </div>
+                        {% endif %}
+                        
+                        {% if a.date_deces and a.date_deces != 'None' and a.date_deces != '' %}
+                            <div class="mention-item">
+                                Décédé(e) le <strong>{{ a.date_deces }}</strong> à <strong>{{ a.lieu_deces }}</strong>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+
             </div>
 
             <div class="col-droite">
@@ -120,9 +179,7 @@
 
                 <table class="table-transcription">
                     <tr><td class="td-num">1.</td><td class="td-label">Le</td><td class="td-valeur">{{ a.infos_naissance_lettres }}</td></tr>
-                    
                     <tr><td class="td-num">2.</td><td class="td-label">à</td><td class="td-valeur">{% if a.heure_naissance %}{{ a.heure_naissance_lettres }}{% else %}................................................{% endif %}</td></tr>
-                    
                     <tr><td class="td-num">3.</td><td class="td-label">est né(e) à</td><td class="td-valeur">{% if a.lieu_naissance and a.lieu_naissance != "None" %}{{ a.lieu_naissance }}{% else %}................................................{% endif %}</td></tr>
                     <tr><td class="td-num">4.</td><td class="td-label">sous-préfecture de</td><td class="td-valeur">{{ s.sous_prefecture }}</td></tr>
                     <tr><td class="td-num">5.</td><td class="td-label">l'enfant</td><td class="td-valeur">{{ a.nom_enfant|upper }} {{ a.prenoms_enfant }}</td></tr>
@@ -141,7 +198,6 @@
                     <tr><td class="td-num">16.</td><td class="td-label">nationalité</td><td class="td-valeur">{% if a.nationalite_mere and a.nationalite_mere != "None" %}{{ a.nationalite_mere }}{% else %}................................................{% endif %}</td></tr>
                     
                     <tr><td class="td-num">17.</td><td class="td-label">dressé le</td><td class="td-valeur">{% if a.date_declaration %}{{ a.date_declaration_lettres }}{% else %}................................................{% endif %}</td></tr>
-                    
                     <tr><td class="td-num">18.</td><td class="td-label">à</td><td class="td-valeur">................................................</td></tr>
                     <tr><td class="td-num">19.</td><td class="td-label">sur la déclaration de</td><td class="td-valeur">................................................</td></tr>
                     <tr><td class="td-num">20.</td><td class="td-label">reçue en langue</td><td class="td-valeur">................................................</td></tr>
@@ -149,7 +205,7 @@
                     <tr><td class="td-num">22.</td><td colspan="2">Par Nous, Officier de l'état civil.</td></tr>
                     <tr><td class="td-num">23.</td><td colspan="2">Lecture faite, et le déclarant invité à lire l'acte.</td></tr>
                     <tr><td class="td-num">24.</td><td colspan="2">L'acte ayant été traduit par l'interprète.</td></tr>
-                    <tr><td class="td-num">25.</td><td colspan="2">Nous avons signé avec le déclarant.</td></tr>
+                    <tr><td class="td-num">25.</td><td colspan="2" style="padding-bottom: 5px;">Nous avons signé avec le déclarant.</td></tr>
                 </table>
 
                 <div class="texte-certification">

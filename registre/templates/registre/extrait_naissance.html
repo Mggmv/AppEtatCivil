@@ -29,12 +29,26 @@
         .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
         
         /* BLOC GAUCHE */
-        .bloc-gauche { text-align: center; width: 320px; }
+        .bloc-gauche { text-align: center; width: 320px; padding-right: 10px; }
         .logo-embleme { width: 125px; height: auto; margin: 10px 0; }
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.2; }
         
         .info-acte-gauche { margin-top: 15px; line-height: 1.2; }
         .nom-enfant-gauche { margin-top: 15px; text-align: center; }
+        
+        /* TRANSCRIPTION GAUCHE SANS DÉBORDEMENT */
+        .transcription-gauche {
+            margin-top: 20px; 
+            font-size: 12px; 
+            font-style: italic; 
+            font-weight: bold; 
+            line-height: 1.3;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 210px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
         /* BLOC DROITE */
         .bloc-droite { 
@@ -47,9 +61,8 @@
 
         .en-tete-republique { margin-bottom: 10px; }
 
-        /* --- POLICES MODIFIABLES ICI --- */
         .titre-extrait { 
-            font-size: 40px; /* MODIFIEZ CETTE VALEUR POUR LA TAILLE DE "EXTRAIT" */
+            font-size: 40px; 
             font-weight: bold; 
             text-decoration: underline; 
             text-transform: uppercase; 
@@ -58,23 +71,22 @@
         }
 
         .image-intermediaire {
-            width: 80px; /* MODIFIEZ CETTE VALEUR POUR AGRANDIR/RÉDUIRE L'IMAGE */
+            width: 80px; 
             height: auto;
-            margin: 8px 0; /* Espace au-dessus et en-dessous de l'image */
+            margin: 8px 0; 
         }
 
         .sous-titre-registre {
-            font-size: 14px; /* MODIFIEZ CETTE VALEUR POUR LA TAILLE DE "DU REGISTRE..." */
+            font-size: 14px; 
             font-weight: bold; 
             line-height: 1.2;
             margin: 0;
         }
-        /* ------------------------------- */
 
         .bloc-naissance-texte { 
             margin-top: 35px; 
             text-align: left; 
-            line-height: 1.5; 
+            line-height: 1.4; 
             font-size: 17px; 
             width: 95%; 
         }
@@ -83,10 +95,17 @@
         .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin: 15px 0 5px 0; }
         .titre-mention-centre { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 10px; display: block; }
         
-        .ligne-mention { display: flex; align-items: baseline; width: 100%; margin-bottom: 6px; font-size: 13px; }
+        .ligne-mention { display: flex; align-items: baseline; width: 100%; margin-bottom: 8px; font-size: 13px; }
         .legende { white-space: nowrap; margin-right: 5px; }
         .pointilles { flex-grow: 1; border-bottom: 1.5px dotted black; height: 1em; margin: 0 5px; }
-        .valeur-officielle { font-weight: bold; text-transform: uppercase; white-space: nowrap; }
+        
+        .valeur-officielle { 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            white-space: normal; 
+            word-break: break-word; 
+            line-height: 1.4;
+        }
 
         /* SIGNATURE ET BAS DE PAGE */
         .signature-zone { text-align: right; margin-top: 10px; padding-right: 20px; }
@@ -135,6 +154,12 @@
                     <span style="font-size: 16px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
                     <span style="font-size: 19px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
                 </div>
+
+                {% if acte.transcription_justice and acte.transcription_justice != 'None' and acte.transcription_justice != '' %}
+                <div class="transcription-gauche">
+                    {{ acte.transcription_justice }}
+                </div>
+                {% endif %}
             </div>
 
             <div class="bloc-droite">
@@ -153,7 +178,12 @@
                 </p>
 
                 <div class="bloc-naissance-texte">
-                    <p>{{ date_heure_complete }}</p>
+                    <p style="margin: 0;">{{ phrase_date }}</p>
+                    {% if phrase_heure %}
+                        <p style="margin: 5px 0 15px 0;">{{ phrase_heure }}</p>
+                    {% else %}
+                        <p style="margin: 5px 0 15px 0;">&nbsp;</p> {% endif %}
+                    
                     <p>à <strong>{{ acte.lieu_naissance|upper }}</strong></p>
                     <p style="margin: 10px 0;">est {{ accord_ne }} <strong>{{ acte.prenoms_enfant|upper }} {{ acte.nom_enfant|upper }}</strong></p>
                     
@@ -166,16 +196,9 @@
         <div class="separateur-mentions"></div>
         <span class="titre-mention-centre">MENTIONS (éventuellement) :</span>
         
-        {% if acte.transcription_justice and acte.transcription_justice != 'None' %}
-        <div class="ligne-mention">
-            <span class="valeur-officielle">{{ acte.transcription_justice }}</span>
-            <div class="pointilles"></div>
-        </div>
-        {% endif %}
-
         <div class="ligne-mention">
             <span class="legende">Marié(e) le</span>
-            {% if acte.date_mariage and acte.date_mariage != 'None' %}
+            {% if acte.date_mariage and acte.date_mariage != 'None' and acte.date_mariage != '' %}
                 <span class="valeur-officielle">{{ acte.date_mariage }}</span><div class="pointilles"></div>
             {% else %}
                 <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
@@ -184,7 +207,7 @@
 
         <div class="ligne-mention">
             <span class="legende">Avec</span>
-            {% if acte.conjoint_mariage and acte.conjoint_mariage != 'None' %}
+            {% if acte.conjoint_mariage and acte.conjoint_mariage != 'None' and acte.conjoint_mariage != '' %}
                 <span class="valeur-officielle">{{ acte.conjoint_mariage }}</span><div class="pointilles"></div>
             {% else %}
                 <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
@@ -193,7 +216,7 @@
 
         <div class="ligne-mention">
             <span class="legende">Mariage dissous le</span>
-            {% if acte.dissolution_mariage and acte.dissolution_mariage != 'None' %}
+            {% if acte.dissolution_mariage and acte.dissolution_mariage != 'None' and acte.dissolution_mariage != '' %}
                 <span class="valeur-officielle">{{ acte.dissolution_mariage }}</span><div class="pointilles"></div>
             {% else %}
                 <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
@@ -202,7 +225,7 @@
 
         <div class="ligne-mention">
             <span class="legende">Décédé(e) le</span>
-            {% if acte.date_deces and acte.date_deces != 'None' %}
+            {% if acte.date_deces and acte.date_deces != 'None' and acte.date_deces != '' %}
                 <span class="valeur-officielle">{{ acte.date_deces }}</span><div class="pointilles"></div>
             {% else %}
                 <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
@@ -211,7 +234,7 @@
 
         <div class="ligne-mention">
             <span class="legende">Lieu de décès</span>
-            {% if acte.lieu_deces and acte.lieu_deces != 'None' %}
+            {% if acte.lieu_deces and acte.lieu_deces != 'None' and acte.lieu_deces != '' %}
                 <span class="valeur-officielle">{{ acte.lieu_deces }}</span><div class="pointilles"></div>
             {% else %}
                 <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>

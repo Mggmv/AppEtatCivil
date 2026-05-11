@@ -47,7 +47,9 @@ def voir_extrait(request, pk):
             date_lettres = date_lettres.replace("un ", "premier ", 1)
     # ==========================================
 
-    phrase_naissance = f"Le {date_lettres}"
+    # --- SÉPARATION DE LA DATE ET DE L'HEURE ---
+    phrase_date = f"Le {date_lettres}"
+    phrase_heure = ""
     
     # Gestion de l'heure
     if acte.heure_naissance:
@@ -69,7 +71,7 @@ def voir_extrait(request, pk):
             else:
                 d, u = divmod(m, 10)
                 txt_m = f" {conv.get(d*10)}{' et ' if u == 1 else '-'}{conv.get(u)}"
-        phrase_naissance += f" à {txt_h}{txt_m}"
+        phrase_heure = f"à {txt_h}{txt_m}"
 
     # ==========================================
     # --- GESTION DU SEXE ET DE LA GRAMMAIRE ---
@@ -89,10 +91,13 @@ def voir_extrait(request, pk):
             pere_info += f", né le {acte.date_naissance_pere}"
         if acte.profession_pere and str(acte.profession_pere).strip() != 'None':
             pere_info += f", {acte.profession_pere}"
+            
+        # AJOUT DE "DE NATIONALITÉ" ICI
         if acte.nationalite_pere and str(acte.nationalite_pere).strip() != 'None':
-            pere_info += f" {acte.nationalite_pere}"
+            pere_info += f" de nationalité {str(acte.nationalite_pere).strip()}"
+            
         if acte.domicile_pere and str(acte.domicile_pere).strip() != 'None':
-            pere_info += f" domicilié à {acte.domicile_pere}"
+            pere_info += f" et domicilié à {acte.domicile_pere}"
         pere_label = enfant_label
     else:
         pere_info = "de père inconnu"
@@ -105,10 +110,13 @@ def voir_extrait(request, pk):
             mere_info += f", née le {acte.date_naissance_mere}"
         if acte.profession_mere and str(acte.profession_mere).strip() != 'None':
             mere_info += f", {acte.profession_mere}"
+            
+        # AJOUT DE "DE NATIONALITÉ" ICI
         if acte.nationalite_mere and str(acte.nationalite_mere).strip() != 'None':
-            mere_info += f" {acte.nationalite_mere}"
+            mere_info += f" de nationalité {str(acte.nationalite_mere).strip()}"
+            
         if acte.domicile_mere and str(acte.domicile_mere).strip() != 'None':
-            mere_info += f" domiciliée à {acte.domicile_mere}"
+            mere_info += f" et domiciliée à {acte.domicile_mere}"
         mere_label = "et de "
     else:
         mere_info = "de mère inconnue"
@@ -118,7 +126,6 @@ def voir_extrait(request, pk):
     # --- GÉNÉRATION DU QR CODE HORS-LIGNE ---
     # ==========================================
     date_str = acte.date_declaration.strftime('%d/%m/%Y') if acte.date_declaration else ""
-    # Sécurisation en cas d'absence de structure
     sp_nom = acte.structure.sous_prefecture if hasattr(acte, 'structure') and acte.structure else ""
     
     qr_data = f"SOUS-PREFECTURE DE {sp_nom}\nACTE N: {acte.numero_registre} DU {date_str}\nNOM: {acte.nom_enfant}\nPRENOMS: {acte.prenoms_enfant}\nSEXE: {sexe_enfant}".upper()
@@ -135,7 +142,8 @@ def voir_extrait(request, pk):
 
     context = {
         'acte': acte,
-        'date_heure_complete': phrase_naissance,
+        'phrase_date': phrase_date,
+        'phrase_heure': phrase_heure,
         'pere_info': pere_info,
         'pere_label': pere_label,
         'mere_info': mere_info,
