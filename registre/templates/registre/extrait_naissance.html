@@ -26,7 +26,9 @@
             width: 14cm; opacity: 0.08; z-index: 0; pointer-events: none;
         }
         .contenu-officiel { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
-        .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        
+        /* LA ZONE SUPÉRIEURE PREND EXACTEMENT LA MOITIÉ HAUT DE LA PAGE */
+        .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; height: 48%; }
         
         /* BLOC GAUCHE */
         .bloc-gauche { text-align: center; width: 320px; padding-right: 10px; }
@@ -36,7 +38,6 @@
         .info-acte-gauche { margin-top: 15px; line-height: 1.2; }
         .nom-enfant-gauche { margin-top: 15px; text-align: center; }
         
-        /* TRANSCRIPTION GAUCHE SANS DÉBORDEMENT */
         .transcription-gauche {
             margin-top: 20px; 
             font-size: 12px; 
@@ -51,74 +52,31 @@
         }
 
         /* BLOC DROITE */
-        .bloc-droite { 
-            text-align: center; 
-            width: 380px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-        }
-
+        .bloc-droite { text-align: center; width: 380px; display: flex; flex-direction: column; align-items: center; }
         .en-tete-republique { margin-bottom: 10px; }
+        .titre-extrait { font-size: 40px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0; width: 100%; }
+        .image-intermediaire { width: 80px; height: auto; margin: 8px 0; }
+        .sous-titre-registre { font-size: 14px; font-weight: bold; line-height: 1.2; margin: 0; }
+        .bloc-naissance-texte { margin-top: 35px; text-align: left; line-height: 1.4; font-size: 17px; width: 95%; }
 
-        .titre-extrait { 
-            font-size: 40px; 
-            font-weight: bold; 
-            text-decoration: underline; 
-            text-transform: uppercase; 
-            margin: 0; 
-            width: 100%; 
-        }
-
-        .image-intermediaire {
-            width: 80px; 
-            height: auto;
-            margin: 8px 0; 
-        }
-
-        .sous-titre-registre {
-            font-size: 14px; 
-            font-weight: bold; 
-            line-height: 1.2;
-            margin: 0;
-        }
-
-        .bloc-naissance-texte { 
-            margin-top: 35px; 
-            text-align: left; 
-            line-height: 1.4; 
-            font-size: 17px; 
-            width: 95%; 
-        }
-
-        /* SECTION MENTIONS */
-        .separateur-mentions { border-top: 1.5px solid black; width: 100%; margin: 15px 0 5px 0; }
-        .titre-mention-centre { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 10px; display: block; }
+        /* LIGNE HORIZONTALE STRICTEMENT FIGÉE AU MILIEU (50%) */
+        .separateur-mentions { position: absolute; top: 50%; left: 0; right: 0; border-top: 1.5px solid black; width: 100%; margin: 0; }
         
+        /* ZONE INFÉRIEURE FIGÉE SOUS LA LIGNE */
+        .zone-inferieure { position: absolute; top: 51%; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; padding-top: 10px; }
+
+        .titre-mention-centre { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 10px; display: block; }
         .ligne-mention { display: flex; align-items: baseline; width: 100%; margin-bottom: 8px; font-size: 13px; }
         .legende { white-space: nowrap; margin-right: 5px; }
         .pointilles { flex-grow: 1; border-bottom: 1.5px dotted black; height: 1em; margin: 0 5px; }
         
-        .valeur-officielle { 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            white-space: normal; 
-            word-break: break-word; 
-            line-height: 1.4;
-        }
+        /* SUPPRESSION DES MAJUSCULES FORCÉES POUR LES MENTIONS */
+        .valeur-officielle { font-weight: bold; white-space: normal; word-break: break-word; line-height: 1.4; }
 
         /* SIGNATURE ET BAS DE PAGE */
         .signature-zone { text-align: right; margin-top: 10px; padding-right: 20px; }
         .officier-titre { font-weight: bold; margin-bottom: 2px; display: block; }
-        
-        .bas-de-page { 
-            margin-top: auto;
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding-bottom: 15px;
-        }
+        .bas-de-page { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; }
         .container-sceau-qr { display: flex; align-items: center; justify-content: center; width: 100%; position: relative; }
         .mention-sceau { position: absolute; left: 15%; font-weight: bold; text-transform: lowercase; font-size: 14px; }
         .qr-code-img { width: 95px; height: 95px; }
@@ -132,6 +90,7 @@
     <img src="{% static 'registre/armoirie ci.png' %}" class="armoiries-filigrane">
     
     <div class="contenu-officiel">
+        
         <div class="section-superieure">
             <div class="bloc-gauche">
                 <p class="txt-admin">RÉGION DU {{ acte.structure.region|upper }}</p>
@@ -151,8 +110,14 @@
 
                 <div class="nom-enfant-gauche">
                     <span style="font-size: 12px;">NAISSANCE DE :</span><br>
-                    <span style="font-size: 16px; font-weight: bold;">{{ acte.prenoms_enfant }}</span><br>
-                    <span style="font-size: 19px; font-weight: bold; text-transform: uppercase;">{{ acte.nom_enfant }}</span>
+                    <span style="font-size: 16px; font-weight: bold;">
+                        {% if acte.prenoms_enfant and acte.prenoms_enfant != 'None' and acte.prenoms_enfant != 'none' %}
+                            {{ acte.prenoms_enfant|title }}<br>
+                            <span style="font-size: 19px; text-transform: uppercase;">{{ acte.nom_enfant|upper }}</span>
+                        {% else %}
+                            <span style="font-size: 19px; text-transform: uppercase;">{{ acte.nom_enfant|upper }}</span>
+                        {% endif %}
+                    </span>
                 </div>
 
                 {% if acte.transcription_justice and acte.transcription_justice != 'None' and acte.transcription_justice != '' %}
@@ -169,9 +134,7 @@
                 </div>
 
                 <h1 class="titre-extrait">EXTRAIT</h1>
-                
                 <img src="{% static 'registre/votre_image.png' %}" class="image-intermediaire" alt="Séparateur" onerror="this.style.display='none'">
-                
                 <p class="sous-titre-registre">
                     DU REGISTRE DES ACTES D'ÉTAT CIVIL<br>
                     POUR L'ANNÉE {{ acte.annee_registre }}
@@ -182,10 +145,17 @@
                     {% if phrase_heure %}
                         <p style="margin: 5px 0 15px 0;">{{ phrase_heure }}</p>
                     {% else %}
-                        <p style="margin: 5px 0 15px 0;">&nbsp;</p> {% endif %}
+                        <p style="margin: 5px 0 15px 0;">&nbsp;</p> 
+                    {% endif %}
                     
                     <p>à <strong>{{ acte.lieu_naissance|upper }}</strong></p>
-                    <p style="margin: 10px 0;">est {{ accord_ne }} <strong>{{ acte.prenoms_enfant|upper }} {{ acte.nom_enfant|upper }}</strong></p>
+                    <p style="margin: 10px 0;">est {{ accord_ne }} <strong>
+                        {% if acte.prenoms_enfant and acte.prenoms_enfant != 'None' and acte.prenoms_enfant != 'none' %}
+                            <span style="text-transform: none;">{{ acte.prenoms_enfant|title }}</span>
+                        {% else %}
+                            <span style="text-transform: uppercase;">{{ acte.nom_enfant|upper }}</span>
+                        {% endif %}
+                    </strong></p>
                     
                     <p>{{ pere_label }}<strong>{{ pere_info }}</strong></p>
                     <p>{{ mere_label }}<strong>{{ mere_info }}</strong></p>
@@ -194,67 +164,70 @@
         </div>
 
         <div class="separateur-mentions"></div>
-        <span class="titre-mention-centre">MENTIONS (éventuellement) :</span>
         
-        <div class="ligne-mention">
-            <span class="legende">Marié(e) le</span>
-            {% if acte.date_mariage and acte.date_mariage != 'None' and acte.date_mariage != '' %}
-                <span class="valeur-officielle">{{ acte.date_mariage }}</span><div class="pointilles"></div>
-            {% else %}
-                <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
-            {% endif %}
-        </div>
-
-        <div class="ligne-mention">
-            <span class="legende">Avec</span>
-            {% if acte.conjoint_mariage and acte.conjoint_mariage != 'None' and acte.conjoint_mariage != '' %}
-                <span class="valeur-officielle">{{ acte.conjoint_mariage }}</span><div class="pointilles"></div>
-            {% else %}
-                <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
-            {% endif %}
-        </div>
-
-        <div class="ligne-mention">
-            <span class="legende">Mariage dissous le</span>
-            {% if acte.dissolution_mariage and acte.dissolution_mariage != 'None' and acte.dissolution_mariage != '' %}
-                <span class="valeur-officielle">{{ acte.dissolution_mariage }}</span><div class="pointilles"></div>
-            {% else %}
-                <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
-            {% endif %}
-        </div>
-
-        <div class="ligne-mention">
-            <span class="legende">Décédé(e) le</span>
-            {% if acte.date_deces and acte.date_deces != 'None' and acte.date_deces != '' %}
-                <span class="valeur-officielle">{{ acte.date_deces }}</span><div class="pointilles"></div>
-            {% else %}
-                <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
-            {% endif %}
-        </div>
-
-        <div class="ligne-mention">
-            <span class="legende">Lieu de décès</span>
-            {% if acte.lieu_deces and acte.lieu_deces != 'None' and acte.lieu_deces != '' %}
-                <span class="valeur-officielle">{{ acte.lieu_deces }}</span><div class="pointilles"></div>
-            {% else %}
-                <div class="pointilles"></div><span class="valeur-officielle">NÉANT</span>
-            {% endif %}
-        </div>
-
-        <p style="font-style: italic; margin-top: 15px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
-        
-        <div class="signature-zone">
-            <p>Délivré à <strong>{{ acte.structure.sous_prefecture|upper }}</strong>, le {% now "d F Y" %}</p>
-            <p class="officier-titre">L'Officier de l'État Civil</p>
-            <p style="font-style: italic; font-size: 11px;">(Signature)</p>
-        </div>
-
-        <div class="bas-de-page">
-            <div class="container-sceau-qr">
-                <div class="mention-sceau">sceau</div>
-                <img src="data:image/png;base64,{{ qr_base64 }}" class="qr-code-img">
+        <div class="zone-inferieure">
+            <span class="titre-mention-centre">MENTIONS (éventuellement) :</span>
+            
+            <div class="ligne-mention">
+                <span class="legende">Marié(e) le</span>
+                {% if acte.date_mariage and acte.date_mariage != 'None' and acte.date_mariage != '' %}
+                    <span class="valeur-officielle">{{ acte.date_mariage }}</span><div class="pointilles"></div>
+                {% else %}
+                    <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
+                {% endif %}
             </div>
-            <p style="font-size: 9px; margin-top: 3px;">Validation numérique officielle</p>
+
+            <div class="ligne-mention">
+                <span class="legende">Avec</span>
+                {% if acte.conjoint_mariage and acte.conjoint_mariage != 'None' and acte.conjoint_mariage != '' %}
+                    <span class="valeur-officielle">{{ acte.conjoint_mariage|title }}</span><div class="pointilles"></div>
+                {% else %}
+                    <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
+                {% endif %}
+            </div>
+
+            <div class="ligne-mention">
+                <span class="legende">Mariage dissous le</span>
+                {% if acte.dissolution_mariage and acte.dissolution_mariage != 'None' and acte.dissolution_mariage != '' %}
+                    <span class="valeur-officielle">{{ acte.dissolution_mariage }}</span><div class="pointilles"></div>
+                {% else %}
+                    <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
+                {% endif %}
+            </div>
+
+            <div class="ligne-mention">
+                <span class="legende">Décédé(e) le</span>
+                {% if acte.date_deces and acte.date_deces != 'None' and acte.date_deces != '' %}
+                    <span class="valeur-officielle">{{ acte.date_deces }}</span><div class="pointilles"></div>
+                {% else %}
+                    <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
+                {% endif %}
+            </div>
+
+            <div class="ligne-mention">
+                <span class="legende">Lieu de décès</span>
+                {% if acte.lieu_deces and acte.lieu_deces != 'None' and acte.lieu_deces != '' %}
+                    <span class="valeur-officielle">{{ acte.lieu_deces|title }}</span><div class="pointilles"></div>
+                {% else %}
+                    <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
+                {% endif %}
+            </div>
+
+            <p style="font-style: italic; margin-top: 15px; font-size: 14px;">Certifié le présent extrait conforme aux indications portées au registre.</p>
+            
+            <div class="signature-zone">
+                <p>Délivré à <strong>{{ acte.structure.sous_prefecture|title }}</strong>, le {% now "d F Y" %}</p>
+                <p class="officier-titre">L'Officier de l'État Civil</p>
+                <p style="font-style: italic; font-size: 11px;">(Signature)</p>
+            </div>
+
+            <div class="bas-de-page">
+                <div class="container-sceau-qr">
+                    <div class="mention-sceau">sceau</div>
+                    <img src="data:image/png;base64,{{ qr_base64 }}" class="qr-code-img">
+                </div>
+                <p style="font-size: 9px; margin-top: 3px;">Validation numérique officielle</p>
+            </div>
         </div>
         
     </div>

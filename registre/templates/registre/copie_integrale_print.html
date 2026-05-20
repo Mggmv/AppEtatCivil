@@ -43,56 +43,26 @@
         .acte-num { font-weight: bold; font-size: 14pt; margin-bottom: 10px; }
         .naissance-de { font-size: 14pt; line-height: 1.2; margin-bottom: 20px; }
         
-        /* Styles pour la transcription et les mentions à gauche */
         .mentions-texte, .mention-item { 
-            font-size: 11pt; 
-            line-height: 1.3; 
-            text-align: justify; 
-            word-wrap: break-word; 
-            overflow-wrap: break-word; 
-            word-break: break-word; /* Protection contre les débordements */
+            font-size: 11pt; line-height: 1.3; text-align: justify; 
+            word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; 
             max-width: 100%; 
         }
-        
-        .mentions-texte {
-            font-weight: bold;
-            font-style: italic;
-            margin-bottom: 15px;
-        }
-
-        .mention-item {
-            margin-bottom: 10px;
-        }
+        .mentions-texte { font-weight: bold; font-style: italic; margin-bottom: 15px; }
+        .mention-item { margin-bottom: 10px; }
 
         /* ================= COLONNE DROITE ================= */
         .col-droite { width: 70%; display: flex; flex-direction: column; }
         .titre-copie { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
         .sous-titre-copie { text-align: center; font-size: 12pt; font-style: italic; margin-bottom: 15px; line-height: 1.2; }
 
-        /* Tableau de la copie */
-        .table-transcription { 
-            width: 100%; 
-            border-collapse: collapse; 
-            font-size: 12.5pt; 
-            line-height: 1.1; 
-            table-layout: fixed; 
-        }
-        
+        .table-transcription { width: 100%; border-collapse: collapse; font-size: 12.5pt; line-height: 1.1; table-layout: fixed; }
         .table-transcription td { padding: 1px 0; vertical-align: top; }
         .td-num { width: 6%; font-weight: bold; text-align: left; }
         .td-label { width: 35%; font-weight: normal; }
-        .td-valeur { 
-            width: 59%; 
-            font-weight: bold; 
-            word-wrap: break-word; 
-            overflow-wrap: break-word; 
-            word-break: break-word; 
-        }
+        .td-valeur { width: 59%; font-weight: bold; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
 
-        /* Certification */
-        .texte-certification { 
-            font-size: 13pt; text-align: justify; line-height: 1.3; margin-top: 20px; margin-bottom: 10px;
-        }
+        .texte-certification { font-size: 13pt; text-align: justify; line-height: 1.3; margin-top: 20px; margin-bottom: 10px; }
 
         /* ================= ZONE BASSE ================= */
         .section-inferieure { width: 100%; z-index: 1; margin-top: 10px; }
@@ -112,7 +82,7 @@
 </head>
 <body>
     <div class="cadre">
-        <img src="{% static 'registre/armoirie ci.png' %}" class="armoiries-filigrane" alt="Filigrane">
+        <img src="Mon_Projet/../{% static 'registre/armoirie ci.png' %}" class="armoiries-filigrane" alt="Filigrane">
 
         <div class="header-trois-colonnes">
             <div class="header-gauche">
@@ -135,7 +105,13 @@
                 <div class="acte-num">Acte n° {{ a.numero_registre }}</div>
                 <div class="naissance-de">
                     Naissance de :<br>
-                    <strong>{{ a.nom_enfant|upper }}<br>{{ a.prenoms_enfant }}</strong>
+                    <strong>
+                        {% if a.prenoms_enfant and a.prenoms_enfant != 'None' and a.prenoms_enfant != 'none' %}
+                            {{ a.prenoms_enfant|title }}<br><span style="text-transform: uppercase;">{{ a.nom_enfant|upper }}</span>
+                        {% else %}
+                            <span style="text-transform: uppercase;">{{ a.nom_enfant|upper }}</span>
+                        {% endif %}
+                    </strong>
                 </div>
                 
                 {% if a.transcription_justice and a.transcription_justice != 'None' and a.transcription_justice != '' %}
@@ -149,7 +125,7 @@
                         
                         {% if a.date_mariage and a.date_mariage != 'None' and a.date_mariage != '' %}
                             <div class="mention-item">
-                                Marié(e) le <strong>{{ a.date_mariage }}</strong> avec <strong>{{ a.conjoint_mariage }}</strong>
+                                Marié(e) le <strong>{{ a.date_mariage }}</strong> avec <strong>{{ a.conjoint_mariage|title }}</strong>
                             </div>
                         {% endif %}
                         
@@ -161,28 +137,33 @@
                         
                         {% if a.date_deces and a.date_deces != 'None' and a.date_deces != '' %}
                             <div class="mention-item">
-                                Décédé(e) le <strong>{{ a.date_deces }}</strong> à <strong>{{ a.lieu_deces }}</strong>
+                                Décédé(e) le <strong>{{ a.date_deces }}</strong> à <strong>{{ a.lieu_deces|title }}</strong>
                             </div>
                         {% endif %}
 
                     </div>
                 {% endif %}
-
             </div>
 
             <div class="col-droite">
                 <div class="titre-copie">COPIE INTÉGRALE</div>
                 <div class="sous-titre-copie">
                     Du registre des Actes de l'état civil de la<br>
-                    Sous-préfecture de {{ s.sous_prefecture }} pour l'année {{ a.annee_registre }}
+                    Sous-préfecture de {{ s.sous_prefecture|title }} pour l'année {{ a.annee_registre }}
                 </div>
 
                 <table class="table-transcription">
                     <tr><td class="td-num">1.</td><td class="td-label">Le</td><td class="td-valeur">{{ a.infos_naissance_lettres }}</td></tr>
                     <tr><td class="td-num">2.</td><td class="td-label">à</td><td class="td-valeur">{% if a.heure_naissance %}{{ a.heure_naissance_lettres }}{% else %}................................................{% endif %}</td></tr>
-                    <tr><td class="td-num">3.</td><td class="td-label">est né(e) à</td><td class="td-valeur">{% if a.lieu_naissance and a.lieu_naissance != "None" %}{{ a.lieu_naissance }}{% else %}................................................{% endif %}</td></tr>
-                    <tr><td class="td-num">4.</td><td class="td-label">sous-préfecture de</td><td class="td-valeur">{{ s.sous_prefecture }}</td></tr>
-                    <tr><td class="td-num">5.</td><td class="td-label">l'enfant</td><td class="td-valeur">{{ a.nom_enfant|upper }} {{ a.prenoms_enfant }}</td></tr>
+                    <tr><td class="td-num">3.</td><td class="td-label">est né(e) à</td><td class="td-valeur">{% if a.lieu_naissance and a.lieu_naissance != "None" %}{{ a.lieu_naissance|upper }}{% else %}................................................{% endif %}</td></tr>
+                    <tr><td class="td-num">4.</td><td class="td-label">sous-préfecture de</td><td class="td-valeur">{{ s.sous_prefecture|title }}</td></tr>
+                    <tr><td class="td-num">5.</td><td class="td-label">l'enfant</td><td class="td-valeur">
+                        {% if a.prenoms_enfant and a.prenoms_enfant != 'None' and a.prenoms_enfant != 'none' %}
+                            <span style="text-transform: none; font-weight: bold;">{{ a.prenoms_enfant|title }}</span>
+                        {% else %}
+                            <span style="text-transform: uppercase; font-weight: bold;">{{ a.nom_enfant|upper }}</span>
+                        {% endif %}
+                    </td></tr>
                     <tr><td class="td-num">6.</td><td class="td-label">du sexe</td><td class="td-valeur">{% if a.sexe == 'M' %}Masculin{% else %}Féminin{% endif %}</td></tr>
                     
                     <tr><td class="td-num">7.</td><td class="td-label">ayant pour père</td><td class="td-valeur">{% if a.nom_pere and a.nom_pere != "None" %}{{ a.nom_pere }}{% else %}................................................{% endif %}</td></tr>
@@ -223,7 +204,7 @@
                     <div style="font-size: 7pt; margin-top: 2px;">Validation Numérique</div>
                 </div>
                 <div class="signature-bloc">
-                    <div class="date-delivrance">Fait à {{ s.sous_prefecture|upper }}, le <span id="date-jour"></span></div>
+                    <div class="date-delivrance">Fait à {{ s.sous_prefecture|title }}, le <span id="date-jour"></span></div>
                     <span class="officier-titre">L’Officier de l'état civil</span>
                     <div class="sign-mention">(Signature)</div>
                 </div>
