@@ -2,50 +2,63 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <title>Registre Annuel - {{ annee }}</title>
     <style>
+        /* Mettre la page en PAYSAGE (Landscape) */
+        @page { size: A4 landscape; margin: 10mm; }
+        
         body { font-family: Arial, sans-serif; font-size: 12px; }
-        .page-garde { text-align: center; margin-top: 200px; page-break-after: always; }
+        .page-garde { text-align: center; margin-top: 150px; page-break-after: always; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        
+        /* Marges réduites pour que tout rentre */
+        th, td { border: 1px solid black; padding: 4px 6px; text-align: left; line-height: 1.2; }
+        th { background-color: #f2f2f2; text-transform: uppercase; font-size: 11px; }
         .header { text-align: center; text-transform: uppercase; }
+        
+        @media print { .btn-print { display: none !important; } }
     </style>
 </head>
 <body onload="window.print()">
+    <button onclick="window.print()" class="btn-print" style="position: fixed; top: 20px; right: 20px; padding: 10px 15px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; z-index: 1000;">🖨️ Imprimer</button>
+
     <div class="page-garde">
         <div class="header">
             <h2>République de Côte d'Ivoire</h2>
             <h3>{{ structure.region }}</h3>
             <h4>{{ structure.nom_sous_prefecture }}</h4>
         </div>
-        <h1 style="margin-top: 100px;">REGISTRE DES ACTES DE NAISSANCE</h1>
+        <h1 style="margin-top: 80px;">REGISTRE DES ACTES DE NAISSANCE</h1>
         <h2 style="font-size: 40px;">ANNÉE {{ annee }}</h2>
-        <p style="margin-top: 50px;">Nombre d'actes contenus dans le présent registre : <strong>{{ total }}</strong></p>
+        <p style="margin-top: 50px; font-size: 14px;">Nombre d'actes contenus dans le présent registre : <strong style="font-size: 16px;">{{ total }}</strong></p>
     </div>
 
     <h2 class="header">Récapitulatif des actes de l'année {{ annee }}</h2>
     <table>
         <thead>
             <tr>
-                <th>N° Acte Complet</th>
-                <th>Nom et Prénoms</th>
-                <th>Date de Naissance</th>
-                <th>Père / Mère</th>
+                <th style="width: 15%;">N° Acte Complet</th>
+                <th style="width: 25%;">Nom et Prénoms</th>
+                <th style="width: 25%;">Date de Naissance</th>
+                <th style="width: 35%;">Père / Mère</th>
             </tr>
         </thead>
         <tbody>
             {% for acte in actes %}
             <tr>
-                <td>{{ acte.numero_registre }}{% if acte.date_declaration %} du {{ acte.date_declaration|date:"d/m/Y" }}{% endif %}</td>
-                <td><strong>{{ acte.nom_enfant }}</strong> {{ acte.prenoms_enfant }}</td>
-                <td>{{ acte.date_naissance|date:"d/m/Y" }}</td>
-                <td>P: {{ acte.nom_pere }}<br>M: {{ acte.nom_mere }}</td>
+                <td><strong>{{ acte.numero_registre }}</strong> {% if acte.date_declaration %}du {{ acte.date_declaration|date:"d/m/Y" }}{% endif %}</td>
+                <td><strong style="text-transform: uppercase;">{{ acte.nom_enfant }}</strong> {{ acte.prenoms_enfant }}</td>
+                <td>{{ acte.date_naissance }}</td>
+                <td><strong>P:</strong> {{ acte.nom_pere }}<br><strong>M:</strong> {{ acte.nom_mere }}</td>
             </tr>
+            {% empty %}
+            <tr><td colspan="4" style="text-align: center; padding: 20px; font-style: italic;">Aucun acte enregistré pour cette année.</td></tr>
             {% endfor %}
         </tbody>
     </table>
     
-    <p style="margin-top: 30px; text-align: right;">
-        Arrêté le présent registre à la somme de {{ total }} actes.<br>
+    <p style="margin-top: 30px; text-align: right; font-size: 13px; line-height: 1.5;">
+        Arrêté le présent registre à la somme de <strong>{{ total }}</strong> actes.<br>
         Fait à {{ structure.ville_sous_prefecture }}, le {{ date_edition|date:"d F" }} deux <strong>mil</strong> vingt-six.
     </p>
 </body>

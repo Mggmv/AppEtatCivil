@@ -87,6 +87,8 @@ class ActeNaissance(models.Model):
     
     transcription_justice = models.TextField(verbose_name="Transcription de décision de justice", blank=True, null=True)
     nom_sous_prefet = models.CharField(max_length=150, verbose_name="Nom et Prénoms du Sous-préfet", blank=True, null=True, help_text="Ex: TRA Bi Bah Albert")
+    nom_officier_creation = models.CharField(max_length=150, blank=True, null=True, verbose_name="Officier d'état civil (Créateur de l'acte)")
+
 
     class Meta:
         verbose_name = "Acte de Naissance"

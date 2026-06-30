@@ -1,13 +1,35 @@
 {% extends "admin/change_list.html" %}
 
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        /* Serrage des lignes pour voir plus d'actes */
+        #result_list th, #result_list td {
+            padding: 4px 8px !important;
+            line-height: 1.2 !important;
+            vertical-align: middle !important;
+            font-size: 12px !important;
+        }
+        #result_list .action-checkbox {
+            padding-top: 2px !important;
+            padding-bottom: 2px !important;
+        }
+    </style>
+{% endblock %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="{% url 'admin:import_naissances' %}" class="addlink" style="background-color: #ffc107; color: black; font-weight: bold;">
+            📥 Importer un fichier Excel (CSV)
+        </a>
+    </li>
+    {{ block.super }}
+{% endblock %}
+
 {% block search %}
-    <!-- On garde la barre de recherche standard de Django au cas où -->
     {{ block.super }}
 
-    <!-- NOS ZONES DE RECHERCHE PERSONNALISÉES -->
     <div style="background: #f4f6f8; padding: 15px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px;">
-        
-        <!-- ZONE 1 : RECHERCHE PAR NUMÉRO ET DATE (RÉFÉRENCE COMPLÈTE) -->
         <form method="GET" action="" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc;">
             <h3 style="margin-top: 0; color: #004494;">1. Recherche par Référence de l'Acte</h3>
             <div style="display: flex; gap: 15px; align-items: flex-end;">
@@ -19,7 +41,6 @@
             </div>
         </form>
 
-        <!-- ZONE 2 : RECHERCHE PAR IDENTITÉ -->
         <form method="GET" action="">
             <h3 style="margin-top: 0; color: #004494;">2. Recherche par Identité du Citoyen</h3>
             <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
@@ -40,7 +61,7 @@
                     <input type="text" name="q_mere" value="{{ request.GET.q_mere }}" style="padding: 5px;">
                 </div>
                 <button type="submit" class="button" style="background: #004494; color: white;">🔍 Chercher la personne</button>
-                <a href="?" class="button" style="background: #dc3545; color: white; text-decoration: none;">❌ Réinitialiser</a>
+                <a href="?" class="button" style="background: #dc3545; color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; font-weight: bold;">❌ Réinitialiser</a>
             </div>
         </form>
     </div>

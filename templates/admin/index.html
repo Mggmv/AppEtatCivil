@@ -13,14 +13,14 @@
 
     <a href="/admin/registre/actenaissance/?sexe__exact=M" style="text-decoration: none; flex: 1 1 200px;">
         <div style="background: #28a745; color: white; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
-            <span style="font-size: 11px; font-weight: bold; text-transform: uppercase;">Garçons</span>
+            <span style="font-size: 11px; font-weight: bold; text-transform: uppercase;">Masculin</span>
             <span style="font-size: 13px; font-weight: bold; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 10px;">{{ naissances_garcons }}</span>
         </div>
     </a>
 
     <a href="/admin/registre/actenaissance/?sexe__exact=F" style="text-decoration: none; flex: 1 1 200px;">
-        <div style="background: #e83e8c; color: white; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
-            <span style="font-size: 11px; font-weight: bold; text-transform: uppercase;">Filles</span>
+        <div style="background: #dc3545; color: white; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+            <span style="font-size: 11px; font-weight: bold; text-transform: uppercase;">Féminin</span>
             <span style="font-size: 13px; font-weight: bold; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 10px;">{{ naissances_filles }}</span>
         </div>
     </a> 
@@ -34,16 +34,26 @@
 
 </div>
 
-<div style="margin-bottom: 25px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+<div style="margin-bottom: 25px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
     
-    <a href="{% url 'admin:print_registre' %}" target="_blank" style="background: #17a2b8; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 11px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
-        🖨️ IMPRIMER LE REGISTRE ANNUEL
+    <form method="GET" action="{% url 'admin:print_registre' %}" target="_blank" style="display: flex; align-items: center; background: white; padding: 5px 15px; border: 1px solid #17a2b8; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <label style="margin-right: 10px; font-weight: bold; color: #17a2b8;">🖨️ Registre des Naissances :</label>
+        <select name="annee" required style="padding: 5px; border-radius: 3px; border: 1px solid #ccc; outline: none; font-size: 14px; min-width: 120px;">
+            <option value="">Choisir l'année...</option>
+            {% for annee in annees_disponibles %}
+                <option value="{{ annee }}">{{ annee }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" style="margin-left: 10px; background: #17a2b8; color: white; border: none; padding: 6px 15px; border-radius: 3px; font-weight: bold; cursor: pointer; transition: 0.2s;">Générer</button>
+    </form>
+
+    <a href="{% url 'admin:import_naissances' %}" style="background: #ffc107; color: black; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center;">
+        📥 Importer Données (Excel)
     </a>
 
-    <a href="{% url 'admin:backup_db' %}" style="background: #dc3545; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 11px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
-        ⚠️ SAUVEGARDE D'URGENCE
+    <a href="{% url 'admin:backup_db' %}" style="background: #28a745; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center;">
+        💾 Sauvegarder la Base
     </a>
-
 </div>
 
 {{ block.super }}

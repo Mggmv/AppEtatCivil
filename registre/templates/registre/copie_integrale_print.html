@@ -23,7 +23,6 @@
             width: 14cm; opacity: 0.06; z-index: 0; pointer-events: none;
         }
 
-        /* En-tête en 3 colonnes */
         .header-trois-colonnes {
             display: flex; justify-content: space-between; align-items: flex-start;
             margin-bottom: 15px; z-index: 1; position: relative;
@@ -35,7 +34,6 @@
 
         .colonnes-container { display: flex; width: 100%; z-index: 1; }
 
-        /* ================= COLONNE GAUCHE ================= */
         .col-gauche {
             width: 30%; border-right: 1.5px solid black; padding-right: 15px; margin-right: 15px;
             display: flex; flex-direction: column; height: fit-content;
@@ -51,7 +49,6 @@
         .mentions-texte { font-weight: bold; font-style: italic; margin-bottom: 15px; }
         .mention-item { margin-bottom: 10px; }
 
-        /* ================= COLONNE DROITE ================= */
         .col-droite { width: 70%; display: flex; flex-direction: column; }
         .titre-copie { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
         .sous-titre-copie { text-align: center; font-size: 12pt; font-style: italic; margin-bottom: 15px; line-height: 1.2; }
@@ -64,7 +61,6 @@
 
         .texte-certification { font-size: 13pt; text-align: justify; line-height: 1.3; margin-top: 20px; margin-bottom: 10px; }
 
-        /* ================= ZONE BASSE ================= */
         .section-inferieure { width: 100%; z-index: 1; margin-top: 10px; }
         .zone-finale { position: relative; width: 100%; min-height: 140px; }
         
@@ -125,7 +121,7 @@
                         
                         {% if a.date_mariage and a.date_mariage != 'None' and a.date_mariage != '' %}
                             <div class="mention-item">
-                                Marié(e) le <strong>{{ a.date_mariage }}</strong> avec <strong>{{ a.conjoint_mariage|title }}</strong>
+                                Marié(e) le <strong>{{ a.date_mariage }}</strong> avec <strong>{{ a.conjoint_mariage }}</strong>
                             </div>
                         {% endif %}
                         
@@ -137,7 +133,7 @@
                         
                         {% if a.date_deces and a.date_deces != 'None' and a.date_deces != '' %}
                             <div class="mention-item">
-                                Décédé(e) le <strong>{{ a.date_deces }}</strong> à <strong>{{ a.lieu_deces|title }}</strong>
+                                Décédé(e) le <strong>{{ a.date_deces }}</strong> à <strong>{{ a.lieu_deces }}</strong>
                             </div>
                         {% endif %}
 
@@ -155,7 +151,10 @@
                 <table class="table-transcription">
                     <tr><td class="td-num">1.</td><td class="td-label">Le</td><td class="td-valeur">{{ a.infos_naissance_lettres }}</td></tr>
                     <tr><td class="td-num">2.</td><td class="td-label">à</td><td class="td-valeur">{% if a.heure_naissance %}{{ a.heure_naissance_lettres }}{% else %}................................................{% endif %}</td></tr>
-                    <tr><td class="td-num">3.</td><td class="td-label">est né(e) à</td><td class="td-valeur">{% if a.lieu_naissance and a.lieu_naissance != "None" %}{{ a.lieu_naissance|upper }}{% else %}................................................{% endif %}</td></tr>
+                    
+                    <!-- CORRECTION : Suppression du filtre |upper pour conserver le mode de saisie -->
+                    <tr><td class="td-num">3.</td><td class="td-label">est né(e) à</td><td class="td-valeur">{% if a.lieu_naissance and a.lieu_naissance != "None" %}{{ a.lieu_naissance }}{% else %}................................................{% endif %}</td></tr>
+                    
                     <tr><td class="td-num">4.</td><td class="td-label">sous-préfecture de</td><td class="td-valeur">{{ s.sous_prefecture|title }}</td></tr>
                     <tr><td class="td-num">5.</td><td class="td-label">l'enfant</td><td class="td-valeur">
                         {% if a.prenoms_enfant and a.prenoms_enfant != 'None' and a.prenoms_enfant != 'none' %}
@@ -183,14 +182,20 @@
                     <tr><td class="td-num">19.</td><td class="td-label">sur la déclaration de</td><td class="td-valeur">................................................</td></tr>
                     <tr><td class="td-num">20.</td><td class="td-label">reçue en langue</td><td class="td-valeur">................................................</td></tr>
                     <tr><td class="td-num">21.</td><td class="td-label">avec l'assistance de</td><td class="td-valeur">................................................</td></tr>
-                    <tr><td class="td-num">22.</td><td colspan="2">Par Nous, Officier de l'état civil.</td></tr>
+                    
+                    <!-- CORRECTION : Ajout du nom de l'officier qui a créé l'acte (Ligne 22) -->
+                    <tr>
+                        <td class="td-num">22.</td>
+                        <td colspan="2">Par Nous, <strong>{% if a.nom_officier_creation and a.nom_officier_creation != 'None' %}{{ a.nom_officier_creation|upper }}{% else %}................................................{% endif %}</strong>, Officier de l'état civil.</td>
+                    </tr>
+                    
                     <tr><td class="td-num">23.</td><td colspan="2">Lecture faite, et le déclarant invité à lire l'acte.</td></tr>
                     <tr><td class="td-num">24.</td><td colspan="2">L'acte ayant été traduit par l'interprète.</td></tr>
                     <tr><td class="td-num">25.</td><td colspan="2" style="padding-bottom: 5px;">Nous avons signé avec le déclarant.</td></tr>
                 </table>
 
                 <div class="texte-certification">
-                    Pour copie certifiée conforme, par nous, <strong>{% if a.nom_sous_prefet and a.nom_sous_prefet != 'None' %}{{ a.nom_sous_prefet }}{% else %}................................................{% endif %}</strong>,<br>
+                    Pour copie certifiée conforme, par nous, <strong>{% if a.nom_sous_prefet and a.nom_sous_prefet != 'None' %}{{ a.nom_sous_prefet|upper }}{% else %}................................................{% endif %}</strong>,<br>
                     Sous-préfet, Officier d’état civil de la Circonscription Administrative de {{ s.sous_prefecture|upper }}.
                 </div>
             </div>

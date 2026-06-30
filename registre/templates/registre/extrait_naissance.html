@@ -27,10 +27,8 @@
         }
         .contenu-officiel { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
         
-        /* LA ZONE SUPÉRIEURE PREND EXACTEMENT LA MOITIÉ HAUT DE LA PAGE */
         .section-superieure { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; height: 48%; }
         
-        /* BLOC GAUCHE */
         .bloc-gauche { text-align: center; width: 320px; padding-right: 10px; }
         .logo-embleme { width: 125px; height: auto; margin: 10px 0; }
         .txt-admin { font-weight: bold; text-transform: uppercase; font-size: 11px; margin: 0; line-height: 1.2; }
@@ -51,7 +49,6 @@
             margin-right: auto;
         }
 
-        /* BLOC DROITE */
         .bloc-droite { text-align: center; width: 380px; display: flex; flex-direction: column; align-items: center; }
         .en-tete-republique { margin-bottom: 10px; }
         .titre-extrait { font-size: 40px; font-weight: bold; text-decoration: underline; text-transform: uppercase; margin: 0; width: 100%; }
@@ -59,10 +56,8 @@
         .sous-titre-registre { font-size: 14px; font-weight: bold; line-height: 1.2; margin: 0; }
         .bloc-naissance-texte { margin-top: 35px; text-align: left; line-height: 1.4; font-size: 17px; width: 95%; }
 
-        /* LIGNE HORIZONTALE STRICTEMENT FIGÉE AU MILIEU (50%) */
         .separateur-mentions { position: absolute; top: 50%; left: 0; right: 0; border-top: 1.5px solid black; width: 100%; margin: 0; }
         
-        /* ZONE INFÉRIEURE FIGÉE SOUS LA LIGNE */
         .zone-inferieure { position: absolute; top: 51%; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; padding-top: 10px; }
 
         .titre-mention-centre { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 10px; display: block; }
@@ -70,10 +65,8 @@
         .legende { white-space: nowrap; margin-right: 5px; }
         .pointilles { flex-grow: 1; border-bottom: 1.5px dotted black; height: 1em; margin: 0 5px; }
         
-        /* SUPPRESSION DES MAJUSCULES FORCÉES POUR LES MENTIONS */
         .valeur-officielle { font-weight: bold; white-space: normal; word-break: break-word; line-height: 1.4; }
 
-        /* SIGNATURE ET BAS DE PAGE */
         .signature-zone { text-align: right; margin-top: 10px; padding-right: 20px; }
         .officier-titre { font-weight: bold; margin-bottom: 2px; display: block; }
         .bas-de-page { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; }
@@ -148,7 +141,7 @@
                         <p style="margin: 5px 0 15px 0;">&nbsp;</p> 
                     {% endif %}
                     
-                    <p>à <strong>{{ acte.lieu_naissance|upper }}</strong></p>
+                    <p>à <strong>{{ acte.lieu_naissance|title }}</strong></p>
                     <p style="margin: 10px 0;">est {{ accord_ne }} <strong>
                         {% if acte.prenoms_enfant and acte.prenoms_enfant != 'None' and acte.prenoms_enfant != 'none' %}
                             <span style="text-transform: none;">{{ acte.prenoms_enfant|title }}</span>
@@ -180,7 +173,8 @@
             <div class="ligne-mention">
                 <span class="legende">Avec</span>
                 {% if acte.conjoint_mariage and acte.conjoint_mariage != 'None' and acte.conjoint_mariage != '' %}
-                    <span class="valeur-officielle">{{ acte.conjoint_mariage|title }}</span><div class="pointilles"></div>
+                    <!-- Suppression du filtre title pour respecter la saisie exacte -->
+                    <span class="valeur-officielle">{{ acte.conjoint_mariage }}</span><div class="pointilles"></div>
                 {% else %}
                     <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
                 {% endif %}
@@ -207,7 +201,8 @@
             <div class="ligne-mention">
                 <span class="legende">Lieu de décès</span>
                 {% if acte.lieu_deces and acte.lieu_deces != 'None' and acte.lieu_deces != '' %}
-                    <span class="valeur-officielle">{{ acte.lieu_deces|title }}</span><div class="pointilles"></div>
+                    <!-- Suppression du filtre title pour respecter la saisie exacte -->
+                    <span class="valeur-officielle">{{ acte.lieu_deces }}</span><div class="pointilles"></div>
                 {% else %}
                     <div class="pointilles"></div><span class="valeur-officielle">Néant</span>
                 {% endif %}
